@@ -1,4 +1,4 @@
-package com.darryncampbell.networkstatslogger.utils;
+package de.htwg.co2footprint_tracker.utils;
 
 import android.content.Context;
 import android.media.MediaScannerConnection;
@@ -8,14 +8,13 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.darryncampbell.networkstatslogger.model.Package;
+import de.htwg.co2footprint_tracker.model.Package;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

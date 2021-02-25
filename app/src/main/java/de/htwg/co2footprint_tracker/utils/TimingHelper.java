@@ -1,10 +1,10 @@
-package com.darryncampbell.networkstatslogger.utils;
+package de.htwg.co2footprint_tracker.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.darryncampbell.networkstatslogger.R;
+import de.htwg.co2footprint_tracker.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

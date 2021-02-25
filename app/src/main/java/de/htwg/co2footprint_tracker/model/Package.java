@@ -1,4 +1,4 @@
-package com.darryncampbell.networkstatslogger.model;
+package de.htwg.co2footprint_tracker.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

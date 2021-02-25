@@ -1,4 +1,4 @@
-package com.darryncampbell.networkstatslogger.model;
+package de.htwg.co2footprint_tracker.model;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.darryncampbell.networkstatslogger.R;
+import de.htwg.co2footprint_tracker.R;
 
 import java.util.List;
 

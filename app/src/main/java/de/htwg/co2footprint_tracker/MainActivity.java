@@ -1,4 +1,4 @@
-package com.darryncampbell.networkstatslogger;
+package de.htwg.co2footprint_tracker;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -23,16 +23,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.darryncampbell.networkstatslogger.model.Package;
-import com.darryncampbell.networkstatslogger.utils.Constants;
-import com.darryncampbell.networkstatslogger.model.PackageAdapter;
-import com.darryncampbell.networkstatslogger.utils.StorageHelper;
-import com.darryncampbell.networkstatslogger.utils.TimingHelper;
+import de.htwg.co2footprint_tracker.R;
+
+import de.htwg.co2footprint_tracker.model.Package;
+import de.htwg.co2footprint_tracker.utils.Constants;
+import de.htwg.co2footprint_tracker.model.PackageAdapter;
+import de.htwg.co2footprint_tracker.utils.StorageHelper;
+import de.htwg.co2footprint_tracker.utils.TimingHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.darryncampbell.networkstatslogger.utils.TimingHelper.getTestDurationInMins;
+import static de.htwg.co2footprint_tracker.utils.TimingHelper.getTestDurationInMins;
 
 //  Credit: Heavily influenced by https://github.com/RobertZagorski/NetworkStats,
 //          particularly requesting permissions and the bootstrapping
