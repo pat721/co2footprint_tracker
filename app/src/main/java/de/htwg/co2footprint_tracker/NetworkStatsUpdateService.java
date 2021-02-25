@@ -1,4 +1,4 @@
-package com.darryncampbell.networkstatslogger;
+package de.htwg.co2footprint_tracker;
 
 import android.annotation.SuppressLint;
 import android.app.IntentService;
@@ -13,9 +13,9 @@ import android.os.RemoteException;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.darryncampbell.networkstatslogger.model.Package;
-import com.darryncampbell.networkstatslogger.utils.Constants;
-import com.darryncampbell.networkstatslogger.utils.TimingHelper;
+import de.htwg.co2footprint_tracker.model.Package;
+import de.htwg.co2footprint_tracker.utils.Constants;
+import de.htwg.co2footprint_tracker.utils.TimingHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,8 +45,8 @@ public class NetworkStatsUpdateService extends IntentService {
                 ArrayList<Package> packageList = intent.getParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST);
                 Boolean saveStatsToFile = intent.getBooleanExtra(Constants.PARAMS.SAVE_STATS_TO_FILE, false);
 
-                long ONE_MINUTE_IN_MS = 1000*60;
-                long ONE_DAY_IN_MS = 1000* 60*60*24;
+                long ONE_MINUTE_IN_MS = 1000 * 60;
+                long ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;
                 long SEVEN_DAYS_IN_MS = 7 * ONE_DAY_IN_MS;
                 long startTime = TimingHelper.getStartTime(this);
                 long temp = System.currentTimeMillis();
@@ -54,8 +54,7 @@ public class NetworkStatsUpdateService extends IntentService {
                 //long startTime = System.currentTimeMillis() - ONE_DAY_IN_MS;
                 //long startTime = System.currentTimeMillis() - ONE_MINUTE_IN_MS;
 
-                for (int i = 0; i < packageList.size(); i++)
-                {
+                for (int i = 0; i < packageList.size(); i++) {
                     long rxBytesWifi = 0;
                     long txBytesWifi = 0;
                     long rxBytesMobile = 0;
@@ -75,39 +74,32 @@ public class NetworkStatsUpdateService extends IntentService {
                         NetworkStatsManager networkStatsManager = (NetworkStatsManager) getSystemService(Context.NETWORK_STATS_SERVICE);
 
                         try {
-                            networkStatsWifi = networkStatsManager.queryDetailsForUid(
-                                    ConnectivityManager.TYPE_WIFI,
-                                    "",
-                                    startTime,
-                                    System.currentTimeMillis() + SEVEN_DAYS_IN_MS,  //  Otherwise we don't catch all the recent data
-                                    packageList.get(i).getPackageUid());
-                            NetworkStats.Bucket bucket = new NetworkStats.Bucket();
-                            while (networkStatsWifi.hasNextBucket()) {
+                            networkStatsWifi = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", startTime, System.currentTimeMillis());
+                            do {
+                                NetworkStats.Bucket bucket = new NetworkStats.Bucket();
                                 networkStatsWifi.getNextBucket(bucket);
-                                rxBytesWifi += bucket.getRxBytes();
-                                txBytesWifi += bucket.getTxBytes();
-                                rxPacketsWifi += bucket.getRxPackets();
-                                txPacketsWifi += bucket.getTxPackets();
-                                //Log.d(Constants.LOG.TAG, "Cumulative bytes: " + rxBytesWifi);
-                            }
+                                if (bucket.getUid() == packageList.get(i).getPackageUid()) {
+                                    rxBytesWifi += bucket.getRxBytes();
+                                    txBytesWifi += bucket.getTxBytes();
+                                    rxPacketsWifi += bucket.getRxPackets();
+                                    txPacketsWifi += bucket.getTxPackets();
+                                }
+                            } while (networkStatsWifi.hasNextBucket());
                         } catch (RemoteException e) {
                             Log.e(Constants.LOG.TAG, "Remote Exception: " + e.getMessage());
                         }
                         try {
-                            networkStatsMobile = networkStatsManager.queryDetailsForUid(
-                                    ConnectivityManager.TYPE_MOBILE,
-                                    getSubscriberId(this, ConnectivityManager.TYPE_MOBILE),
-                                    startTime,
-                                    System.currentTimeMillis() + SEVEN_DAYS_IN_MS,
-                                    packageList.get(i).getPackageUid());
-                            NetworkStats.Bucket bucket = new NetworkStats.Bucket();
-                            while (networkStatsMobile.hasNextBucket()) {
+                            networkStatsMobile = networkStatsManager.querySummary(ConnectivityManager.TYPE_MOBILE, getSubscriberId(this, ConnectivityManager.TYPE_MOBILE), startTime, System.currentTimeMillis());
+                            do {
+                                NetworkStats.Bucket bucket = new NetworkStats.Bucket();
                                 networkStatsMobile.getNextBucket(bucket);
-                                rxBytesMobile += bucket.getRxBytes();
-                                txBytesMobile += bucket.getTxBytes();
-                                rxPacketsMobile += bucket.getRxPackets();
-                                txPacketsMobile += bucket.getTxPackets();
-                            }
+                                if (bucket.getUid() == packageList.get(i).getPackageUid()) {
+                                    rxBytesWifi += bucket.getRxBytes();
+                                    txBytesWifi += bucket.getTxBytes();
+                                    rxPacketsWifi += bucket.getRxPackets();
+                                    txPacketsWifi += bucket.getTxPackets();
+                                }
+                            } while (networkStatsMobile.hasNextBucket());
                             rxBytesTotal = rxBytesWifi + rxBytesMobile;
                             txBytesTotal = txBytesWifi + txBytesMobile;
                             rxPacketsTotal = rxPacketsWifi + rxPacketsMobile;
@@ -116,9 +108,7 @@ public class NetworkStatsUpdateService extends IntentService {
                         } catch (RemoteException e) {
                             Log.e(Constants.LOG.TAG, "Remote Exception: " + e.getMessage());
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //  Note: These only return data for our own UID on M and higher
                         //  Note: These only reset to zero after every reboot so the start / stop test logic doesn't
                         //        make sense for these
