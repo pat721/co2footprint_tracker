@@ -13,6 +13,7 @@ import android.os.RemoteException;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.utils.Constants;
 import de.htwg.co2footprint_tracker.utils.TimingHelper;
@@ -50,10 +51,9 @@ public class NetworkStatsUpdateService extends IntentService {
                 long SEVEN_DAYS_IN_MS = 7 * ONE_DAY_IN_MS;
                 long startTime = TimingHelper.getStartTime(this);
                 long temp = System.currentTimeMillis();
-                //long startTime = System.currentTimeMillis() - SEVEN_DAYS_IN_MS;
-                //long startTime = System.currentTimeMillis() - ONE_DAY_IN_MS;
-                //long startTime = System.currentTimeMillis() - ONE_MINUTE_IN_MS;
-
+                boolean isNewRun = InitialBucketContainer.isNewRun();
+                InitialBucketContainer.setNewRun(false);
+                
                 for (int i = 0; i < packageList.size(); i++) {
                     long rxBytesWifi = 0;
                     long txBytesWifi = 0;
@@ -75,18 +75,30 @@ public class NetworkStatsUpdateService extends IntentService {
 
                         try {
                             networkStatsWifi = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", startTime, System.currentTimeMillis());
-                            do {
-                                NetworkStats.Bucket bucket = new NetworkStats.Bucket();
+                            NetworkStats.Bucket bucket = new NetworkStats.Bucket();
+                                
+                            while (networkStatsWifi.hasNextBucket()) {
+                                
                                 networkStatsWifi.getNextBucket(bucket);
                                 if (bucket.getUid() == packageList.get(i).getPackageUid()) {
-                                    rxBytesWifi += bucket.getRxBytes();
-                                    txBytesWifi += bucket.getTxBytes();
-                                    rxPacketsWifi += bucket.getRxPackets();
-                                    txPacketsWifi += bucket.getTxPackets();
+                                    int bucketId = bucket.getUid();
+
+                                    //TODO Fehler beim aufsummeren d. Buckets - alle initial data von allen buckets müssen aufsummiert werden (InitialBucketContainer.putInitial...).
+                                    if (isNewRun){
+                                        InitialBucketContainer.putInitialReceivedWifiData(bucketId, bucket.getRxBytes());
+                                        InitialBucketContainer.putInitialTransmittedWifiData(bucketId, bucket.getTxBytes());
+                                        InitialBucketContainer.putInitialReceivedWifiPacket(bucketId, bucket.getRxPackets());
+                                        InitialBucketContainer.putInitialTransmittedWifiPacket(bucketId, bucket.getTxPackets());
+                                    }
+                                    //TODO Abziehen von InitialBucketContainer.getInitialReceivedWifiData(bucketId) muss ausserhalb der while schleife passieren
+                                    rxBytesWifi = rxBytesWifi + bucket.getRxBytes() - InitialBucketContainer.getInitialReceivedWifiData(bucketId);
+                                    txBytesWifi = txBytesWifi + bucket.getTxBytes() - InitialBucketContainer.getInitialTransmittedWifiData(bucketId);
+                                    rxPacketsWifi =  rxPacketsWifi + bucket.getRxPackets() - InitialBucketContainer.getInitialReceivedWifiPacket(bucketId);
+                                    txPacketsWifi = txPacketsWifi + bucket.getTxPackets() - InitialBucketContainer.getInitialTransmittedWifiPacket(bucketId);
                                 }
-                            } while (networkStatsWifi.hasNextBucket());
-                        } catch (RemoteException e) {
-                            Log.e(Constants.LOG.TAG, "Remote Exception: " + e.getMessage());
+                            }// while (networkStatsWifi.hasNextBucket());
+                        } catch (Exception e) {
+                            Log.e(Constants.LOG.TAG, "Remote Exception: WIFI " + e.getMessage());
                         }
                         try {
                             networkStatsMobile = networkStatsManager.querySummary(ConnectivityManager.TYPE_MOBILE, getSubscriberId(this, ConnectivityManager.TYPE_MOBILE), startTime, System.currentTimeMillis());
@@ -105,7 +117,7 @@ public class NetworkStatsUpdateService extends IntentService {
                             rxPacketsTotal = rxPacketsWifi + rxPacketsMobile;
                             txPacketsTotal = txPacketsWifi + txPacketsMobile;
 
-                        } catch (RemoteException e) {
+                        } catch (Exception e) {
                             Log.e(Constants.LOG.TAG, "Remote Exception: " + e.getMessage());
                         }
                     } else {

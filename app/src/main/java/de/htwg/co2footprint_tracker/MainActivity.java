@@ -23,11 +23,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import de.htwg.co2footprint_tracker.R;
-
 import de.htwg.co2footprint_tracker.model.Package;
+import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.utils.Constants;
 import de.htwg.co2footprint_tracker.model.PackageAdapter;
+import de.htwg.co2footprint_tracker.utils.NetworkStatsInitiator;
 import de.htwg.co2footprint_tracker.utils.StorageHelper;
 import de.htwg.co2footprint_tracker.utils.TimingHelper;
 
@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 TimingHelper.setStartTime(this);
                 TimingHelper.setIsTestRunning(this, true);
+                //new NetworkStatsInitiator().fillMapForNewRun(this);
                 Toast.makeText(this, "Started test at " + TimingHelper.getStartTimeForUI(this), Toast.LENGTH_LONG).show();
             }
             return true;
@@ -202,7 +203,9 @@ public class MainActivity extends AppCompatActivity {
                 {
                     StorageHelper fileHelper = new StorageHelper();
                     String fileLocation = fileHelper.persistNetworkStatisticsToFile(getApplicationContext(), packageList);
-                    if (!fileLocation.equals(""))
+
+                   if (!fileLocation.equals(""))
+                        InitialBucketContainer.setNewRun(true);
                         Toast.makeText(getApplicationContext(), "Statistics written to " + fileLocation , Toast.LENGTH_LONG).show();
                 }
             }
