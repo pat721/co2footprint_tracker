@@ -53,7 +53,7 @@ public class NetworkStatsUpdateService extends IntentService {
                 long temp = System.currentTimeMillis();
                 boolean isNewRun = InitialBucketContainer.isNewRun();
                 InitialBucketContainer.setNewRun(false);
-                
+
                 for (int i = 0; i < packageList.size(); i++) {
                     long rxBytesWifi = 0;
                     long txBytesWifi = 0;
@@ -69,47 +69,54 @@ public class NetworkStatsUpdateService extends IntentService {
                     long txPacketsTotal = 0;
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        NetworkStats networkStatsWifi = null;
-                        NetworkStats networkStatsMobile = null;
+                        NetworkStats networkStatsWifi;
+                        NetworkStats networkStatsMobile;
                         NetworkStatsManager networkStatsManager = (NetworkStatsManager) getSystemService(Context.NETWORK_STATS_SERVICE);
 
                         try {
                             networkStatsWifi = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", startTime, System.currentTimeMillis());
                             NetworkStats.Bucket bucket = new NetworkStats.Bucket();
-                                
-                            while (networkStatsWifi.hasNextBucket()) {
-                                
-                                networkStatsWifi.getNextBucket(bucket);
+                            do {
                                 if (bucket.getUid() == packageList.get(i).getPackageUid()) {
-                                    int bucketId = bucket.getUid();
-
-                                    //TODO Fehler beim aufsummeren d. Buckets - alle initial data von allen buckets müssen aufsummiert werden (InitialBucketContainer.putInitial...).
-                                    if (isNewRun){
-                                        InitialBucketContainer.putInitialReceivedWifiData(bucketId, bucket.getRxBytes());
-                                        InitialBucketContainer.putInitialTransmittedWifiData(bucketId, bucket.getTxBytes());
-                                        InitialBucketContainer.putInitialReceivedWifiPacket(bucketId, bucket.getRxPackets());
-                                        InitialBucketContainer.putInitialTransmittedWifiPacket(bucketId, bucket.getTxPackets());
+                                    if (isNewRun) {
+                                        //if it is the first run, it is possible that buckets already contain data and do not start from zero,
+                                        // so this initial data needs to be stores for further calculations
+                                        InitialBucketContainer.putInitialReceivedWifiData(bucket.getUid(), bucket.getRxBytes());
+                                        InitialBucketContainer.putInitialTransmittedWifiData(bucket.getUid(), bucket.getTxBytes());
+                                        InitialBucketContainer.putInitialReceivedWifiPacket(bucket.getUid(), bucket.getRxPackets());
+                                        InitialBucketContainer.putInitialTransmittedWifiPacket(bucket.getUid(), bucket.getTxPackets());
                                     }
-                                    //TODO Abziehen von InitialBucketContainer.getInitialReceivedWifiData(bucketId) muss ausserhalb der while schleife passieren
-                                    rxBytesWifi = rxBytesWifi + bucket.getRxBytes() - InitialBucketContainer.getInitialReceivedWifiData(bucketId);
-                                    txBytesWifi = txBytesWifi + bucket.getTxBytes() - InitialBucketContainer.getInitialTransmittedWifiData(bucketId);
-                                    rxPacketsWifi =  rxPacketsWifi + bucket.getRxPackets() - InitialBucketContainer.getInitialReceivedWifiPacket(bucketId);
-                                    txPacketsWifi = txPacketsWifi + bucket.getTxPackets() - InitialBucketContainer.getInitialTransmittedWifiPacket(bucketId);
+                                    rxBytesWifi +=  bucket.getRxBytes();
+                                    txBytesWifi += bucket.getTxBytes();
+                                    rxPacketsWifi += bucket.getRxPackets();
+                                    txPacketsWifi += bucket.getTxPackets();
                                 }
-                            }// while (networkStatsWifi.hasNextBucket());
+                                networkStatsWifi.getNextBucket(bucket);
+                            } while (networkStatsWifi.hasNextBucket());
+
+                            //since we stored the data in the initial run, we subtract it
+                            rxBytesWifi -= InitialBucketContainer.getInitialReceivedWifiData(packageList.get(i).getPackageUid());
+                            txBytesWifi -= InitialBucketContainer.getInitialTransmittedWifiData(packageList.get(i).getPackageUid());
+                            rxPacketsWifi -= InitialBucketContainer.getInitialReceivedWifiPacket(packageList.get(i).getPackageUid());
+                            txPacketsWifi -= InitialBucketContainer.getInitialTransmittedWifiPacket(packageList.get(i).getPackageUid());
+
+                            rxBytesTotal = rxBytesWifi;
+                            txBytesTotal = txBytesWifi;
+                            rxPacketsTotal = rxPacketsWifi;
+                            txPacketsTotal = txPacketsWifi;
                         } catch (Exception e) {
                             Log.e(Constants.LOG.TAG, "Remote Exception: WIFI " + e.getMessage());
                         }
-                        try {
+                        /*try {
                             networkStatsMobile = networkStatsManager.querySummary(ConnectivityManager.TYPE_MOBILE, getSubscriberId(this, ConnectivityManager.TYPE_MOBILE), startTime, System.currentTimeMillis());
                             do {
                                 NetworkStats.Bucket bucket = new NetworkStats.Bucket();
                                 networkStatsMobile.getNextBucket(bucket);
                                 if (bucket.getUid() == packageList.get(i).getPackageUid()) {
-                                    rxBytesWifi += bucket.getRxBytes();
-                                    txBytesWifi += bucket.getTxBytes();
-                                    rxPacketsWifi += bucket.getRxPackets();
-                                    txPacketsWifi += bucket.getTxPackets();
+                                    rxBytesMobile += bucket.getRxBytes();
+                                    txBytesMobile += bucket.getTxBytes();
+                                    rxPacketsMobile += bucket.getRxPackets();
+                                    txPacketsMobile += bucket.getTxPackets();
                                 }
                             } while (networkStatsMobile.hasNextBucket());
                             rxBytesTotal = rxBytesWifi + rxBytesMobile;
@@ -130,6 +137,7 @@ public class NetworkStatsUpdateService extends IntentService {
                         txBytesTotal = TrafficStats.getUidTxBytes(packageList.get(i).getPackageUid());
                         rxPacketsTotal = TrafficStats.getUidRxPackets(packageList.get(i).getPackageUid());
                         txPacketsTotal = TrafficStats.getUidTxPackets(packageList.get(i).getPackageUid());
+                         */
                     }
 
                     packageList.get(i).setReceivedBytesWifi(rxBytesWifi);
