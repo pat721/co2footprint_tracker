@@ -37,7 +37,11 @@ public class InitialBucketContainer {
     }
 
     public static long getInitialTransmittedWifiData(int uid) {
-        return mappedPackageData.get(DATA_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid);
+        if(mappedPackageData.containsKey(DATA_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid)){
+            return mappedPackageData.get(DATA_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid);
+        } else{
+            return 0;
+        }
     }
 
 
@@ -52,7 +56,11 @@ public class InitialBucketContainer {
     }
 
     public static long getInitialReceivedWifiData(int uid) {
-        return mappedPackageData.get(DATA_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid);
+        if(mappedPackageData.containsKey(DATA_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid)){
+            return mappedPackageData.get(DATA_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid);
+        } else{
+            return 0;
+        }
     }
 
     public static void putInitialTransmittedWifiPacket(int uid, long packets) {
@@ -66,7 +74,11 @@ public class InitialBucketContainer {
     }
 
     public static long getInitialTransmittedWifiPacket(int uid) {
-        return mappedPackageData.get(PACKET_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid);
+        if(mappedPackageData.containsKey(PACKET_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid)){
+            return mappedPackageData.get(PACKET_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid);
+        } else{
+            return 0;
+        }
     }
 
     public static void putInitialReceivedWifiPacket(int uid, long packets) {
@@ -80,7 +92,11 @@ public class InitialBucketContainer {
     }
 
     public static long getInitialReceivedWifiPacket(int uid) {
-        return mappedPackageData.get(PACKET_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid);
+        if(mappedPackageData.containsKey(PACKET_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid)){
+            return mappedPackageData.get(PACKET_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid);
+        } else{
+            return 0;
+        }
     }
 
     public static boolean isNewRun() {
