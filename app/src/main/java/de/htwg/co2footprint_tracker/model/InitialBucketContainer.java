@@ -20,15 +20,20 @@ public class InitialBucketContainer {
 
     //debugging only------
 
-    public static HashMap<String, Long> getOurMap (){
+    public static HashMap<String, Long> getOurMap() {
         return mappedPackageData;
     }
     //debugging only------
 
 
-
     public static void putInitialTransmittedWifiData(int uid, long bytes) {
-        mappedPackageData.put(DATA_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid, bytes);
+        if (mappedPackageData.containsKey(DATA_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid)) {
+            long currentBytes = mappedPackageData.get(DATA_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid);
+            long sumOfBytes = currentBytes + bytes;
+            mappedPackageData.put(DATA_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid, sumOfBytes);
+        } else {
+            mappedPackageData.put(DATA_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid, bytes);
+        }
     }
 
     public static long getInitialTransmittedWifiData(int uid) {
@@ -37,23 +42,41 @@ public class InitialBucketContainer {
 
 
     public static void putInitialReceivedWifiData(int uid, long bytes) {
-        mappedPackageData.put(DATA_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid, bytes);
+        if (mappedPackageData.containsKey(DATA_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid)) {
+            long currentBytes = mappedPackageData.get(DATA_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid);
+            long sumOfBytes = currentBytes + bytes;
+            mappedPackageData.put(DATA_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid, sumOfBytes);
+        } else {
+            mappedPackageData.put(DATA_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid, bytes);
+        }
     }
 
     public static long getInitialReceivedWifiData(int uid) {
         return mappedPackageData.get(DATA_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid);
     }
 
-    public static void putInitialTransmittedWifiPacket(int uid, long packet) {
-        mappedPackageData.put(PACKET_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid, packet);
+    public static void putInitialTransmittedWifiPacket(int uid, long packets) {
+        if (mappedPackageData.containsKey(PACKET_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid)) {
+            long currentPackets = mappedPackageData.get(PACKET_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid);
+            long sumOfPackets = currentPackets + packets;
+            mappedPackageData.put(PACKET_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid, sumOfPackets);
+        } else {
+            mappedPackageData.put(PACKET_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid, packets);
+        }
     }
 
     public static long getInitialTransmittedWifiPacket(int uid) {
         return mappedPackageData.get(PACKET_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid);
     }
 
-    public static void putInitialReceivedWifiPacket(int uid, long packet) {
-        mappedPackageData.put(PACKET_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid, packet);
+    public static void putInitialReceivedWifiPacket(int uid, long packets) {
+        if (mappedPackageData.containsKey(PACKET_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid)) {
+            long currentPackets = mappedPackageData.get(PACKET_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid);
+            long sumOfPackets = currentPackets + packets;
+            mappedPackageData.put(PACKET_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid, sumOfPackets);
+        } else {
+            mappedPackageData.put(PACKET_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid, packets);
+        }
     }
 
     public static long getInitialReceivedWifiPacket(int uid) {
