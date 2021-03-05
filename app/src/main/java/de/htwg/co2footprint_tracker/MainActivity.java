@@ -102,28 +102,19 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.menu_request_permissions) {
             requestPermissions();
             return true;
-        }
-        else if (id == R.id.menu_start_test) {
-            if (TimingHelper.getIsTestRunning(this))
-            {
+        } else if (id == R.id.menu_start_test) {
+            if (TimingHelper.getIsTestRunning(this)) {
                 Toast.makeText(this, "Test is already running.  Please stop current test first", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
+            } else {
                 TimingHelper.setStartTime(this);
                 TimingHelper.setIsTestRunning(this, true);
-                //new NetworkStatsInitiator().fillMapForNewRun(this);
                 Toast.makeText(this, "Started test at " + TimingHelper.getStartTimeForUI(this), Toast.LENGTH_LONG).show();
             }
             return true;
-        }
-        else if (id == R.id.menu_update_stats) {
-            if (!TimingHelper.getIsTestRunning(this))
-            {
+        } else if (id == R.id.menu_update_stats) {
+            if (!TimingHelper.getIsTestRunning(this)) {
                 Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
+            } else {
                 long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
                 if (testDurationInMins <= Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME)
                     Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
@@ -131,14 +122,10 @@ public class MainActivity extends AppCompatActivity {
                         false);
             }
             return true;
-        }
-        else if (id == R.id.menu_update_stats_and_log) {
-            if (!TimingHelper.getIsTestRunning(this))
-            {
+        } else if (id == R.id.menu_update_stats_and_log) {
+            if (!TimingHelper.getIsTestRunning(this)) {
                 Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
+            } else {
                 long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
                 if (testDurationInMins <= Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME)
                     Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
@@ -146,21 +133,20 @@ public class MainActivity extends AppCompatActivity {
                         true);
             }
             return true;
-        }
-        else if (id == R.id.menu_stop_test) {
-            if (!TimingHelper.getIsTestRunning(this))
-            {
+        } else if (id == R.id.menu_stop_test) {
+            if (!TimingHelper.getIsTestRunning(this)) {
                 Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
+            } else {
                 TimingHelper.setIsTestRunning(this, false);
                 long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
-                if (testDurationInMins < Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME)
+                if (testDurationInMins < Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME) {
                     Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
+                }
                 UpdateNetworkStats("Gathering network stats at the end of the test\nTest duration: " + testDurationInMins + "mins",
                         true);
             }
+            InitialBucketContainer.setNewRun(true);
+            InitialBucketContainer.clearMappedPackageData();
         }
 
         return super.onOptionsItemSelected(item);
@@ -168,10 +154,8 @@ public class MainActivity extends AppCompatActivity {
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    private void UpdateNetworkStats(String messageToUser, Boolean saveStatsToFile)
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
+    private void UpdateNetworkStats(String messageToUser, Boolean saveStatsToFile) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             statsUpdateDialog.setMessage(messageToUser);
             statsUpdateDialog.setTitle("Retrieving network stats");
             statsUpdateDialog.setIndeterminate(false);
@@ -191,22 +175,19 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Constants.ACTION.PACKAGE_LIST_UPDATED))
-            {
+            if (intent.getAction().equals(Constants.ACTION.PACKAGE_LIST_UPDATED)) {
                 ArrayList<Package> packageListLocal = intent.getParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST);
                 packageList.clear();
                 packageList.addAll(packageListLocal);
                 packageAdapter.notifyDataSetChanged();
                 statsUpdateDialog.dismiss();
                 Boolean saveStatsToFile = intent.getBooleanExtra(Constants.PARAMS.SAVE_STATS_TO_FILE, false);
-                if (saveStatsToFile)
-                {
+                if (saveStatsToFile) {
                     StorageHelper fileHelper = new StorageHelper();
                     String fileLocation = fileHelper.persistNetworkStatisticsToFile(getApplicationContext(), packageList);
 
-                   if (!fileLocation.equals(""))
-                        InitialBucketContainer.setNewRun(true);
-                        Toast.makeText(getApplicationContext(), "Statistics written to " + fileLocation , Toast.LENGTH_LONG).show();
+                    if (!fileLocation.equals(""))
+                    Toast.makeText(getApplicationContext(), "Statistics written to " + fileLocation, Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -239,17 +220,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         //  Go through the package list and set whether the entries have duplicate uids
-        for (int i = 0; i < packageList.size(); i++)
-        {
+        for (int i = 0; i < packageList.size(); i++) {
             if (packageList.get(i).getDuplicateUids())
                 continue;
             int packageUid = packageList.get(i).getPackageUid();
-            for (int j = 0; j < packageList.size(); j++)
-            {
+            for (int j = 0; j < packageList.size(); j++) {
                 if (i == j)
                     continue;
-                else
-                {
+                else {
                     if (packageUid == packageList.get(j).getPackageUid()) {
                         packageList.get(i).setDuplicateUids(true);
                         packageList.get(j).setDuplicateUids(true);
