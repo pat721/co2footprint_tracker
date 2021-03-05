@@ -99,6 +99,10 @@ public class InitialBucketContainer {
         }
     }
 
+    public static void clearMappedPackageData(){
+        mappedPackageData.clear();
+    }
+
     public static boolean isNewRun() {
         return newRun;
     }
