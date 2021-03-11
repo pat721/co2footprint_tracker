@@ -41,6 +41,11 @@ public class NetworkStatsUpdateService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
+            //TODO add ScheduledExecutorService (see https://stackoverflow.com/questions/16872419/android-standard-way-to-make-a-thread-run-every-second)  to main activity to call this method
+            //TODO make sure schedule service can run when app is closed
+            // TODO onHandleIntent saves stuff to db with db helper - db does need context from main
+            // TODO UI-update from db
+
             final String action = intent.getAction();
             if (Constants.ACTION.ACTION_UPDATE_STATS.equals(action)) {
                 ArrayList<Package> packageList = intent.getParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST);

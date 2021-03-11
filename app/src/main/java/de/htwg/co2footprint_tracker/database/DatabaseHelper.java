@@ -1,4 +1,4 @@
-package database;
+package de.htwg.co2footprint_tracker.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 
 import java.sql.Timestamp;
 
@@ -23,7 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME_DATA_PER_HOUR_TABLE = "data_per_hour";
     private static final String TABLE_NAME_DATA_PER_DAY_TABLE = "data_per_day";
     private static final String TABLE_NAME_DATA_PER_WEEK_TABLE = "data_per_week";
-    private static final String TABLE_NAME_DATA_PER_WEEK_MONTH = "data_per_MONTH";
+    private static final String TABLE_NAME_DATA_PER_MONTH_TABLE = "data_per_month";
 
     private static final String NAME = "app_name";
     private static final String TIMESTAMP = "starting_time";
@@ -55,7 +54,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createTableFor(TABLE_NAME_DATA_PER_HOUR_TABLE, db);
         createTableFor(TABLE_NAME_DATA_PER_DAY_TABLE, db);
         createTableFor(TABLE_NAME_DATA_PER_WEEK_TABLE, db);
-        createTableFor(TABLE_NAME_DATA_PER_WEEK_MONTH, db);
+        createTableFor(TABLE_NAME_DATA_PER_MONTH_TABLE, db);
     }
 
     private void createTableFor(String tableName, SQLiteDatabase db) {
@@ -91,7 +90,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         dropTable(db, TABLE_NAME_DATA_PER_HOUR_TABLE);
         dropTable(db, TABLE_NAME_DATA_PER_DAY_TABLE);
         dropTable(db, TABLE_NAME_DATA_PER_WEEK_TABLE);
-        dropTable(db, TABLE_NAME_DATA_PER_WEEK_MONTH);
+        dropTable(db, TABLE_NAME_DATA_PER_MONTH_TABLE);
         onCreate(db);
     }
 
@@ -115,7 +114,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else if (databaseInterval == DatabaseInterval.WEEK) {
             affectedTable = TABLE_NAME_DATA_PER_WEEK_TABLE;
         } else {
-            affectedTable = TABLE_NAME_DATA_PER_WEEK_MONTH; //Default
+            affectedTable = TABLE_NAME_DATA_PER_MONTH_TABLE; //Default
         }
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -174,7 +173,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else if (databaseInterval == DatabaseInterval.WEEK) {
             requestedTable = TABLE_NAME_DATA_PER_WEEK_TABLE;
         } else {
-            requestedTable = TABLE_NAME_DATA_PER_WEEK_MONTH; //Default
+            requestedTable = TABLE_NAME_DATA_PER_MONTH_TABLE; //Default
         }
 
         SQLiteDatabase db = this.getWritableDatabase();
