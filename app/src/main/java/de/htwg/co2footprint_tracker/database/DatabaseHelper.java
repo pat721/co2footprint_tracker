@@ -27,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String NAME = "app_name";
     private static final String TIMESTAMP = "starting_time";
     private static final String VERSION = "version";
-    private static final String PACKAGE_NAME = "package_Name";
+    private static final String PACKAGE_NAME = "package_name";
     private static final String PACKAGE_UID = "package_uid";
     private static final String DUPLICATE_UIDS = "duplicate_uids"; //  Whether multiple packages share this uid
     private static final String RECEIVED_BYTES_WIFI = "received_bytes_wifi";
@@ -58,10 +58,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private void createTableFor(String tableName, SQLiteDatabase db) {
-        String createTable = "CREATE TABLE " + tableName +
+        String createTable = "CREATE TABLE IF NOT EXISTS " + tableName +
                 " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 NAME + " TEXT" + "," +
-                TIMESTAMP + " TEXT" + "," +
+                TIMESTAMP + " INTEGER" + "," +
                 VERSION + " TEXT" + "," +
                 PACKAGE_NAME + " TEXT" + "," +
                 PACKAGE_UID + " TEXT" + "," +
@@ -100,7 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean addData(DatabaseInterval databaseInterval, Package packageModel, Timestamp timestamp) {
+    public boolean addData(DatabaseInterval databaseInterval, Package packageModel) {
 
         String affectedTable = "";
         if (databaseInterval == DatabaseInterval.MINUTE) {
@@ -121,7 +121,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(NAME, packageModel.getName());
-        contentValues.put(TIMESTAMP, timestamp.toString()); //TODO check if it works
+        contentValues.put(TIMESTAMP, packageModel.getTimestamp());
         contentValues.put(VERSION, packageModel.getVersion());
         contentValues.put(PACKAGE_NAME, packageModel.getPackageName());
         contentValues.put(PACKAGE_UID, packageModel.getPackageUid());
@@ -152,10 +152,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void clearDb() {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + DATABASE_FILE_NAME);
+        db.execSQL("DELETE FROM " + TABLE_NAME_DATA_PER_MINUTE_TABLE);
+        db.execSQL("DELETE FROM " + TABLE_NAME_DATA_PER_FIVE_MINUTES_TABLE);
+        db.execSQL("DELETE FROM " + TABLE_NAME_DATA_PER_HOUR_TABLE);
+        db.execSQL("DELETE FROM " + TABLE_NAME_DATA_PER_DAY_TABLE);
+        db.execSQL("DELETE FROM " + TABLE_NAME_DATA_PER_WEEK_TABLE);
+        db.execSQL("DELETE FROM " + TABLE_NAME_DATA_PER_MONTH_TABLE);
         db.execSQL("VACUUM");
-
-        Log.d(TAG, "db "+DATABASE_FILE_NAME + " cleared");
+        Log.d(TAG, "db " + DATABASE_FILE_NAME + " cleared");
     }
 
 
@@ -180,6 +184,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + requestedTable;
         Cursor data = db.rawQuery(query, null);
         return data;
+    }
+
+    public Cursor getTotalsForPackage(int packageUid) {
+        String query = "SELECT" +
+                " SUM(" + RECEIVED_BYTES_WIFI + ") as " + RECEIVED_BYTES_WIFI +
+                " , SUM(" + RECEIVED_BYTES_MOBILE + ") as " + RECEIVED_BYTES_MOBILE +
+                " , SUM(" + RECEIVED_BYTES_TOTAL + ") as " + RECEIVED_BYTES_TOTAL +
+                " , SUM(" + RECEIVED_PACKETS_WIFI + ") as " + RECEIVED_PACKETS_WIFI +
+                " , SUM(" + RECEIVED_PACKETS_MOBILE + ") as " + RECEIVED_PACKETS_MOBILE +
+                " , SUM(" + RECEIVED_PACKETS_TOTAL + ") as " + RECEIVED_PACKETS_TOTAL +
+
+                " FROM " + TABLE_NAME_DATA_PER_MINUTE_TABLE + " WHERE " + PACKAGE_UID + " = " + packageUid + "";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        return cursor;
+    }
+
+
+    public Cursor getAppIds() {
+        String query = "SELECT DISTINCT " + PACKAGE_UID + " FROM " + TABLE_NAME_DATA_PER_MINUTE_TABLE;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        return cursor;
+    }
+
+
+    public long getTotalReceivedBytesFor(int packageUid) {
+        String query = "SELECT SUM(" + RECEIVED_BYTES_TOTAL + ") as total_bytes FROM " + TABLE_NAME_DATA_PER_MINUTE_TABLE + " WHERE " + PACKAGE_UID + " = " + packageUid + "";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor data = db.rawQuery(query, null);
+
+        long bytes = 0;
+
+        if (data.moveToFirst()) {
+            bytes = data.getLong(0);
+        }
+        return bytes;
     }
 
 

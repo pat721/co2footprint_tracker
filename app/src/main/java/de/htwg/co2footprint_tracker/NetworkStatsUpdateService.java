@@ -41,21 +41,13 @@ public class NetworkStatsUpdateService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
-            //TODO add ScheduledExecutorService (see https://stackoverflow.com/questions/16872419/android-standard-way-to-make-a-thread-run-every-second)  to main activity to call this method
-            //TODO make sure schedule service can run when app is closed
-            // TODO onHandleIntent saves stuff to db with db helper - db does need context from main
-            // TODO UI-update from db
 
             final String action = intent.getAction();
             if (Constants.ACTION.ACTION_UPDATE_STATS.equals(action)) {
                 ArrayList<Package> packageList = intent.getParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST);
-                Boolean saveStatsToFile = intent.getBooleanExtra(Constants.PARAMS.SAVE_STATS_TO_FILE, false);
 
-                long ONE_MINUTE_IN_MS = 1000 * 60;
-                long ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;
-                long SEVEN_DAYS_IN_MS = 7 * ONE_DAY_IN_MS;
                 long startTime = TimingHelper.getStartTime(this);
-                long temp = System.currentTimeMillis();
+                long timeOnUpdate = System.currentTimeMillis();
                 boolean isNewRun = InitialBucketContainer.isNewRun();
                 InitialBucketContainer.setNewRun(false);
 
@@ -79,7 +71,7 @@ public class NetworkStatsUpdateService extends IntentService {
                         NetworkStatsManager networkStatsManager = (NetworkStatsManager) getSystemService(Context.NETWORK_STATS_SERVICE);
 
                         try {
-                            networkStatsWifi = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", startTime, System.currentTimeMillis());
+                            networkStatsWifi = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, "", startTime, timeOnUpdate);
                             NetworkStats.Bucket bucket = new NetworkStats.Bucket();
                             do {
                                 if (bucket.getUid() == packageList.get(i).getPackageUid()) {
@@ -91,7 +83,7 @@ public class NetworkStatsUpdateService extends IntentService {
                                         InitialBucketContainer.putInitialReceivedWifiPacket(bucket.getUid(), bucket.getRxPackets());
                                         InitialBucketContainer.putInitialTransmittedWifiPacket(bucket.getUid(), bucket.getTxPackets());
                                     }
-                                    rxBytesWifi +=  bucket.getRxBytes();
+                                    rxBytesWifi += bucket.getRxBytes();
                                     txBytesWifi += bucket.getTxBytes();
                                     rxPacketsWifi += bucket.getRxPackets();
                                     txPacketsWifi += bucket.getTxPackets();
@@ -105,6 +97,12 @@ public class NetworkStatsUpdateService extends IntentService {
                             rxPacketsWifi -= InitialBucketContainer.getInitialReceivedWifiPacket(packageList.get(i).getPackageUid());
                             txPacketsWifi -= InitialBucketContainer.getInitialTransmittedWifiPacket(packageList.get(i).getPackageUid());
 
+                            if(!isNewRun){
+                                InitialBucketContainer.putInitialReceivedWifiData(packageList.get(i).getPackageUid(), rxBytesWifi);
+                                InitialBucketContainer.putInitialReceivedWifiPacket(packageList.get(i).getPackageUid(), rxPacketsWifi);
+                                InitialBucketContainer.putInitialTransmittedWifiData(packageList.get(i).getPackageUid(), txBytesWifi);
+                                InitialBucketContainer.putInitialTransmittedWifiPacket(packageList.get(i).getPackageUid(), txPacketsWifi);
+                            }
                             rxBytesTotal = rxBytesWifi;
                             txBytesTotal = txBytesWifi;
                             rxPacketsTotal = rxPacketsWifi;
@@ -165,7 +163,7 @@ public class NetworkStatsUpdateService extends IntentService {
                 //  Return the updated package list to the main activity
                 Intent packageListUpdatedIntent = new Intent(Constants.ACTION.PACKAGE_LIST_UPDATED);
                 packageListUpdatedIntent.putParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST, packageList);
-                packageListUpdatedIntent.putExtra(Constants.PARAMS.SAVE_STATS_TO_FILE, saveStatsToFile);
+                packageListUpdatedIntent.putExtra(Constants.PARAMS.TIMESTAMP, timeOnUpdate);
                 sendBroadcast(packageListUpdatedIntent);
             }
         }

@@ -27,4 +27,9 @@
         android:orderInCategory="104"
         android:title="@string/menu_stop_test"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_purge_db"
+        android:orderInCategory="104"
+        android:title="@string/menu_purge_db"
+        app:showAsAction="never" />
 </menu>

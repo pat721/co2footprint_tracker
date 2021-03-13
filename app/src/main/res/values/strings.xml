@@ -4,6 +4,7 @@
     <string name="menu_update_stats">Update Stats (UI only)</string>
     <string name="menu_update_stats_and_log">Update Stats and log</string>
     <string name="menu_stop_test">Stop Test</string>
+    <string name="menu_purge_db">Purge DB</string>
     <string name="menu_request_permissions">Request Runtime Permissions</string>
     <string name="saved_start_time">start_time</string>
     <string name="saved_is_test_running">is_test_running</string>

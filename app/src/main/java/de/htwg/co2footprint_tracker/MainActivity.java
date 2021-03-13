@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -19,10 +20,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.utils.Constants;
@@ -30,9 +33,17 @@ import de.htwg.co2footprint_tracker.model.PackageAdapter;
 import de.htwg.co2footprint_tracker.utils.NetworkStatsInitiator;
 import de.htwg.co2footprint_tracker.utils.StorageHelper;
 import de.htwg.co2footprint_tracker.utils.TimingHelper;
+import de.htwg.co2footprint_tracker.utils.UpdateDatabaseServiceReceiver;
+import de.htwg.co2footprint_tracker.utils.UpdateServiceSchedulerThread;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static de.htwg.co2footprint_tracker.utils.TimingHelper.getTestDurationInMins;
 
@@ -45,7 +56,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Package> packageList;
     private RecyclerView.Adapter packageAdapter;
     private NetworkStatsUpdateServiceReceiver networkStatsUpdateServiceReceiver;
+    private UpdateDatabaseServiceReceiver updateDatabaseServiceReceiver;
     private ProgressDialog statsUpdateDialog;
+    private UpdateServiceSchedulerThread updateServiceSchedulerThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         packageAdapter = new PackageAdapter(packageList);
         recyclerView.setAdapter(packageAdapter);
+        this.updateServiceSchedulerThread = new UpdateServiceSchedulerThread(this, packageList);
     }
 
 
@@ -76,6 +90,16 @@ public class MainActivity extends AppCompatActivity {
         if (!hasPermissions()) {
             requestPermissions();
         }
+
+        Log.e(Constants.LOG.TAG, "checking receiver");
+        if (updateDatabaseServiceReceiver == null) {
+            Log.e(Constants.LOG.TAG, "creating and registering receiver");
+            updateDatabaseServiceReceiver = new UpdateDatabaseServiceReceiver();
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(Constants.ACTION.PACKAGE_LIST_UPDATED);
+            registerReceiver(updateDatabaseServiceReceiver, intentFilter);
+        }
+
 
         if (networkStatsUpdateServiceReceiver == null)
             networkStatsUpdateServiceReceiver = new NetworkStatsUpdateServiceReceiver();
@@ -109,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
                 TimingHelper.setStartTime(this);
                 TimingHelper.setIsTestRunning(this, true);
                 Toast.makeText(this, "Started test at " + TimingHelper.getStartTimeForUI(this), Toast.LENGTH_LONG).show();
+                updateServiceSchedulerThread.start();
+
             }
             return true;
         } else if (id == R.id.menu_update_stats) {
@@ -147,6 +173,9 @@ public class MainActivity extends AppCompatActivity {
             }
             InitialBucketContainer.setNewRun(true);
             InitialBucketContainer.clearMappedPackageData();
+        } else if (id == R.id.menu_purge_db) {
+            new DatabaseHelper(this).clearDb();
+            Toast.makeText(this, "clearing database", Toast.LENGTH_LONG).show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -176,19 +205,23 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Constants.ACTION.PACKAGE_LIST_UPDATED)) {
-                ArrayList<Package> packageListLocal = intent.getParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST);
-                packageList.clear();
-                packageList.addAll(packageListLocal);
+                //ArrayList<Package> packageListLocal = intent.getParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST);
+
+                DatabaseHelper databaseHelper = new DatabaseHelper(context);
+                for (Package packet : packageList) {
+                    Cursor cursor = databaseHelper.getTotalsForPackage(packet.getPackageUid());
+                    if (cursor.moveToFirst()) {
+                        packet.setReceivedBytesWifi(cursor.getLong(0));
+                        packet.setReceivedBytesMobile(cursor.getLong(1));
+                        packet.setReceivedBytesTotal(cursor.getLong(2));
+
+                        packet.setReceivedPacketsWifi(cursor.getLong(3));
+                        packet.setReceivedPacketsMobile(cursor.getLong(4));
+                        packet.setReceivedPacketsTotal(cursor.getLong(5));
+                    }
+                 }
                 packageAdapter.notifyDataSetChanged();
                 statsUpdateDialog.dismiss();
-                Boolean saveStatsToFile = intent.getBooleanExtra(Constants.PARAMS.SAVE_STATS_TO_FILE, false);
-                if (saveStatsToFile) {
-                    StorageHelper fileHelper = new StorageHelper();
-                    String fileLocation = fileHelper.persistNetworkStatisticsToFile(getApplicationContext(), packageList);
-
-                    if (!fileLocation.equals(""))
-                    Toast.makeText(getApplicationContext(), "Statistics written to " + fileLocation, Toast.LENGTH_LONG).show();
-                }
             }
         }
     }
