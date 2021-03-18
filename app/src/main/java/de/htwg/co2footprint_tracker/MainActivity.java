@@ -2,7 +2,9 @@ package de.htwg.co2footprint_tracker;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.AppOpsManager;
+import android.app.IntentService;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -31,9 +33,11 @@ import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.utils.Constants;
 import de.htwg.co2footprint_tracker.model.PackageAdapter;
 import de.htwg.co2footprint_tracker.utils.NetworkStatsInitiator;
+import de.htwg.co2footprint_tracker.utils.SchedulerRestarter;
 import de.htwg.co2footprint_tracker.utils.StorageHelper;
 import de.htwg.co2footprint_tracker.utils.TimingHelper;
 import de.htwg.co2footprint_tracker.utils.UpdateDatabaseServiceReceiver;
+import de.htwg.co2footprint_tracker.utils.UpdateServiceSchedulerService;
 import de.htwg.co2footprint_tracker.utils.UpdateServiceSchedulerThread;
 
 import java.util.ArrayList;
@@ -57,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter packageAdapter;
     private NetworkStatsUpdateServiceReceiver networkStatsUpdateServiceReceiver;
     private UpdateDatabaseServiceReceiver updateDatabaseServiceReceiver;
+    private SchedulerRestarter schedulerRestarter;
+
     private ProgressDialog statsUpdateDialog;
     private UpdateServiceSchedulerThread updateServiceSchedulerThread;
 
@@ -100,13 +106,21 @@ public class MainActivity extends AppCompatActivity {
             registerReceiver(updateDatabaseServiceReceiver, intentFilter);
         }
 
+        if(schedulerRestarter == null){
+            schedulerRestarter = new SchedulerRestarter();
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(Constants.ACTION.UPDATE_SERVICE_SCHEDULER_STARTED);
+            registerReceiver(schedulerRestarter, intentFilter);
+        }
 
-        if (networkStatsUpdateServiceReceiver == null)
+
+        if (networkStatsUpdateServiceReceiver == null) {
             networkStatsUpdateServiceReceiver = new NetworkStatsUpdateServiceReceiver();
-        //  Listen for messages from the service
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Constants.ACTION.PACKAGE_LIST_UPDATED);
-        registerReceiver(networkStatsUpdateServiceReceiver, intentFilter);
+            //  Listen for messages from the service
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(Constants.ACTION.PACKAGE_LIST_UPDATED);
+            registerReceiver(networkStatsUpdateServiceReceiver, intentFilter);
+        }
     }
 
     @Override
@@ -133,7 +147,14 @@ public class MainActivity extends AppCompatActivity {
                 TimingHelper.setStartTime(this);
                 TimingHelper.setIsTestRunning(this, true);
                 Toast.makeText(this, "Started test at " + TimingHelper.getStartTimeForUI(this), Toast.LENGTH_LONG).show();
-                updateServiceSchedulerThread.start();
+                //updateServiceSchedulerThread.start();
+                Log.e(Constants.LOG.TAG, "creating intent....");
+                Intent updateSchedulerIntent = new Intent(this, UpdateServiceSchedulerService.class);
+                updateSchedulerIntent.putExtra(Constants.PARAMS.PACKAGE_LIST, packageList);
+                updateSchedulerIntent.setAction(Constants.ACTION.UPDATE_SERVICE_SCHEDULER_STARTED);
+                Log.e(Constants.LOG.TAG, "intent created, starting service...");
+                startService(updateSchedulerIntent);
+                Log.e(Constants.LOG.TAG, "service started");
 
             }
             return true;
@@ -164,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
             } else {
                 TimingHelper.setIsTestRunning(this, false);
+                stopService(new Intent(this, UpdateServiceSchedulerService.class));
                 long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
                 if (testDurationInMins < Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME) {
                     Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
@@ -199,7 +221,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //TODO rm? https://stackoverflow.com/questions/30525784/android-keep-service-running-when-app-is-killed
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i("Service status", "Running");
+                return true;
+            }
+        }
+        Log.i("Service status", "Not running");
+        return false;
+    }
 
+    //TODO make it restart the service in background
+    @Override
+    protected void onDestroy() {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(Constants.ACTION.RESTART_SCHEDULER_SERVICE);
+        broadcastIntent.setClass(this, SchedulerRestarter.class);
+        this.sendBroadcast(broadcastIntent);
+        super.onDestroy();
+    }
+
+
+    //TODO move to own class if possible
     private class NetworkStatsUpdateServiceReceiver extends BroadcastReceiver {
 
         @Override
@@ -219,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
                         packet.setReceivedPacketsMobile(cursor.getLong(4));
                         packet.setReceivedPacketsTotal(cursor.getLong(5));
                     }
-                 }
+                }
                 packageAdapter.notifyDataSetChanged();
                 statsUpdateDialog.dismiss();
             }
