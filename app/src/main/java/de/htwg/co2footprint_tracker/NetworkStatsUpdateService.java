@@ -13,6 +13,8 @@ import android.os.RemoteException;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import de.htwg.co2footprint_tracker.database.DatabaseHelper;
+import de.htwg.co2footprint_tracker.model.DatabaseInterval;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.utils.Constants;
@@ -41,7 +43,6 @@ public class NetworkStatsUpdateService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
-
             final String action = intent.getAction();
             if (Constants.ACTION.ACTION_UPDATE_STATS.equals(action)) {
                 ArrayList<Package> packageList = intent.getParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST);
@@ -97,7 +98,7 @@ public class NetworkStatsUpdateService extends IntentService {
                             rxPacketsWifi -= InitialBucketContainer.getInitialReceivedWifiPacket(packageList.get(i).getPackageUid());
                             txPacketsWifi -= InitialBucketContainer.getInitialTransmittedWifiPacket(packageList.get(i).getPackageUid());
 
-                            if(!isNewRun){
+                            if (!isNewRun) {
                                 InitialBucketContainer.putInitialReceivedWifiData(packageList.get(i).getPackageUid(), rxBytesWifi);
                                 InitialBucketContainer.putInitialReceivedWifiPacket(packageList.get(i).getPackageUid(), rxPacketsWifi);
                                 InitialBucketContainer.putInitialTransmittedWifiData(packageList.get(i).getPackageUid(), txBytesWifi);
@@ -165,8 +166,29 @@ public class NetworkStatsUpdateService extends IntentService {
                 packageListUpdatedIntent.putParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST, packageList);
                 packageListUpdatedIntent.putExtra(Constants.PARAMS.TIMESTAMP, timeOnUpdate);
                 sendBroadcast(packageListUpdatedIntent);
+
+                saveToDatabase(getApplicationContext(), timeOnUpdate, packageList);
             }
         }
     }
+
+
+    private void saveToDatabase(Context context, long timeStamp, ArrayList<Package> packageList) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        Log.e(Constants.LOG.TAG, "new db helper created");
+        for (Package packet : packageList) {
+            if (packetHasChanges(packet)) {
+                packet.setTimestamp(timeStamp);
+                databaseHelper.addData(DatabaseInterval.MINUTE, packet);
+            }
+        }
+    }
+
+    private boolean packetHasChanges(Package packet) {
+        //if any total value is anything other than 0 there was some traffic happening
+        return (packet.getReceivedBytesTotal() + packet.getReceivedPacketsTotal() +
+                packet.getTransmittedBytesTotal() + packet.getTransmittedPacketsTotal() != 0);
+    }
+
 
 }

@@ -139,15 +139,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(TRANSMITTED_PACKETS_MOBILE, packageModel.getTransmittedPacketsMobile());
         contentValues.put(TRANSMITTED_PACKETS_TOTAL, packageModel.getTransmittedPacketsTotal());
 
-        Log.d(TAG, "addData: Adding " + packageModel.toString() + " to " + affectedTable);
+        Log.d(TAG, "addData: Adding " + packageModel.getPackageName() + " to " + affectedTable);
 
         long result = db.insert(affectedTable, null, contentValues);
 
-        if (result == -1) { //if date as inserted incorrectly it will return -1
-            return false;
-        } else {
-            return true;
-        }
+        //if date as inserted incorrectly it will return -1
+        return result != -1;
     }
 
     public void clearDb() {
