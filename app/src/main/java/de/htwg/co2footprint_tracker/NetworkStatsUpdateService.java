@@ -4,14 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.TrafficStats;
 import android.os.Build;
-import android.os.RemoteException;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.model.DatabaseInterval;
@@ -19,13 +19,6 @@ import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.utils.Constants;
 import de.htwg.co2footprint_tracker.utils.TimingHelper;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class NetworkStatsUpdateService extends IntentService {
 
@@ -56,14 +49,7 @@ public class NetworkStatsUpdateService extends IntentService {
                 boolean isNewRun = InitialBucketContainer.isNewRun();
                 InitialBucketContainer.setNewRun(false);
 
-                //Set<Integer> usedDuplicatedIds = new HashSet<>();
-
                 for (int i = 0; i < packageList.size(); i++) {
-
-//                    if (packageList.get(i).getDuplicateUids() && usedDuplicatedIds.contains(packageList.get(i).getPackageUid())) {
-//                        continue;
-//                    }
-//                    usedDuplicatedIds.add(packageList.get(i).getPackageUid());
 
                     long rxBytesWifi = 0;
                     long txBytesWifi = 0;
@@ -170,14 +156,7 @@ public class NetworkStatsUpdateService extends IntentService {
                     packageList.get(i).setTransmittedPacketsTotal(txPacketsTotal);
                 }
 
-                //  Put the highest using packages at the top
-                //Collections.sort(packageList);
 
-                //  Return the updated package list to the main activity
-                Intent packageListUpdatedIntent = new Intent(Constants.ACTION.PACKAGE_LIST_UPDATED);
-                packageListUpdatedIntent.putParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST, packageList);
-                packageListUpdatedIntent.putExtra(Constants.PARAMS.TIMESTAMP, timeOnUpdate);
-                sendBroadcast(packageListUpdatedIntent);
 
                 saveToDatabase(getApplicationContext(), timeOnUpdate, packageList);
             }
@@ -187,17 +166,7 @@ public class NetworkStatsUpdateService extends IntentService {
 
     private void saveToDatabase(Context context, long timeStamp, ArrayList<Package> packageList) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
-        Log.e(Constants.LOG.TAG, "new db helper created");
-
-        //Set<Integer> usedDuplicatedIds = new HashSet<>();
-
         for (Package packet : packageList) {
-
-//            if (packet.getDuplicateUids() && usedDuplicatedIds.contains(packet.getPackageUid())) {
-//                continue;
-//            }
-//            usedDuplicatedIds.add(packet.getPackageUid());
-
             if (packetHasChanges(packet)) {
                 packet.setTimestamp(timeStamp);
                 databaseHelper.addData(DatabaseInterval.MINUTE, packet);

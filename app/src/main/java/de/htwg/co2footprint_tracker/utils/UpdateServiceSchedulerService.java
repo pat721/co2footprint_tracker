@@ -144,8 +144,8 @@ public class UpdateServiceSchedulerService extends Service implements Runnable {
                 continue;
             }
             if(packet.getDuplicateUids()){
-                packet.setName("Systemappppplulululululu"+packet.getPackageUid());
-                packet.setPackageName("com.htwgboiz.ichbinsokrass.system"+packet.getPackageUid());
+                packet.setName("SystemApp" + packet.getPackageUid());
+                packet.setPackageName("internal.uid." + packet.getPackageUid());
             }
             usedDuplicatedIds.add(packet.getPackageUid());
             packageListForReturn.add(packet);
