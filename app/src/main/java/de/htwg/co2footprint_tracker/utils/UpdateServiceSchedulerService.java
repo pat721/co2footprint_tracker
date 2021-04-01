@@ -137,23 +137,20 @@ public class UpdateServiceSchedulerService extends Service implements Runnable {
 
 
         Set<Integer> usedDuplicatedIds = new HashSet<>();
-
         ArrayList<Package> packageListForReturn = new ArrayList<>();
-
+        //rm duplicate uid-packages and return List without duplicate uids
         for (Package packet : packageList) {
             if (packet.getDuplicateUids() && usedDuplicatedIds.contains(packet.getPackageUid())) {
-                packageListForReturn.remove(packet);
+                continue;
             }
             if(packet.getDuplicateUids()){
-                //packet.setName("Systemappppplulululululu"+packet.getPackageUid());
-                //packet.setPackageName("com.htwgboiz.ichbinsokrass.system"+packet.getPackageUid());
+                packet.setName("Systemappppplulululululu"+packet.getPackageUid());
+                packet.setPackageName("com.htwgboiz.ichbinsokrass.system"+packet.getPackageUid());
             }
             usedDuplicatedIds.add(packet.getPackageUid());
             packageListForReturn.add(packet);
         }
         return packageListForReturn;
-
-
     }
 
     private static int getPackageUid(Context context, String packageName) {
