@@ -102,6 +102,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean addData(DatabaseInterval databaseInterval, Package packageModel) {
 
+        Log.d(TAG, "attemting to addData");
+
         String affectedTable = "";
         if (databaseInterval == DatabaseInterval.MINUTE) {
             affectedTable = TABLE_NAME_DATA_PER_MINUTE_TABLE;

@@ -34,7 +34,10 @@ import de.htwg.co2footprint_tracker.utils.TimingHelper;
 import de.htwg.co2footprint_tracker.utils.UpdateServiceSchedulerService;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static de.htwg.co2footprint_tracker.utils.TimingHelper.getTestDurationInMins;
 
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 //UpdateNetworkStats("Updating network stats so far during test (UI only)\nTest duration: " + testDurationInMins + "mins", false);
             }
             return true;
-       } else if (id == R.id.menu_stop_test) {
+        } else if (id == R.id.menu_stop_test) {
             if (!TimingHelper.getIsTestRunning(this)) {
                 Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
             } else {
@@ -146,8 +149,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -183,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 packet.setReceivedPacketsTotal(cursor.getLong(5));
             }
         }
+        Collections.sort(packageList);
         packageAdapter.notifyDataSetChanged();
         statsUpdateDialog.dismiss();
     }
@@ -229,7 +231,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        return packageList;
+
+
+        Set<Integer> usedDuplicatedIds = new HashSet<>();
+
+        ArrayList<Package> packageListForReturn = new ArrayList<>();
+
+        for (Package packet : packageList) {
+            if (packet.getDuplicateUids() && usedDuplicatedIds.contains(packet.getPackageUid())) {
+                packageListForReturn.remove(packet);
+            }
+            if(packet.getDuplicateUids()){
+                //packet.setName("Systemappppplulululululu"+packet.getPackageUid());
+                //packet.setPackageName("com.htwgboiz.ichbinsokrass.system"+packet.getPackageUid());
+            }
+            usedDuplicatedIds.add(packet.getPackageUid());
+            packageListForReturn.add(packet);
+        }
+        return packageListForReturn;
     }
 
     private static int getPackageUid(Context context, String packageName) {

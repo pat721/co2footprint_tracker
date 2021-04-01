@@ -12,7 +12,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import de.htwg.co2footprint_tracker.NetworkStatsUpdateService;
@@ -132,7 +134,26 @@ public class UpdateServiceSchedulerService extends Service implements Runnable {
                 }
             }
         }
-        return packageList;
+
+
+        Set<Integer> usedDuplicatedIds = new HashSet<>();
+
+        ArrayList<Package> packageListForReturn = new ArrayList<>();
+
+        for (Package packet : packageList) {
+            if (packet.getDuplicateUids() && usedDuplicatedIds.contains(packet.getPackageUid())) {
+                packageListForReturn.remove(packet);
+            }
+            if(packet.getDuplicateUids()){
+                //packet.setName("Systemappppplulululululu"+packet.getPackageUid());
+                //packet.setPackageName("com.htwgboiz.ichbinsokrass.system"+packet.getPackageUid());
+            }
+            usedDuplicatedIds.add(packet.getPackageUid());
+            packageListForReturn.add(packet);
+        }
+        return packageListForReturn;
+
+
     }
 
     private static int getPackageUid(Context context, String packageName) {

@@ -22,6 +22,10 @@ import de.htwg.co2footprint_tracker.utils.TimingHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class NetworkStatsUpdateService extends IntentService {
 
@@ -52,7 +56,15 @@ public class NetworkStatsUpdateService extends IntentService {
                 boolean isNewRun = InitialBucketContainer.isNewRun();
                 InitialBucketContainer.setNewRun(false);
 
+                Set<Integer> usedDuplicatedIds = new HashSet<>();
+
                 for (int i = 0; i < packageList.size(); i++) {
+
+                    if (packageList.get(i).getDuplicateUids() && usedDuplicatedIds.contains(packageList.get(i).getPackageUid())) {
+                        continue;
+                    }
+                    usedDuplicatedIds.add(packageList.get(i).getPackageUid());
+
                     long rxBytesWifi = 0;
                     long txBytesWifi = 0;
                     long rxBytesMobile = 0;
@@ -159,7 +171,7 @@ public class NetworkStatsUpdateService extends IntentService {
                 }
 
                 //  Put the highest using packages at the top
-                Collections.sort(packageList);
+                //Collections.sort(packageList);
 
                 //  Return the updated package list to the main activity
                 Intent packageListUpdatedIntent = new Intent(Constants.ACTION.PACKAGE_LIST_UPDATED);
@@ -176,7 +188,16 @@ public class NetworkStatsUpdateService extends IntentService {
     private void saveToDatabase(Context context, long timeStamp, ArrayList<Package> packageList) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         Log.e(Constants.LOG.TAG, "new db helper created");
+
+        Set<Integer> usedDuplicatedIds = new HashSet<>();
+
         for (Package packet : packageList) {
+
+            if (packet.getDuplicateUids() && usedDuplicatedIds.contains(packet.getPackageUid())) {
+                continue;
+            }
+            usedDuplicatedIds.add(packet.getPackageUid());
+
             if (packetHasChanges(packet)) {
                 packet.setTimestamp(timeStamp);
                 databaseHelper.addData(DatabaseInterval.MINUTE, packet);
