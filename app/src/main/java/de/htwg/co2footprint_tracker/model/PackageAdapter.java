@@ -51,7 +51,7 @@ public class PackageAdapter extends RecyclerView.Adapter<PackageAdapter.PackageV
         holder.receivedPacketsMobile.setText(packetsToUI(packageItem.getReceivedPacketsMobile()) + "");
         holder.transmittedPacketsTotal.setText("" + (char) 0x03A3 + " " + packetsToUI(packageItem.getTransmittedPacketsTotal()));
         holder.transmittedPacketsWifi.setText(packetsToUI(packageItem.getTransmittedPacketsWifi()) + "");
-        holder.transmittedPacketsMobile.setText(packetsToUI(packageItem.getTransmittedPacketsMobile()) + "");
+        holder.transmittedPacketsMobile.setText(packageItem.getEnergyConsumption() + "KwH");
         try {
             if (!packageItem.getDuplicateUids()) {
                 holder.icon.setImageDrawable(holder.context.getPackageManager().getApplicationIcon(packageItem.getPackageName()));

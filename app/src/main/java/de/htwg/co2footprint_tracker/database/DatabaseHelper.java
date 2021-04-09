@@ -42,6 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TRANSMITTED_PACKETS_WIFI = "transmitted_packets_wifi";
     private static final String TRANSMITTED_PACKETS_MOBILE = "transmitted_packets_mobile";
     private static final String TRANSMITTED_PACKETS_TOTAL = "transmitted_packets_total";
+    private static final String ENERGY_CONSUMPTION = "energy_consumption";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_FILE_NAME, null, 1);
@@ -77,7 +78,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 RECEIVED_PACKETS_TOTAL + " TEXT" + "," +
                 TRANSMITTED_PACKETS_WIFI + " TEXT" + "," +
                 TRANSMITTED_PACKETS_MOBILE + " TEXT" + "," +
-                TRANSMITTED_PACKETS_TOTAL + " TEXT" +
+                TRANSMITTED_PACKETS_TOTAL + " TEXT" + "," +
+                ENERGY_CONSUMPTION + " TEXT" +
                 ")";
         db.execSQL(createTable);
     }
@@ -140,6 +142,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(TRANSMITTED_PACKETS_WIFI, packageModel.getTransmittedPacketsWifi());
         contentValues.put(TRANSMITTED_PACKETS_MOBILE, packageModel.getTransmittedPacketsMobile());
         contentValues.put(TRANSMITTED_PACKETS_TOTAL, packageModel.getTransmittedPacketsTotal());
+        contentValues.put(ENERGY_CONSUMPTION, packageModel.getEnergyConsumption());
 
         Log.d(TAG, "addData: Adding " + packageModel.getPackageName() + " to " + affectedTable);
 
@@ -193,9 +196,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " , SUM(" + RECEIVED_PACKETS_WIFI + ") as " + RECEIVED_PACKETS_WIFI +
                 " , SUM(" + RECEIVED_PACKETS_MOBILE + ") as " + RECEIVED_PACKETS_MOBILE +
                 " , SUM(" + RECEIVED_PACKETS_TOTAL + ") as " + RECEIVED_PACKETS_TOTAL +
+                " , SUM(" + ENERGY_CONSUMPTION + ") as " + ENERGY_CONSUMPTION +
 
                 " FROM " + TABLE_NAME_DATA_PER_MINUTE_TABLE + " WHERE " + PACKAGE_UID + " = " + packageUid + "";
 
+        //TODO: sum for energyconsumtion ist falsch
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 

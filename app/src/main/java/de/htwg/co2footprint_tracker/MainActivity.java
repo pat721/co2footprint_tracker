@@ -12,6 +12,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -31,6 +32,7 @@ import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.utils.Constants;
 import de.htwg.co2footprint_tracker.model.PackageAdapter;
 import de.htwg.co2footprint_tracker.utils.TimingHelper;
+import de.htwg.co2footprint_tracker.utils.UiRefresher;
 import de.htwg.co2footprint_tracker.utils.UpdateServiceSchedulerService;
 
 import java.util.ArrayList;
@@ -182,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
                 packet.setReceivedPacketsWifi(cursor.getLong(3));
                 packet.setReceivedPacketsMobile(cursor.getLong(4));
                 packet.setReceivedPacketsTotal(cursor.getLong(5));
+                packet.setEnergyConsumption(cursor.getLong(6));
+
             }
         }
         Collections.sort(packageList);

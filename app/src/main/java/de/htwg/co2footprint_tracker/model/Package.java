@@ -29,6 +29,7 @@ public class Package implements Parcelable, Comparable {
     private long transmittedPacketsMobile;
     private long transmittedPacketsTotal;
     private long timestamp;
+    private double energyConsumption;
 
 
     protected Package(Parcel in) {
@@ -135,6 +136,14 @@ public class Package implements Parcelable, Comparable {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public double getEnergyConsumption() {
+        return energyConsumption;
+    }
+
+    public void setEnergyConsumption(double energyConsumption) {
+        this.energyConsumption = energyConsumption;
     }
 
     @Override

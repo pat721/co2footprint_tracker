@@ -55,6 +55,7 @@ public class UpdateServiceSchedulerService extends Service implements Runnable {
     @Override
     public void onDestroy() {
         testIsRunning = false;
+        Log.e(Constants.LOG.TAG, "Scheduling service was destroyed!");
         super.onDestroy();
     }
 
@@ -71,7 +72,7 @@ public class UpdateServiceSchedulerService extends Service implements Runnable {
 //            }
 
             for (int i = 10; i >= 0; i--) {
-                Log.e(Constants.LOG.TAG, "Updating UI in " + i + " seconds");
+                Log.e(Constants.LOG.TAG, "Updating stats in " + i + " seconds");
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
