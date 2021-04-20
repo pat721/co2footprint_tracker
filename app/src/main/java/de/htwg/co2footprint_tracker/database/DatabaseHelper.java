@@ -79,7 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TRANSMITTED_PACKETS_WIFI + " TEXT" + "," +
                 TRANSMITTED_PACKETS_MOBILE + " TEXT" + "," +
                 TRANSMITTED_PACKETS_TOTAL + " TEXT" + "," +
-                ENERGY_CONSUMPTION + " TEXT" +
+                ENERGY_CONSUMPTION + " REAL" +
                 ")";
         db.execSQL(createTable);
     }
