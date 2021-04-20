@@ -99,6 +99,79 @@ public class InitialBucketContainer {
         }
     }
 
+    //MOBILE
+    public static void putInitialTransmittedMobileData(int uid, long bytes) {
+        if (mappedPackageData.containsKey(DATA_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid)) {
+            long currentBytes = mappedPackageData.get(DATA_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid);
+            long sumOfBytes = currentBytes + bytes;
+            mappedPackageData.put(DATA_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid, sumOfBytes);
+        } else {
+            mappedPackageData.put(DATA_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid, bytes);
+        }
+    }
+
+    public static long getInitialTransmittedMobileData(int uid) {
+        if(mappedPackageData.containsKey(DATA_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid)){
+            return mappedPackageData.get(DATA_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid);
+        } else{
+            return 0;
+        }
+    }
+
+    public static void putInitialReceivedMobileData(int uid, long bytes) {
+        if (mappedPackageData.containsKey(DATA_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid)) {
+            long currentBytes = mappedPackageData.get(DATA_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid);
+            long sumOfBytes = currentBytes + bytes;
+            mappedPackageData.put(DATA_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid, sumOfBytes);
+        } else {
+            mappedPackageData.put(DATA_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid, bytes);
+        }
+    }
+
+    public static long getInitialReceivedMobileData(int uid) {
+        if(mappedPackageData.containsKey(DATA_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid)){
+            return mappedPackageData.get(DATA_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid);
+        } else{
+            return 0;
+        }
+    }
+
+    public static void putInitialTransmittedMobilePacket(int uid, long packets) {
+        if (mappedPackageData.containsKey(PACKET_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid)) {
+            long currentPackets = mappedPackageData.get(PACKET_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid);
+            long sumOfPackets = currentPackets + packets;
+            mappedPackageData.put(PACKET_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid, sumOfPackets);
+        } else {
+            mappedPackageData.put(PACKET_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid, packets);
+        }
+    }
+
+    public static long getInitialTransmittedMobilePacket(int uid) {
+        if(mappedPackageData.containsKey(PACKET_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid)){
+            return mappedPackageData.get(PACKET_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid);
+        } else{
+            return 0;
+        }
+    }
+
+    public static void putInitialReceivedMobilePacket(int uid, long packets) {
+        if (mappedPackageData.containsKey(PACKET_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid)) {
+            long currentPackets = mappedPackageData.get(PACKET_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid);
+            long sumOfPackets = currentPackets + packets;
+            mappedPackageData.put(PACKET_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid, sumOfPackets);
+        } else {
+            mappedPackageData.put(PACKET_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid, packets);
+        }
+    }
+
+    public static long getInitialReceivedMobilePacket(int uid) {
+        if(mappedPackageData.containsKey(PACKET_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid)){
+            return mappedPackageData.get(PACKET_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid);
+        } else{
+            return 0;
+        }
+    }
+
     public static void clearMappedPackageData(){
         mappedPackageData.clear();
     }

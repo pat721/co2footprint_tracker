@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 packet.setReceivedPacketsWifi(cursor.getLong(3));
                 packet.setReceivedPacketsMobile(cursor.getLong(4));
                 packet.setReceivedPacketsTotal(cursor.getLong(5));
-                packet.setEnergyConsumption(cursor.getLong(6));
+                packet.setEnergyConsumption(cursor.getDouble(6));
 
             }
         }
