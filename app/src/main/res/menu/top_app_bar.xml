@@ -3,8 +3,8 @@
 
     <item
         android:id="@+id/more"
-        android:title="@string/settings"
         android:contentDescription="@string/content_description_settings"
+        android:title="@string/settings"
         app:showAsAction="never" />
 
 </menu>
