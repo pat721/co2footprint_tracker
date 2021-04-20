@@ -2,7 +2,8 @@ package de.htwg.co2footprint_tracker.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by darry on 31/01/2018.

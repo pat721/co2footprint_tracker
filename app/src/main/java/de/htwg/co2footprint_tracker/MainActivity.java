@@ -14,25 +14,20 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import de.htwg.co2footprint_tracker.R;
-
-import de.htwg.co2footprint_tracker.model.Package;
-import de.htwg.co2footprint_tracker.utils.Constants;
-import de.htwg.co2footprint_tracker.model.PackageAdapter;
-import de.htwg.co2footprint_tracker.utils.StorageHelper;
-import de.htwg.co2footprint_tracker.utils.TimingHelper;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.htwg.co2footprint_tracker.model.Package;
+import de.htwg.co2footprint_tracker.utils.Constants;
+import de.htwg.co2footprint_tracker.utils.StorageHelper;
+import de.htwg.co2footprint_tracker.utils.TimingHelper;
 
 import static de.htwg.co2footprint_tracker.utils.TimingHelper.getTestDurationInMins;
 
@@ -41,9 +36,7 @@ import static de.htwg.co2footprint_tracker.utils.TimingHelper.getTestDurationInM
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
     private ArrayList<Package> packageList;
-    private RecyclerView.Adapter packageAdapter;
     private NetworkStatsUpdateServiceReceiver networkStatsUpdateServiceReceiver;
     private ProgressDialog statsUpdateDialog;
 
@@ -51,15 +44,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         statsUpdateDialog = new ProgressDialog(this);
         packageList = getPackagesData();
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        packageAdapter = new PackageAdapter(packageList);
-        recyclerView.setAdapter(packageAdapter);
     }
 
 
@@ -88,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.top_app_bar, menu);
         return true;
     }
 
@@ -102,27 +89,19 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.menu_request_permissions) {
             requestPermissions();
             return true;
-        }
-        else if (id == R.id.menu_start_test) {
-            if (TimingHelper.getIsTestRunning(this))
-            {
+        } else if (id == R.id.menu_start_test) {
+            if (TimingHelper.getIsTestRunning(this)) {
                 Toast.makeText(this, "Test is already running.  Please stop current test first", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
+            } else {
                 TimingHelper.setStartTime(this);
                 TimingHelper.setIsTestRunning(this, true);
                 Toast.makeText(this, "Started test at " + TimingHelper.getStartTimeForUI(this), Toast.LENGTH_LONG).show();
             }
             return true;
-        }
-        else if (id == R.id.menu_update_stats) {
-            if (!TimingHelper.getIsTestRunning(this))
-            {
+        } else if (id == R.id.menu_update_stats) {
+            if (!TimingHelper.getIsTestRunning(this)) {
                 Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
+            } else {
                 long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
                 if (testDurationInMins <= Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME)
                     Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
@@ -130,14 +109,10 @@ public class MainActivity extends AppCompatActivity {
                         false);
             }
             return true;
-        }
-        else if (id == R.id.menu_update_stats_and_log) {
-            if (!TimingHelper.getIsTestRunning(this))
-            {
+        } else if (id == R.id.menu_update_stats_and_log) {
+            if (!TimingHelper.getIsTestRunning(this)) {
                 Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
+            } else {
                 long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
                 if (testDurationInMins <= Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME)
                     Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
@@ -145,14 +120,10 @@ public class MainActivity extends AppCompatActivity {
                         true);
             }
             return true;
-        }
-        else if (id == R.id.menu_stop_test) {
-            if (!TimingHelper.getIsTestRunning(this))
-            {
+        } else if (id == R.id.menu_stop_test) {
+            if (!TimingHelper.getIsTestRunning(this)) {
                 Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
+            } else {
                 TimingHelper.setIsTestRunning(this, false);
                 long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
                 if (testDurationInMins < Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME)
@@ -167,10 +138,8 @@ public class MainActivity extends AppCompatActivity {
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    private void UpdateNetworkStats(String messageToUser, Boolean saveStatsToFile)
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
+    private void UpdateNetworkStats(String messageToUser, Boolean saveStatsToFile) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             statsUpdateDialog.setMessage(messageToUser);
             statsUpdateDialog.setTitle("Retrieving network stats");
             statsUpdateDialog.setIndeterminate(false);
@@ -190,20 +159,17 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Constants.ACTION.PACKAGE_LIST_UPDATED))
-            {
+            if (intent.getAction().equals(Constants.ACTION.PACKAGE_LIST_UPDATED)) {
                 ArrayList<Package> packageListLocal = intent.getParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST);
                 packageList.clear();
                 packageList.addAll(packageListLocal);
-                packageAdapter.notifyDataSetChanged();
                 statsUpdateDialog.dismiss();
                 Boolean saveStatsToFile = intent.getBooleanExtra(Constants.PARAMS.SAVE_STATS_TO_FILE, false);
-                if (saveStatsToFile)
-                {
+                if (saveStatsToFile) {
                     StorageHelper fileHelper = new StorageHelper();
                     String fileLocation = fileHelper.persistNetworkStatisticsToFile(getApplicationContext(), packageList);
                     if (!fileLocation.equals(""))
-                        Toast.makeText(getApplicationContext(), "Statistics written to " + fileLocation , Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Statistics written to " + fileLocation, Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -236,17 +202,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         //  Go through the package list and set whether the entries have duplicate uids
-        for (int i = 0; i < packageList.size(); i++)
-        {
+        for (int i = 0; i < packageList.size(); i++) {
             if (packageList.get(i).getDuplicateUids())
                 continue;
             int packageUid = packageList.get(i).getPackageUid();
-            for (int j = 0; j < packageList.size(); j++)
-            {
+            for (int j = 0; j < packageList.size(); j++) {
                 if (i == j)
                     continue;
-                else
-                {
+                else {
                     if (packageUid == packageList.get(j).getPackageUid()) {
                         packageList.get(i).setDuplicateUids(true);
                         packageList.get(j).setDuplicateUids(true);
