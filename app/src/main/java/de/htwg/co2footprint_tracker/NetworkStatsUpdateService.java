@@ -7,6 +7,7 @@ import android.app.usage.NetworkStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.TrafficStats;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -17,7 +18,6 @@ import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.model.DatabaseInterval;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
-import de.htwg.co2footprint_tracker.utils.Co2CalculatorHelper;
 import de.htwg.co2footprint_tracker.utils.Constants;
 import de.htwg.co2footprint_tracker.utils.TimingHelper;
 
@@ -97,38 +97,55 @@ public class NetworkStatsUpdateService extends IntentService {
                             rxPacketsWifi -= InitialBucketContainer.getInitialReceivedWifiPacket(packageList.get(i).getPackageUid());
                             txPacketsWifi -= InitialBucketContainer.getInitialTransmittedWifiPacket(packageList.get(i).getPackageUid());
 
+                            //If the current run, is not a new run, we need to store the data so we can calculate the traffic every minute
                             if (!isNewRun) {
                                 InitialBucketContainer.putInitialReceivedWifiData(packageList.get(i).getPackageUid(), rxBytesWifi);
                                 InitialBucketContainer.putInitialReceivedWifiPacket(packageList.get(i).getPackageUid(), rxPacketsWifi);
                                 InitialBucketContainer.putInitialTransmittedWifiData(packageList.get(i).getPackageUid(), txBytesWifi);
                                 InitialBucketContainer.putInitialTransmittedWifiPacket(packageList.get(i).getPackageUid(), txPacketsWifi);
                             }
-                            rxBytesTotal = rxBytesWifi;
-                            txBytesTotal = txBytesWifi;
-                            rxPacketsTotal = rxPacketsWifi;
-                            txPacketsTotal = txPacketsWifi;
                         } catch (Exception e) {
                             Log.e(Constants.LOG.TAG, "Remote Exception: WIFI " + e.getMessage());
                         }
-                        /*try {
-                            networkStatsMobile = networkStatsManager.querySummary(ConnectivityManager.TYPE_MOBILE, getSubscriberId(this, ConnectivityManager.TYPE_MOBILE), startTime, System.currentTimeMillis());
+                        try {
+                            networkStatsMobile = networkStatsManager.querySummary(ConnectivityManager.TYPE_MOBILE, null, startTime, timeOnUpdate);
+                            NetworkStats.Bucket bucket = new NetworkStats.Bucket();
                             do {
-                                NetworkStats.Bucket bucket = new NetworkStats.Bucket();
-                                networkStatsMobile.getNextBucket(bucket);
                                 if (bucket.getUid() == packageList.get(i).getPackageUid()) {
+                                    if (isNewRun) {
+                                        //if it is the first run, it is possible that buckets already contain data and do not start from zero,
+                                        // so this initial data needs to be stores for further calculations
+                                        InitialBucketContainer.putInitialReceivedMobileData(bucket.getUid(), bucket.getRxBytes());
+                                        InitialBucketContainer.putInitialTransmittedMobileData(bucket.getUid(), bucket.getTxBytes());
+                                        InitialBucketContainer.putInitialReceivedMobilePacket(bucket.getUid(), bucket.getRxPackets());
+                                        InitialBucketContainer.putInitialTransmittedMobilePacket(bucket.getUid(), bucket.getTxPackets());
+                                    }
                                     rxBytesMobile += bucket.getRxBytes();
                                     txBytesMobile += bucket.getTxBytes();
                                     rxPacketsMobile += bucket.getRxPackets();
                                     txPacketsMobile += bucket.getTxPackets();
                                 }
+                                networkStatsMobile.getNextBucket(bucket);
                             } while (networkStatsMobile.hasNextBucket());
-                            rxBytesTotal = rxBytesWifi + rxBytesMobile;
-                            txBytesTotal = txBytesWifi + txBytesMobile;
-                            rxPacketsTotal = rxPacketsWifi + rxPacketsMobile;
-                            txPacketsTotal = txPacketsWifi + txPacketsMobile;
 
+                            //since we stored the data in the initial run, we subtract it
+                            rxBytesMobile -= InitialBucketContainer.getInitialReceivedMobileData(packageList.get(i).getPackageUid());
+                            txBytesMobile -= InitialBucketContainer.getInitialTransmittedMobileData(packageList.get(i).getPackageUid());
+                            rxPacketsMobile -= InitialBucketContainer.getInitialReceivedMobilePacket(packageList.get(i).getPackageUid());
+                            txPacketsMobile -= InitialBucketContainer.getInitialTransmittedMobilePacket(packageList.get(i).getPackageUid());
+
+                            if (!isNewRun) {
+                                InitialBucketContainer.putInitialReceivedMobileData(packageList.get(i).getPackageUid(), rxBytesMobile);
+                                InitialBucketContainer.putInitialReceivedMobilePacket(packageList.get(i).getPackageUid(), rxPacketsMobile);
+                                InitialBucketContainer.putInitialTransmittedMobileData(packageList.get(i).getPackageUid(), txBytesMobile);
+                                InitialBucketContainer.putInitialTransmittedMobilePacket(packageList.get(i).getPackageUid(), txPacketsMobile);
+                            }
+                            rxBytesTotal = rxBytesMobile + rxBytesWifi;
+                            txBytesTotal = txBytesMobile + txBytesWifi;
+                            rxPacketsTotal = rxPacketsMobile + rxPacketsWifi;
+                            txPacketsTotal = txPacketsMobile + txPacketsWifi;
                         } catch (Exception e) {
-                            Log.e(Constants.LOG.TAG, "Remote Exception: " + e.getMessage());
+                            Log.e(Constants.LOG.TAG, "Remote Exception: Mobile " + e.getMessage());
                         }
                     } else {
                         //  Note: These only return data for our own UID on M and higher
@@ -140,7 +157,6 @@ public class NetworkStatsUpdateService extends IntentService {
                         txBytesTotal = TrafficStats.getUidTxBytes(packageList.get(i).getPackageUid());
                         rxPacketsTotal = TrafficStats.getUidRxPackets(packageList.get(i).getPackageUid());
                         txPacketsTotal = TrafficStats.getUidTxPackets(packageList.get(i).getPackageUid());
-                         */
                     }
 
                     packageList.get(i).setReceivedBytesWifi(rxBytesWifi);
@@ -156,8 +172,6 @@ public class NetworkStatsUpdateService extends IntentService {
                     packageList.get(i).setTransmittedPacketsMobile(txPacketsMobile);
                     packageList.get(i).setTransmittedPacketsTotal(txPacketsTotal);
                 }
-
-
                 saveToDatabase(getApplicationContext(), timeOnUpdate, packageList);
             }
         }
@@ -168,9 +182,6 @@ public class NetworkStatsUpdateService extends IntentService {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         for (Package packet : packageList) {
             if (packetHasChanges(packet)) {
-
-                long totalBytes = packet.getReceivedBytesTotal() + packet.getTransmittedBytesTotal();
-                packet.setEnergyConsumption(new Co2CalculatorHelper().calculateTotalEnergyConsumption(1, totalBytes));
                 packet.setTimestamp(timeStamp);
                 databaseHelper.addData(DatabaseInterval.MINUTE, packet);
             }
