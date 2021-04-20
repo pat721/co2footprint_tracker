@@ -1,11 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/page_1"
+        android:id="@+id/tips"
         android:enabled="true"
         android:icon="@drawable/baseline_eco_black_24dp"
         android:title="@string/page_tips"/>
     <item
-        android:id="@+id/page_2"
+        android:id="@+id/data"
         android:enabled="true"
         android:icon="@drawable/baseline_sync_alt_black_24dp"
         android:title="@string/page_data"/>

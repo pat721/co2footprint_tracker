@@ -16,12 +16,17 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -43,16 +48,64 @@ import static de.htwg.co2footprint_tracker.utils.TimingHelper.getTestDurationInM
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Package> packageList;
-    private RecyclerView.Adapter packageAdapter;
     private ProgressDialog statsUpdateDialog;
+
+    private static int getPackageUid(Context context, String packageName) {
+        /*
+        uid
+        The kernel user-ID that has been assigned to this application;
+        currently this is not a unique ID (multiple applications can have the same uid).
+         */
+        PackageManager packageManager = context.getPackageManager();
+        int uid = -1;
+        try {
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA);
+            uid = packageInfo.applicationInfo.uid;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        return uid;
+    }
+
+    public static String humanReadableByteCountSI(long bytes) {
+        if (-1000 < bytes && bytes < 1000) {
+            return bytes + " B";
+        }
+        CharacterIterator ci = new StringCharacterIterator("kMGTPE");
+        while (bytes <= -999_950 || bytes >= 999_950) {
+            bytes /= 1000;
+            ci.next();
+        }
+        return String.format("%.1f %cB", bytes / 1000.0, ci.current());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.data);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.tips:
+                        startActivity(new Intent(getApplicationContext(),
+                                Tips.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                    case R.id.data:
+                        return true;
+                }
+                return false;
+            }
+        });
+
+
         statsUpdateDialog = new ProgressDialog(this);
         packageList = getPackagesData();
+        updateUi();
     }
 
     @Override
@@ -69,6 +122,10 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions();
         }
     }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //TODO alles was unterhalb ist in eigene utils auslagern
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(Constants.LOG.TAG, "intent created, starting service...");
                 startService(updateSchedulerIntent);
                 Log.e(Constants.LOG.TAG, "service started");
-
             }
             return true;
         } else if (id == R.id.menu_update_stats) {
@@ -137,10 +193,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    //////////////////////////////////////////////////////////////////////////////////////////
-    //TODO alles was unterhalb ist in eigene utils auslagern
-
     private void UpdateNetworkStats(String messageToUser, Boolean saveStatsToFile) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             statsUpdateDialog.setMessage(messageToUser);
@@ -159,24 +211,41 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateUi() {
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
+
+        long totalReceivedBytes = 0;
+        long totalEnergyConsumption = 0;
+
         for (Package packet : packageList) {
             Cursor cursor = databaseHelper.getTotalsForPackage(packet.getPackageUid());
             if (cursor.moveToFirst()) {
                 packet.setReceivedBytesWifi(cursor.getLong(0));
                 packet.setReceivedBytesMobile(cursor.getLong(1));
-                packet.setReceivedBytesTotal(cursor.getLong(2));
+
+                long receivedBytes = cursor.getLong(2);
+                totalReceivedBytes += receivedBytes;
+                packet.setReceivedBytesTotal(receivedBytes);
 
                 packet.setReceivedPacketsWifi(cursor.getLong(3));
                 packet.setReceivedPacketsMobile(cursor.getLong(4));
                 packet.setReceivedPacketsTotal(cursor.getLong(5));
-                packet.setEnergyConsumption(cursor.getDouble(6));
 
+                long energyConsumption = cursor.getLong(6);
+                totalEnergyConsumption += energyConsumption;
+                packet.setEnergyConsumption(energyConsumption);
             }
         }
         Collections.sort(packageList);
-        packageAdapter.notifyDataSetChanged();
+
+        final TextView dataUsage = (TextView) findViewById(R.id.data_usage_value);
+        final TextView co2equivalent = (TextView) findViewById(R.id.co2_equivalent_value);
+
+        co2equivalent.setText(String.valueOf(totalEnergyConsumption) + " g");
+        dataUsage.setText(humanReadableByteCountSI(totalReceivedBytes));
+
         statsUpdateDialog.dismiss();
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     //TODO make util class and move methods to it
     private ArrayList<Package> getPackagesData() {
@@ -238,24 +307,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return packageListForReturn;
     }
-
-    private static int getPackageUid(Context context, String packageName) {
-        /*
-        uid
-        The kernel user-ID that has been assigned to this application;
-        currently this is not a unique ID (multiple applications can have the same uid).
-         */
-        PackageManager packageManager = context.getPackageManager();
-        int uid = -1;
-        try {
-            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA);
-            uid = packageInfo.applicationInfo.uid;
-        } catch (PackageManager.NameNotFoundException e) {
-        }
-        return uid;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void requestPermissions() {
         if (!hasPermissionToReadNetworkHistory()) {
