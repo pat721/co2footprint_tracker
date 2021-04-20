@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         packageList = getPackagesData();
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -69,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         if (!hasPermissions()) {
             requestPermissions();
         }
-
     }
 
     @Override
@@ -179,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
         packageAdapter.notifyDataSetChanged();
         statsUpdateDialog.dismiss();
     }
-
 
     //TODO make util class and move methods to it
     private ArrayList<Package> getPackagesData() {
