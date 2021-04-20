@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.sql.Timestamp;
+
 /**
  * Created by darry on 31/01/2018.
  */
@@ -27,6 +29,9 @@ public class Package implements Parcelable, Comparable {
     private long transmittedPacketsWifi;
     private long transmittedPacketsMobile;
     private long transmittedPacketsTotal;
+    private long timestamp;
+    private double energyConsumption;
+
 
     protected Package(Parcel in) {
         name = in.readString();
@@ -125,6 +130,22 @@ public class Package implements Parcelable, Comparable {
 
     public long getTransmittedPacketsTotal() {return transmittedPacketsTotal;}
     public void setTransmittedPacketsTotal(long bytes) {transmittedPacketsTotal = bytes;}
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public double getEnergyConsumption() {
+        return energyConsumption;
+    }
+
+    public void setEnergyConsumption(double energyConsumption) {
+        this.energyConsumption = energyConsumption;
+    }
 
     @Override
     public int compareTo(@NonNull Object comparePackage) {

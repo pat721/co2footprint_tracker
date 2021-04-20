@@ -4,30 +4,36 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AppOpsManager;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import de.htwg.co2footprint_tracker.database.DatabaseHelper;
+import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.utils.Constants;
-import de.htwg.co2footprint_tracker.utils.StorageHelper;
 import de.htwg.co2footprint_tracker.utils.TimingHelper;
+import de.htwg.co2footprint_tracker.utils.UpdateServiceSchedulerService;
 
 import static de.htwg.co2footprint_tracker.utils.TimingHelper.getTestDurationInMins;
 
@@ -37,7 +43,7 @@ import static de.htwg.co2footprint_tracker.utils.TimingHelper.getTestDurationInM
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Package> packageList;
-    private NetworkStatsUpdateServiceReceiver networkStatsUpdateServiceReceiver;
+    private RecyclerView.Adapter packageAdapter;
     private ProgressDialog statsUpdateDialog;
 
     @Override
@@ -64,12 +70,6 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions();
         }
 
-        if (networkStatsUpdateServiceReceiver == null)
-            networkStatsUpdateServiceReceiver = new NetworkStatsUpdateServiceReceiver();
-        //  Listen for messages from the service
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Constants.ACTION.PACKAGE_LIST_UPDATED);
-        registerReceiver(networkStatsUpdateServiceReceiver, intentFilter);
     }
 
     @Override
@@ -96,28 +96,25 @@ public class MainActivity extends AppCompatActivity {
                 TimingHelper.setStartTime(this);
                 TimingHelper.setIsTestRunning(this, true);
                 Toast.makeText(this, "Started test at " + TimingHelper.getStartTimeForUI(this), Toast.LENGTH_LONG).show();
+                Log.e(Constants.LOG.TAG, "creating intent....");
+                Intent updateSchedulerIntent = new Intent(this, UpdateServiceSchedulerService.class);
+                updateSchedulerIntent.putExtra(Constants.PARAMS.PACKAGE_LIST, packageList);
+                updateSchedulerIntent.setAction(Constants.ACTION.UPDATE_SERVICE_SCHEDULER_STARTED);
+                Log.e(Constants.LOG.TAG, "intent created, starting service...");
+                startService(updateSchedulerIntent);
+                Log.e(Constants.LOG.TAG, "service started");
+
             }
             return true;
         } else if (id == R.id.menu_update_stats) {
+            updateUi();
             if (!TimingHelper.getIsTestRunning(this)) {
                 Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
             } else {
                 long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
                 if (testDurationInMins <= Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME)
                     Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
-                UpdateNetworkStats("Updating network stats so far during test (UI only)\nTest duration: " + testDurationInMins + "mins",
-                        false);
-            }
-            return true;
-        } else if (id == R.id.menu_update_stats_and_log) {
-            if (!TimingHelper.getIsTestRunning(this)) {
-                Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
-            } else {
-                long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
-                if (testDurationInMins <= Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME)
-                    Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
-                UpdateNetworkStats("Updating network stats so far during test (will log result)\nTest duration: " + testDurationInMins + "mins",
-                        true);
+                //UpdateNetworkStats("Updating network stats so far during test (UI only)\nTest duration: " + testDurationInMins + "mins", false);
             }
             return true;
         } else if (id == R.id.menu_stop_test) {
@@ -125,18 +122,26 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
             } else {
                 TimingHelper.setIsTestRunning(this, false);
+                stopService(new Intent(this, UpdateServiceSchedulerService.class));
                 long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
-                if (testDurationInMins < Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME)
+                if (testDurationInMins < Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME) {
                     Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
-                UpdateNetworkStats("Gathering network stats at the end of the test\nTest duration: " + testDurationInMins + "mins",
-                        true);
+                }
+                //UpdateNetworkStats("Gathering network stats at the end of the test\nTest duration: " + testDurationInMins + "mins", true);
             }
+            InitialBucketContainer.setNewRun(true);
+            InitialBucketContainer.clearMappedPackageData();
+        } else if (id == R.id.menu_purge_db) {
+            new DatabaseHelper(this).clearDb();
+            Toast.makeText(this, "clearing database", Toast.LENGTH_LONG).show();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+
     //////////////////////////////////////////////////////////////////////////////////////////
+    //TODO alles was unterhalb ist in eigene utils auslagern
 
     private void UpdateNetworkStats(String messageToUser, Boolean saveStatsToFile) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -154,29 +159,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void updateUi() {
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        for (Package packet : packageList) {
+            Cursor cursor = databaseHelper.getTotalsForPackage(packet.getPackageUid());
+            if (cursor.moveToFirst()) {
+                packet.setReceivedBytesWifi(cursor.getLong(0));
+                packet.setReceivedBytesMobile(cursor.getLong(1));
+                packet.setReceivedBytesTotal(cursor.getLong(2));
 
-    private class NetworkStatsUpdateServiceReceiver extends BroadcastReceiver {
+                packet.setReceivedPacketsWifi(cursor.getLong(3));
+                packet.setReceivedPacketsMobile(cursor.getLong(4));
+                packet.setReceivedPacketsTotal(cursor.getLong(5));
+                packet.setEnergyConsumption(cursor.getLong(6));
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Constants.ACTION.PACKAGE_LIST_UPDATED)) {
-                ArrayList<Package> packageListLocal = intent.getParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST);
-                packageList.clear();
-                packageList.addAll(packageListLocal);
-                statsUpdateDialog.dismiss();
-                Boolean saveStatsToFile = intent.getBooleanExtra(Constants.PARAMS.SAVE_STATS_TO_FILE, false);
-                if (saveStatsToFile) {
-                    StorageHelper fileHelper = new StorageHelper();
-                    String fileLocation = fileHelper.persistNetworkStatisticsToFile(getApplicationContext(), packageList);
-                    if (!fileLocation.equals(""))
-                        Toast.makeText(getApplicationContext(), "Statistics written to " + fileLocation, Toast.LENGTH_LONG).show();
-                }
             }
         }
+        Collections.sort(packageList);
+        packageAdapter.notifyDataSetChanged();
+        statsUpdateDialog.dismiss();
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
 
+    //TODO make util class and move methods to it
     private ArrayList<Package> getPackagesData() {
         PackageManager packageManager = getPackageManager();
         List<PackageInfo> packageInfoList = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
@@ -217,7 +222,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        return packageList;
+
+
+        Set<Integer> usedDuplicatedIds = new HashSet<>();
+        ArrayList<Package> packageListForReturn = new ArrayList<>();
+
+        //rm duplicate uid-packages and return List without duplicate uids
+        for (Package packet : packageList) {
+            if (packet.getDuplicateUids() && usedDuplicatedIds.contains(packet.getPackageUid())) {
+                continue;
+            }
+            if (packet.getDuplicateUids()) {
+                packet.setName("SystemApp" + packet.getPackageUid());
+                packet.setPackageName("internal.uid." + packet.getPackageUid());
+            }
+            usedDuplicatedIds.add(packet.getPackageUid());
+            packageListForReturn.add(packet);
+        }
+        return packageListForReturn;
     }
 
     private static int getPackageUid(Context context, String packageName) {

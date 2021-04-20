@@ -25,14 +25,12 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service
-            android:name="de.htwg.co2footprint_tracker.NetworkStatsUpdateService"
-            android:exported="false" />
+        <service android:name="de.htwg.co2footprint_tracker.NetworkStatsUpdateService" android:enabled="true" />
+        <service android:name="de.htwg.co2footprint_tracker.utils.UpdateServiceSchedulerService" android:enabled="true"/>
 
     </application>
 

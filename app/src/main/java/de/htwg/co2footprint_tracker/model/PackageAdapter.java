@@ -52,9 +52,14 @@ public class PackageAdapter extends RecyclerView.Adapter<PackageAdapter.PackageV
         holder.receivedPacketsMobile.setText(packetsToUI(packageItem.getReceivedPacketsMobile()) + "");
         holder.transmittedPacketsTotal.setText("" + (char) 0x03A3 + " " + packetsToUI(packageItem.getTransmittedPacketsTotal()));
         holder.transmittedPacketsWifi.setText(packetsToUI(packageItem.getTransmittedPacketsWifi()) + "");
-        holder.transmittedPacketsMobile.setText(packetsToUI(packageItem.getTransmittedPacketsMobile()) + "");
+        holder.transmittedPacketsMobile.setText(packageItem.getEnergyConsumption() + "KwH");
         try {
-            holder.icon.setImageDrawable(holder.context.getPackageManager().getApplicationIcon(packageItem.getPackageName()));
+            if (!packageItem.getDuplicateUids()) {
+                holder.icon.setImageDrawable(holder.context.getPackageManager().getApplicationIcon(packageItem.getPackageName()));
+            }else {
+                holder.icon.setImageDrawable(holder.context.getPackageManager().getApplicationIcon("com.google.android.ext.services"));
+            }
+
             holder.received_data_wifi_icon.setImageDrawable(holder.context.getDrawable(R.drawable.ic_signal_wifi_3_bar_black_24dp));
             holder.transmitted_data_wifi_icon.setImageDrawable(holder.context.getDrawable(R.drawable.ic_signal_wifi_3_bar_black_24dp));
             holder.received_packets_wifi_icon.setImageDrawable(holder.context.getDrawable(R.drawable.ic_signal_wifi_3_bar_black_24dp));
@@ -68,30 +73,22 @@ public class PackageAdapter extends RecyclerView.Adapter<PackageAdapter.PackageV
         }
     }
 
-    private String bytesToUI(long bytes)
-    {
-        if (bytes > 1024*1024*1024)
-        {
+    private String bytesToUI(long bytes) {
+        if (bytes > 1024 * 1024 * 1024) {
             return (bytes / 1024 / 1024 / 1024) + " GB";
-        }
-        else if (bytes > 1024*1024)
-        {
+        } else if (bytes > 1024 * 1024) {
             return (bytes / 1024 / 1024) + " MB";
-        }
-        else if (bytes > 1024)
-        {
+        } else if (bytes > 1024) {
             return (bytes / 1024) + " KB";
-        }
-        else
+        } else
             return bytes + " b";
     }
 
-    private String packetsToUI(long packets)
-    {
-        long thousand= 1000L;
+    private String packetsToUI(long packets) {
+        long thousand = 1000L;
         long million = 1000000L;
         long billion = 1000000000L;
-        long trillion= 1000000000000L;
+        long trillion = 1000000000000L;
         long number = Math.round(packets);
         if ((number >= thousand) && (number < million)) {
             float fraction = calculateFraction(number, thousand);

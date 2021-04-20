@@ -18,13 +18,13 @@
         android:title="@string/menu_update_stats"
         app:showAsAction="never" />
     <item
-        android:id="@+id/menu_update_stats_and_log"
-        android:orderInCategory="103"
-        android:title="@string/menu_update_stats_and_log"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/menu_stop_test"
         android:orderInCategory="104"
         android:title="@string/menu_stop_test"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_purge_db"
+        android:orderInCategory="104"
+        android:title="@string/menu_purge_db"
         app:showAsAction="never" />
 </menu>
