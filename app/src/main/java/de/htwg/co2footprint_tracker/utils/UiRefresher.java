@@ -1,7 +1,8 @@
 package de.htwg.co2footprint_tracker.utils;
 
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.concurrent.TimeUnit;
 

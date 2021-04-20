@@ -1,0 +1,30 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/more"
+        android:contentDescription="@string/content_description_settings"
+        android:title="@string/settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_start_test"
+        android:contentDescription="@string/menu_start_test"
+        android:title="@string/menu_start_test"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_update_stats"
+        android:contentDescription="@string/menu_update_stats"
+        android:title="@string/menu_update_stats"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_stop_test"
+        android:contentDescription="@string/menu_stop_test"
+        android:title="@string/menu_stop_test"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_purge_db"
+        android:contentDescription="@string/menu_purge_db"
+        android:title="@string/menu_purge_db"
+        app:showAsAction="never" />
+
+</menu>

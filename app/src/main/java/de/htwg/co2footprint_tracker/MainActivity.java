@@ -4,42 +4,36 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AppOpsManager;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import de.htwg.co2footprint_tracker.database.DatabaseHelper;
-import de.htwg.co2footprint_tracker.model.Package;
-import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
-import de.htwg.co2footprint_tracker.utils.Constants;
-import de.htwg.co2footprint_tracker.model.PackageAdapter;
-import de.htwg.co2footprint_tracker.utils.TimingHelper;
-import de.htwg.co2footprint_tracker.utils.UiRefresher;
-import de.htwg.co2footprint_tracker.utils.UpdateServiceSchedulerService;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import de.htwg.co2footprint_tracker.database.DatabaseHelper;
+import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
+import de.htwg.co2footprint_tracker.model.Package;
+import de.htwg.co2footprint_tracker.utils.Constants;
+import de.htwg.co2footprint_tracker.utils.TimingHelper;
+import de.htwg.co2footprint_tracker.utils.UpdateServiceSchedulerService;
 
 import static de.htwg.co2footprint_tracker.utils.TimingHelper.getTestDurationInMins;
 
@@ -48,7 +42,6 @@ import static de.htwg.co2footprint_tracker.utils.TimingHelper.getTestDurationInM
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
     private ArrayList<Package> packageList;
     private RecyclerView.Adapter packageAdapter;
     private ProgressDialog statsUpdateDialog;
@@ -57,15 +50,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         statsUpdateDialog = new ProgressDialog(this);
         packageList = getPackagesData();
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        packageAdapter = new PackageAdapter(packageList);
-        recyclerView.setAdapter(packageAdapter);
     }
 
 
@@ -88,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.top_app_bar, menu);
         return true;
     }
 

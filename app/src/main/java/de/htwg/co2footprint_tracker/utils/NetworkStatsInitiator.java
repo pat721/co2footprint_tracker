@@ -8,9 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.RemoteException;
-import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 

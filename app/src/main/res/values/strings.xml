@@ -1,5 +1,9 @@
 <resources>
-    <string name="app_name">CO2 Footprint-Tracker</string>
+    <string name="app_name">CO2-Footprint-Tracker</string>
+    <string name="settings">Settings</string>
+    <string name="page_tips">Tips</string>
+    <string name="page_data">Data</string>
+    <string name="content_description_settings">Settings und so weiter</string>
     <string name="menu_start_test">Start Test</string>
     <string name="menu_update_stats">Update Stats (UI only)</string>
     <string name="menu_update_stats_and_log">Update Stats and log</string>
