@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         return uid;
     }
 
-    public static String humanReadableByteCountSI(long bytes) {
+    private static String humanReadableByteCountSI(long bytes) {
         if (-1000 < bytes && bytes < 1000) {
             return bytes + " B";
         }
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
             bytes /= 1000;
             ci.next();
         }
+
         return String.format("%.1f %cB", bytes / 1000.0, ci.current());
     }
 
@@ -113,6 +114,10 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
     }
 
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //TODO alles was unterhalb ist in eigene utils auslagern
+
     @Override
     @TargetApi(Build.VERSION_CODES.M)
     protected void onResume() {
@@ -122,10 +127,6 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions();
         }
     }
-
-
-    //////////////////////////////////////////////////////////////////////////////////////////
-    //TODO alles was unterhalb ist in eigene utils auslagern
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -209,6 +210,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     public void updateUi() {
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
@@ -244,8 +247,6 @@ public class MainActivity extends AppCompatActivity {
 
         statsUpdateDialog.dismiss();
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     //TODO make util class and move methods to it
     private ArrayList<Package> getPackagesData() {
