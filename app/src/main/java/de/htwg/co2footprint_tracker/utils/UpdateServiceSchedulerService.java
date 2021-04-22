@@ -66,20 +66,21 @@ public class UpdateServiceSchedulerService extends Service implements Runnable {
         while (testIsRunning) {
             updateStats();
 
-//            try {
-//                TimeUnit.MINUTES.sleep(1);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+            Log.e(Constants.LOG.TAG, "Updating stats in 1 minute seconds");
+            try {
+                TimeUnit.MINUTES.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-            for (int i = 10; i >= 0; i--) {
+/*            for (int i = 10; i >= 0; i--) {
                 Log.e(Constants.LOG.TAG, "Updating stats in " + i + " seconds");
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
         }
         Log.e(Constants.LOG.TAG, "Scheduling finished!");
     }
