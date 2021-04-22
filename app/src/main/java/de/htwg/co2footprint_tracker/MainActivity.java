@@ -239,8 +239,8 @@ public class MainActivity extends AppCompatActivity {
         }
         Collections.sort(packageList);
 
-        final TextView dataUsage = (TextView) findViewById(R.id.data_usage_value);
-        final TextView co2equivalent = (TextView) findViewById(R.id.co2_equivalent_value);
+        final TextView dataUsage = findViewById(R.id.data_usage_value);
+        final TextView co2equivalent = findViewById(R.id.co2_equivalent_value);
 
         co2equivalent.setText(String.valueOf(totalEnergyConsumption) + " g");
         dataUsage.setText(humanReadableByteCountSI(totalReceivedBytes));

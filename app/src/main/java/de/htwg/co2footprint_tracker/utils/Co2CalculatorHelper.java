@@ -7,6 +7,7 @@ public class Co2CalculatorHelper {
     private static final double AVERAGE_CONSUMPTION_ACCESS_NETWORK_AND_CPE = 52;
     private static final double AVERAGE_ENGERY_INTESITY_OF_LONG_HAUL_AND_METRO = 0.052;
     private static final double ELECTRICITY_CONSUMPTION_BY_DATACENTERS = 0.072;
+    private static final double KHW_TO_CO2_CONVERSION_VALUE = 515.46;
 
 
     /**
@@ -31,7 +32,7 @@ public class Co2CalculatorHelper {
      * @return energy consumption in kWh
      */
     public double calculateTotalEnergyConsumption(double time, long bytes) {
-        return calculateTotalEnergyConsumption(time, bytesToGb(bytes));
+        return calculateTotalEnergyConsumption(time, bytesToGb(bytes)) * KHW_TO_CO2_CONVERSION_VALUE;
     }
 
     public double calculateSmartphoneEnergyConsumption(double time) {
