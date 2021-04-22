@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
         long totalReceivedBytes = 0;
-        long totalEnergyConsumption = 0;
+        double totalEnergyConsumption = 0;
 
         for (Package packet : packageList) {
             Cursor cursor = databaseHelper.getTotalsForPackage(packet.getPackageUid());
@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                 packet.setReceivedPacketsMobile(cursor.getLong(4));
                 packet.setReceivedPacketsTotal(cursor.getLong(5));
 
-                long energyConsumption = cursor.getLong(6);
+                double energyConsumption = cursor.getLong(6);
                 totalEnergyConsumption += energyConsumption;
                 packet.setEnergyConsumption(energyConsumption);
             }
