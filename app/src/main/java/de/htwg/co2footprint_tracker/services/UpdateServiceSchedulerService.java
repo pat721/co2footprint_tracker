@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.helpers.Constants;
+import de.htwg.co2footprint_tracker.model.Package;
 
 public class UpdateServiceSchedulerService extends Service implements Runnable {
 
@@ -27,31 +27,44 @@ public class UpdateServiceSchedulerService extends Service implements Runnable {
     private ArrayList<Package> packageList;
     private boolean testIsRunning;
 
+    private static int getPackageUid(Context context, String packageName) {
+        /*
+        uid
+        The kernel user-ID that has been assigned to this application;
+        currently this is not a unique ID (multiple applications can have the same uid).
+         */
+        PackageManager packageManager = context.getPackageManager();
+        int uid = -1;
+        try {
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA);
+            uid = packageInfo.applicationInfo.uid;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        return uid;
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-            Log.e(Constants.LOG.TAG, "UpdateServiceSchedulerService: onStartCommand");
-            context = getApplicationContext();
-            packageList = getPackagesData();
-            testIsRunning = true;
-            new Thread(this).start();
-            Log.e(Constants.LOG.TAG, "thread was started, onStartCommand finished");
+        Log.e(Constants.LOG.TAG, "UpdateServiceSchedulerService: onStartCommand");
+        context = getApplicationContext();
+        packageList = getPackagesData();
+        testIsRunning = true;
+        new Thread(this).start();
+        Log.e(Constants.LOG.TAG, "thread was started, onStartCommand finished");
 
-            return START_STICKY;
+        return START_STICKY;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
     }
-
-
+    
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
-
 
     @Override
     public void onDestroy() {
@@ -147,7 +160,7 @@ public class UpdateServiceSchedulerService extends Service implements Runnable {
             if (packet.getDuplicateUids() && usedDuplicatedIds.contains(packet.getPackageUid())) {
                 continue;
             }
-            if(packet.getDuplicateUids()){
+            if (packet.getDuplicateUids()) {
                 packet.setName("SystemApp" + packet.getPackageUid());
                 packet.setPackageName("internal.uid." + packet.getPackageUid());
             }
@@ -156,24 +169,6 @@ public class UpdateServiceSchedulerService extends Service implements Runnable {
         }
         return packageListForReturn;
     }
-
-    private static int getPackageUid(Context context, String packageName) {
-        /*
-        uid
-        The kernel user-ID that has been assigned to this application;
-        currently this is not a unique ID (multiple applications can have the same uid).
-         */
-        PackageManager packageManager = context.getPackageManager();
-        int uid = -1;
-        try {
-            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA);
-            uid = packageInfo.applicationInfo.uid;
-        } catch (PackageManager.NameNotFoundException e) {
-        }
-        return uid;
-    }
-
-
 
 
 }

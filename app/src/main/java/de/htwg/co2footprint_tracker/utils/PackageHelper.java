@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,17 +17,11 @@ public class PackageHelper {
     public static ArrayList<Package> getPackagesData(Context context) {
 
         ArrayList<Package> packageList;
-
-        Log.e(Constants.LOG.TAG, "In package data");
-
         PackageManager packageManager = context.getPackageManager();
         List<PackageInfo> packageInfoList = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
         packageList = new ArrayList<>(packageInfoList.size());
         for (PackageInfo packageInfo : packageInfoList) {
             Package packageItem = new Package();
-
-            Log.e(Constants.LOG.TAG, "Package name: " + packageInfo.packageName);
-
             packageItem.setVersion(packageInfo.versionName);
             packageItem.setPackageName(packageInfo.packageName);
             packageItem.setPackageUid(getPackageUid(context, packageInfo.packageName));
