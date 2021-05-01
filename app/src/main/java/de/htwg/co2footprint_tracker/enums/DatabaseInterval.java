@@ -1,4 +1,4 @@
-package de.htwg.co2footprint_tracker.model;
+package de.htwg.co2footprint_tracker.enums;
 
 public enum DatabaseInterval {
     MINUTE,

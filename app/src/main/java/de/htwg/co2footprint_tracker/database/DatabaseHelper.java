@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import de.htwg.co2footprint_tracker.model.DatabaseInterval;
+import de.htwg.co2footprint_tracker.enums.DatabaseInterval;
 import de.htwg.co2footprint_tracker.model.Package;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -38,6 +38,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TRANSMITTED_PACKETS_MOBILE = "transmitted_packets_mobile";
     private static final String TRANSMITTED_PACKETS_TOTAL = "transmitted_packets_total";
     private static final String ENERGY_CONSUMPTION = "energy_consumption";
+    private static final String CONNECTION_TYPE = "connection_type";
+
     private static DatabaseHelper databaseHelperInstance = null;
 
     private DatabaseHelper(Context context) {
@@ -49,57 +51,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             databaseHelperInstance = new DatabaseHelper(ctx.getApplicationContext());
         }
         return databaseHelperInstance;
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        createTableFor(TABLE_NAME_DATA_PER_MINUTE_TABLE, db);
-        createTableFor(TABLE_NAME_DATA_PER_HOUR_TABLE, db);
-        createTableFor(TABLE_NAME_DATA_PER_DAY_TABLE, db);
-        createTableFor(TABLE_NAME_DATA_PER_WEEK_TABLE, db);
-        createTableFor(TABLE_NAME_DATA_PER_MONTH_TABLE, db);
-    }
-
-    private void createTableFor(String tableName, SQLiteDatabase db) {
-        String createTable = "CREATE TABLE IF NOT EXISTS " + tableName +
-                " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                NAME + " TEXT" + "," +
-                TIMESTAMP + " INTEGER" + "," +
-                VERSION + " TEXT" + "," +
-                PACKAGE_NAME + " TEXT" + "," +
-                PACKAGE_UID + " TEXT" + "," +
-                DUPLICATE_UIDS + " TEXT" + "," +
-                RECEIVED_BYTES_WIFI + " TEXT" + "," +
-                RECEIVED_BYTES_MOBILE + " TEXT" + "," +
-                RECEIVED_BYTES_TOTAL + " TEXT" + "," +
-                TRANSMITTED_BYTES_WIFI + " TEXT" + "," +
-                TRANSMITTED_BYTES_MOBILE + " TEXT" + "," +
-                TRANSMITTED_BYTES_TOTAL + " TEXT" + "," +
-                RECEIVED_PACKETS_WIFI + " TEXT" + "," +
-                RECEIVED_PACKETS_MOBILE + " TEXT" + "," +
-                RECEIVED_PACKETS_TOTAL + " TEXT" + "," +
-                TRANSMITTED_PACKETS_WIFI + " TEXT" + "," +
-                TRANSMITTED_PACKETS_MOBILE + " TEXT" + "," +
-                TRANSMITTED_PACKETS_TOTAL + " TEXT" + "," +
-                ENERGY_CONSUMPTION + " REAL" +
-                ")";
-        db.execSQL(createTable);
-    }
-
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        dropTable(db, TABLE_NAME_DATA_PER_MINUTE_TABLE);
-        dropTable(db, TABLE_NAME_DATA_PER_HOUR_TABLE);
-        dropTable(db, TABLE_NAME_DATA_PER_DAY_TABLE);
-        dropTable(db, TABLE_NAME_DATA_PER_WEEK_TABLE);
-        dropTable(db, TABLE_NAME_DATA_PER_MONTH_TABLE);
-        onCreate(db);
-    }
-
-    private void dropTable(SQLiteDatabase db, String tableName) {
-        db.execSQL("DROP IF TABLE EXISTS " + tableName);
-        Log.d(TAG, "dropTable: Dropping " + tableName);
     }
 
 
@@ -142,6 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(TRANSMITTED_PACKETS_MOBILE, packageModel.getTransmittedPacketsMobile());
         contentValues.put(TRANSMITTED_PACKETS_TOTAL, packageModel.getTransmittedPacketsTotal());
         contentValues.put(ENERGY_CONSUMPTION, packageModel.getEnergyConsumption());
+        contentValues.put(CONNECTION_TYPE, packageModel.getConnectionType().toString());
 
         Log.d(TAG, "addData: Adding " + packageModel.getPackageName() + " to " + affectedTable);
 
@@ -149,6 +101,56 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         //if date as inserted incorrectly it will return -1
         return result != -1;
+    }
+
+    private void createTables(SQLiteDatabase db) {
+        createTableFor(TABLE_NAME_DATA_PER_MINUTE_TABLE, db);
+        createTableFor(TABLE_NAME_DATA_PER_HOUR_TABLE, db);
+        createTableFor(TABLE_NAME_DATA_PER_DAY_TABLE, db);
+        createTableFor(TABLE_NAME_DATA_PER_WEEK_TABLE, db);
+        createTableFor(TABLE_NAME_DATA_PER_MONTH_TABLE, db);
+    }
+
+    private void createTableFor(String tableName, SQLiteDatabase db) {
+        String createTable = "CREATE TABLE IF NOT EXISTS " + tableName +
+                " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                NAME + " TEXT" + "," +
+                TIMESTAMP + " INTEGER" + "," +
+                VERSION + " TEXT" + "," +
+                PACKAGE_NAME + " TEXT" + "," +
+                PACKAGE_UID + " TEXT" + "," +
+                DUPLICATE_UIDS + " TEXT" + "," +
+                RECEIVED_BYTES_WIFI + " TEXT" + "," +
+                RECEIVED_BYTES_MOBILE + " TEXT" + "," +
+                RECEIVED_BYTES_TOTAL + " TEXT" + "," +
+                TRANSMITTED_BYTES_WIFI + " TEXT" + "," +
+                TRANSMITTED_BYTES_MOBILE + " TEXT" + "," +
+                TRANSMITTED_BYTES_TOTAL + " TEXT" + "," +
+                RECEIVED_PACKETS_WIFI + " TEXT" + "," +
+                RECEIVED_PACKETS_MOBILE + " TEXT" + "," +
+                RECEIVED_PACKETS_TOTAL + " TEXT" + "," +
+                TRANSMITTED_PACKETS_WIFI + " TEXT" + "," +
+                TRANSMITTED_PACKETS_MOBILE + " TEXT" + "," +
+                TRANSMITTED_PACKETS_TOTAL + " TEXT" + "," +
+                ENERGY_CONSUMPTION + " REAL" + "," +
+                CONNECTION_TYPE + " TEXT" +
+                ")";
+        db.execSQL(createTable);
+    }
+
+
+
+    private void dropTables(SQLiteDatabase db) {
+        dropTable(db, TABLE_NAME_DATA_PER_MINUTE_TABLE);
+        dropTable(db, TABLE_NAME_DATA_PER_HOUR_TABLE);
+        dropTable(db, TABLE_NAME_DATA_PER_DAY_TABLE);
+        dropTable(db, TABLE_NAME_DATA_PER_WEEK_TABLE);
+        dropTable(db, TABLE_NAME_DATA_PER_MONTH_TABLE);
+    }
+
+    private void dropTable(SQLiteDatabase db, String tableName) {
+        db.execSQL("DROP IF TABLE EXISTS " + tableName);
+        Log.d(TAG, "dropTable: Dropping " + tableName);
     }
 
     public void clearDb() {
@@ -160,6 +162,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_NAME_DATA_PER_MONTH_TABLE);
         db.execSQL("VACUUM");
         Log.d(TAG, "db " + DATABASE_FILE_NAME + " cleared");
+    }
+
+    public void purgeDB() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        clearDb();
+        onUpgrade(db, db.getVersion(), db.getVersion() + 1);
     }
 
 
@@ -203,7 +211,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public double getTotalEnergyConsumptionFor(int packageUid) {
+    public double getTotalEnergyConsumptionForPackage(int packageUid) {
         String query = "SELECT SUM(" + ENERGY_CONSUMPTION + ") as " + ENERGY_CONSUMPTION +
                 " FROM " + TABLE_NAME_DATA_PER_MINUTE_TABLE + " WHERE " + PACKAGE_UID + " = " + packageUid + "";
 
@@ -215,7 +223,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public long getTotalReceivedBytesFor(int packageUid) {
+    public long getTotalReceivedBytesForPackage(int packageUid) {
         String query = "SELECT SUM(" + RECEIVED_BYTES_TOTAL + ") as total_bytes FROM " + TABLE_NAME_DATA_PER_MINUTE_TABLE + " WHERE " + PACKAGE_UID + " = " + packageUid + "";
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -227,6 +235,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             bytes = data.getLong(0);
         }
         return bytes;
+    }
+
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        createTables(db);
+    }
+
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        dropTables(db);
+        onCreate(db);
     }
 
 

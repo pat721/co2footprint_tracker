@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             InitialBucketContainer.setNewRun(true);
             InitialBucketContainer.clearMappedPackageData();
         } else if (id == R.id.menu_purge_db) {
-            DatabaseHelper.getInstance(this).clearDb();
+            DatabaseHelper.getInstance(this).purgeDB();
             Toast.makeText(this, "clearing database", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
@@ -153,8 +153,8 @@ public class MainActivity extends AppCompatActivity {
         double totalEnergyConsumption = 0;
 
         for (Integer uid : applicationUidSet) {
-            totalReceivedBytes += databaseHelper.getTotalReceivedBytesFor(uid);
-            totalEnergyConsumption += databaseHelper.getTotalEnergyConsumptionFor(uid);
+            totalReceivedBytes += databaseHelper.getTotalReceivedBytesForPackage(uid);
+            totalEnergyConsumption += databaseHelper.getTotalEnergyConsumptionForPackage(uid);
         }
 
         final TextView dataUsage = findViewById(R.id.data_usage_value);

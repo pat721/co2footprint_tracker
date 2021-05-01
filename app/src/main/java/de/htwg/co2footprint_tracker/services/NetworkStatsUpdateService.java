@@ -15,7 +15,8 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
-import de.htwg.co2footprint_tracker.model.DatabaseInterval;
+import de.htwg.co2footprint_tracker.enums.DatabaseInterval;
+import de.htwg.co2footprint_tracker.helpers.ConnectionHelper;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.utils.Co2CalculationUtils;
@@ -172,6 +173,7 @@ public class NetworkStatsUpdateService extends IntentService {
                     packageList.get(i).setTransmittedPacketsWifi(txPacketsWifi);
                     packageList.get(i).setTransmittedPacketsMobile(txPacketsMobile);
                     packageList.get(i).setTransmittedPacketsTotal(txPacketsTotal);
+                    packageList.get(i).setConnectionType(new ConnectionHelper().getGetConnectionType());
                 }
                 saveToDatabase(getApplicationContext(), timeOnUpdate, packageList);
             }

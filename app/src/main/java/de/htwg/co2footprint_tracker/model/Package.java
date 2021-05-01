@@ -5,7 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import java.sql.Timestamp;
+import de.htwg.co2footprint_tracker.enums.ConnectionType;
+
 
 /**
  * Created by darry on 31/01/2018.
@@ -31,6 +32,8 @@ public class Package implements Parcelable, Comparable {
     private long transmittedPacketsTotal;
     private long timestamp;
     private double energyConsumption;
+
+    private ConnectionType connectionType; //eg. wifi, 4g, 3g... see ConnectionType Enum
 
 
     protected Package(Parcel in) {
@@ -146,6 +149,15 @@ public class Package implements Parcelable, Comparable {
     public void setEnergyConsumption(double energyConsumption) {
         this.energyConsumption = energyConsumption;
     }
+
+    public ConnectionType getConnectionType() {
+        return connectionType;
+    }
+
+    public void setConnectionType(ConnectionType connectionType) {
+        this.connectionType = connectionType;
+    }
+
 
     @Override
     public int compareTo(@NonNull Object comparePackage) {
