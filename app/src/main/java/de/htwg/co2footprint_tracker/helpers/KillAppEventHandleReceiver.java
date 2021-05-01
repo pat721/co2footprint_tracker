@@ -1,4 +1,4 @@
-package de.htwg.co2footprint_tracker.utils;
+package de.htwg.co2footprint_tracker.helpers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

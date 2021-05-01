@@ -18,9 +18,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import de.htwg.co2footprint_tracker.NetworkStatsUpdateService;
 import de.htwg.co2footprint_tracker.model.Package;
-import de.htwg.co2footprint_tracker.utils.Constants;
+import de.htwg.co2footprint_tracker.helpers.Constants;
 
 public class UpdateServiceSchedulerService extends Service implements Runnable {
 

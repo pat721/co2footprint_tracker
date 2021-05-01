@@ -1,4 +1,4 @@
-package de.htwg.co2footprint_tracker;
+package de.htwg.co2footprint_tracker.services;
 
 import android.annotation.SuppressLint;
 import android.app.IntentService;
@@ -18,9 +18,9 @@ import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.model.DatabaseInterval;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
-import de.htwg.co2footprint_tracker.utils.Co2CalculatorHelper;
-import de.htwg.co2footprint_tracker.utils.Constants;
-import de.htwg.co2footprint_tracker.utils.TimingHelper;
+import de.htwg.co2footprint_tracker.helpers.Co2CalculatorHelper;
+import de.htwg.co2footprint_tracker.helpers.Constants;
+import de.htwg.co2footprint_tracker.helpers.TimingHelper;
 
 public class NetworkStatsUpdateService extends IntentService {
 
@@ -180,7 +180,7 @@ public class NetworkStatsUpdateService extends IntentService {
 
 
     private void saveToDatabase(Context context, long timeStamp, ArrayList<Package> packageList) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context);
         for (Package packet : packageList) {
             if (packetHasChanges(packet)) {
 

@@ -27,27 +27,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
+import de.htwg.co2footprint_tracker.helpers.Constants;
+import de.htwg.co2footprint_tracker.helpers.TimingHelper;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.services.UpdateServiceSchedulerService;
-import de.htwg.co2footprint_tracker.utils.Constants;
-import de.htwg.co2footprint_tracker.utils.TimingHelper;
 
+import static de.htwg.co2footprint_tracker.helpers.StringUtils.humanReadableByteCountSI;
+import static de.htwg.co2footprint_tracker.helpers.TimingHelper.getTestDurationInMins;
 import static de.htwg.co2footprint_tracker.utils.PackageHelper.getPackagesData;
-import static de.htwg.co2footprint_tracker.utils.StringUtils.humanReadableByteCountSI;
-import static de.htwg.co2footprint_tracker.utils.TimingHelper.getTestDurationInMins;
 
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Package> packageList;
-    private ProgressDialog statsUpdateDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.data);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -65,10 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-        statsUpdateDialog = new ProgressDialog(this);
-        packageList = getPackagesData(getApplicationContext());
+        packageList = getPackagesData(this);
         updateUi();
     }
 
@@ -76,10 +70,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
     }
-
-
-    //////////////////////////////////////////////////////////////////////////////////////////
-    //TODO alles was unterhalb ist in eigene utils auslagern
 
     @Override
     @TargetApi(Build.VERSION_CODES.M)
@@ -105,10 +95,7 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.menu_request_permissions) {
-            requestPermissions();
-            return true;
-        } else if (id == R.id.menu_start_test) {
+        if (id == R.id.menu_start_test) {
             if (TimingHelper.getIsTestRunning(this)) {
                 Toast.makeText(this, "Test is already running.  Please stop current test first", Toast.LENGTH_LONG).show();
             } else {
@@ -132,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
                 long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
                 if (testDurationInMins <= Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME)
                     Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
-                //UpdateNetworkStats("Updating network stats so far during test (UI only)\nTest duration: " + testDurationInMins + "mins", false);
             }
             return true;
         } else if (id == R.id.menu_stop_test) {
@@ -145,38 +131,20 @@ public class MainActivity extends AppCompatActivity {
                 if (testDurationInMins < Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME) {
                     Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
                 }
-                //UpdateNetworkStats("Gathering network stats at the end of the test\nTest duration: " + testDurationInMins + "mins", true);
             }
             InitialBucketContainer.setNewRun(true);
             InitialBucketContainer.clearMappedPackageData();
         } else if (id == R.id.menu_purge_db) {
-            new DatabaseHelper(this).clearDb();
+            DatabaseHelper.getInstance(this).clearDb();
             Toast.makeText(this, "clearing database", Toast.LENGTH_LONG).show();
         }
-
         return super.onOptionsItemSelected(item);
-    }
-
-    private void UpdateNetworkStats(String messageToUser, Boolean saveStatsToFile) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            statsUpdateDialog.setMessage(messageToUser);
-            statsUpdateDialog.setTitle("Retrieving network stats");
-            statsUpdateDialog.setIndeterminate(false);
-            statsUpdateDialog.setCancelable(true);
-            statsUpdateDialog.show();
-
-            Intent updateStatsIntent = new Intent(MainActivity.this, NetworkStatsUpdateService.class);
-            updateStatsIntent.putParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST, packageList);
-            updateStatsIntent.putExtra(Constants.PARAMS.SAVE_STATS_TO_FILE, saveStatsToFile);
-            updateStatsIntent.setAction(Constants.ACTION.ACTION_UPDATE_STATS);
-            startService(updateStatsIntent);
-        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void updateUi() {
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
 
         long totalReceivedBytes = 0;
         double totalEnergyConsumption = 0;
@@ -195,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                 packet.setReceivedPacketsMobile(cursor.getLong(4));
                 packet.setReceivedPacketsTotal(cursor.getLong(5));
 
-                double energyConsumption = cursor.getLong(6);
+                double energyConsumption = cursor.getDouble(6);
                 totalEnergyConsumption += energyConsumption;
                 packet.setEnergyConsumption(energyConsumption);
             }
@@ -205,12 +173,11 @@ public class MainActivity extends AppCompatActivity {
         final TextView dataUsage = findViewById(R.id.data_usage_value);
         final TextView co2equivalent = findViewById(R.id.co2_equivalent_value);
 
-        co2equivalent.setText(String.valueOf(totalEnergyConsumption) + " g");
+        co2equivalent.setText(totalEnergyConsumption + " g");
         dataUsage.setText(humanReadableByteCountSI(totalReceivedBytes));
-
-        statsUpdateDialog.dismiss();
     }
 
+    //////////////////////////////////// Permissions ////////////////////////////////////////////
 
     private void requestPermissions() {
         if (!hasPermissionToReadNetworkHistory()) {
@@ -226,8 +193,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean hasPermissionToReadPhoneStats() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED) {
             return false;
         } else {
             return true;
@@ -235,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestPhoneStateStats() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},
                 Constants.PERMISSION.PERMISSION_REQUEST);
     }
 
@@ -251,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
         }
         Toast.makeText(this, "Usage Stats permission is required", Toast.LENGTH_LONG).show();
         appOps.startWatchingMode(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                getApplicationContext().getPackageName(),
+                getPackageName(),
                 new AppOpsManager.OnOpChangedListener() {
                     @Override
                     @TargetApi(Build.VERSION_CODES.M)
@@ -267,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                             intent.putExtras(getIntent().getExtras());
                         }
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        getApplicationContext().startActivity(intent);
+                        startActivity(intent);
                     }
                 });
         requestReadNetworkHistoryAccess();

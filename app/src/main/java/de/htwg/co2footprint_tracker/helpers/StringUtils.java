@@ -1,4 +1,4 @@
-package de.htwg.co2footprint_tracker.utils;
+package de.htwg.co2footprint_tracker.helpers;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;

@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="de.htwg.co2footprint_tracker">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
@@ -32,7 +31,7 @@
         </activity>
 
         <service
-            android:name=".NetworkStatsUpdateService"
+            android:name=".services.NetworkStatsUpdateService"
             android:enabled="true" />
         <service
             android:name=".services.UpdateServiceSchedulerService"

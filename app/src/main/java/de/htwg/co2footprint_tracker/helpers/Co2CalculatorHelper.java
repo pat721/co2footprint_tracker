@@ -1,4 +1,4 @@
-package de.htwg.co2footprint_tracker.utils;
+package de.htwg.co2footprint_tracker.helpers;
 
 public class Co2CalculatorHelper {
 

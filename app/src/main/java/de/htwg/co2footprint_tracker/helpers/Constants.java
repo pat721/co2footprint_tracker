@@ -1,4 +1,4 @@
-package de.htwg.co2footprint_tracker.utils;
+package de.htwg.co2footprint_tracker.helpers;
 
 /**
  * Created by darry on 01/02/2018.

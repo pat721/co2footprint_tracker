@@ -7,12 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.sql.Timestamp;
-
 import de.htwg.co2footprint_tracker.model.DatabaseInterval;
 import de.htwg.co2footprint_tracker.model.Package;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+
+    private static DatabaseHelper databaseHelperInstance = null;
 
     private static final String TAG = "DatabaseHelper";
     private static final String DATABASE_FILE_NAME = "footprint_tracker_db";
@@ -44,7 +44,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TRANSMITTED_PACKETS_TOTAL = "transmitted_packets_total";
     private static final String ENERGY_CONSUMPTION = "energy_consumption";
 
-    public DatabaseHelper(Context context) {
+    public static DatabaseHelper getInstance(Context ctx) {
+        if (databaseHelperInstance == null) {
+            databaseHelperInstance = new DatabaseHelper(ctx.getApplicationContext());
+        }
+        return databaseHelperInstance;
+    }
+
+    private DatabaseHelper(Context context) {
         super(context, DATABASE_FILE_NAME, null, 1);
     }
 
