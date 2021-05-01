@@ -204,15 +204,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public double getTotalEnergyConsumptionFor(int packageUid) {
-        String query = "SELECT" +
-                " , SUM(" + ENERGY_CONSUMPTION + ") as " + ENERGY_CONSUMPTION +
+        String query = "SELECT SUM(" + ENERGY_CONSUMPTION + ") as " + ENERGY_CONSUMPTION +
                 " FROM " + TABLE_NAME_DATA_PER_MINUTE_TABLE + " WHERE " + PACKAGE_UID + " = " + packageUid + "";
-       
+
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        
+
         cursor.moveToFirst();
-        return cursor.getDouble(0); //assuming cursor is not null
+        return cursor.getDouble(0);
     }
 
 

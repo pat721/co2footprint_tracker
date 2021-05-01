@@ -14,6 +14,18 @@ import de.htwg.co2footprint_tracker.model.Package;
 
 public class PackageHelper {
 
+    public static HashSet<Integer> getApplicationUids(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        List<PackageInfo> packageInfoList = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
+
+        HashSet<Integer> uids = new HashSet<>();
+        for (PackageInfo packageInfo : packageInfoList) {
+            uids.add(getPackageUid(context, packageInfo.packageName));
+        }
+        return uids;
+    }
+
+
     // TODO: Refactor naming and co
     public static ArrayList<Package> getPackagesData(Context context) {
         ArrayList<Package> packageList;

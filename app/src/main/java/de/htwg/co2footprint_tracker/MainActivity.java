@@ -21,22 +21,21 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
+import de.htwg.co2footprint_tracker.helpers.PackageHelper;
 import de.htwg.co2footprint_tracker.helpers.TimingHelper;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
-import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.services.UpdateServiceSchedulerService;
 import de.htwg.co2footprint_tracker.utils.Constants;
 
-import static de.htwg.co2footprint_tracker.helpers.PackageHelper.getPackagesData;
 import static de.htwg.co2footprint_tracker.helpers.TimingHelper.getTestDurationInMins;
 import static de.htwg.co2footprint_tracker.utils.StringUtils.humanReadableByteCountSI;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<Package> packageList;
+    private HashSet<Integer> applicationUidSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        packageList = getPackagesData(this);
+        applicationUidSet = PackageHelper.getApplicationUids(this);
         updateUi();
     }
 
@@ -139,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Started test at " + TimingHelper.getStartTimeForUI(this), Toast.LENGTH_LONG).show();
         Log.e(Constants.LOG.TAG, "creating intent....");
         Intent updateSchedulerIntent = new Intent(this, UpdateServiceSchedulerService.class);
-        updateSchedulerIntent.putExtra(Constants.PARAMS.PACKAGE_LIST, packageList);
         updateSchedulerIntent.setAction(Constants.ACTION.UPDATE_SERVICE_SCHEDULER_STARTED);
         Log.e(Constants.LOG.TAG, "intent created, starting service...");
         startService(updateSchedulerIntent);
@@ -154,9 +152,9 @@ public class MainActivity extends AppCompatActivity {
         long totalReceivedBytes = 0;
         double totalEnergyConsumption = 0;
 
-        for (Package packet : packageList) {
-            totalReceivedBytes += databaseHelper.getTotalReceivedBytesFor(packet.getPackageUid());
-            totalEnergyConsumption += databaseHelper.getTotalEnergyConsumptionFor(packet.getPackageUid());
+        for (Integer uid : applicationUidSet) {
+            totalReceivedBytes += databaseHelper.getTotalReceivedBytesFor(uid);
+            totalEnergyConsumption += databaseHelper.getTotalEnergyConsumptionFor(uid);
         }
 
         final TextView dataUsage = findViewById(R.id.data_usage_value);
