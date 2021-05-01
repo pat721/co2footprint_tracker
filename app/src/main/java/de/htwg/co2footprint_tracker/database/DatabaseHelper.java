@@ -12,18 +12,13 @@ import de.htwg.co2footprint_tracker.model.Package;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static DatabaseHelper databaseHelperInstance = null;
-
     private static final String TAG = "DatabaseHelper";
     private static final String DATABASE_FILE_NAME = "footprint_tracker_db";
-
     private static final String TABLE_NAME_DATA_PER_MINUTE_TABLE = "data_per_minute";
-    private static final String TABLE_NAME_DATA_PER_FIVE_MINUTES_TABLE = "data_per_five_minutes";
     private static final String TABLE_NAME_DATA_PER_HOUR_TABLE = "data_per_hour";
     private static final String TABLE_NAME_DATA_PER_DAY_TABLE = "data_per_day";
     private static final String TABLE_NAME_DATA_PER_WEEK_TABLE = "data_per_week";
     private static final String TABLE_NAME_DATA_PER_MONTH_TABLE = "data_per_month";
-
     private static final String NAME = "app_name";
     private static final String TIMESTAMP = "starting_time";
     private static final String VERSION = "version";
@@ -43,6 +38,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TRANSMITTED_PACKETS_MOBILE = "transmitted_packets_mobile";
     private static final String TRANSMITTED_PACKETS_TOTAL = "transmitted_packets_total";
     private static final String ENERGY_CONSUMPTION = "energy_consumption";
+    private static DatabaseHelper databaseHelperInstance = null;
+
+    private DatabaseHelper(Context context) {
+        super(context, DATABASE_FILE_NAME, null, 1);
+    }
 
     public static DatabaseHelper getInstance(Context ctx) {
         if (databaseHelperInstance == null) {
@@ -51,14 +51,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return databaseHelperInstance;
     }
 
-    private DatabaseHelper(Context context) {
-        super(context, DATABASE_FILE_NAME, null, 1);
-    }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         createTableFor(TABLE_NAME_DATA_PER_MINUTE_TABLE, db);
-        createTableFor(TABLE_NAME_DATA_PER_FIVE_MINUTES_TABLE, db);
         createTableFor(TABLE_NAME_DATA_PER_HOUR_TABLE, db);
         createTableFor(TABLE_NAME_DATA_PER_DAY_TABLE, db);
         createTableFor(TABLE_NAME_DATA_PER_WEEK_TABLE, db);
@@ -95,7 +90,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         dropTable(db, TABLE_NAME_DATA_PER_MINUTE_TABLE);
-        dropTable(db, TABLE_NAME_DATA_PER_FIVE_MINUTES_TABLE);
         dropTable(db, TABLE_NAME_DATA_PER_HOUR_TABLE);
         dropTable(db, TABLE_NAME_DATA_PER_DAY_TABLE);
         dropTable(db, TABLE_NAME_DATA_PER_WEEK_TABLE);
@@ -116,8 +110,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String affectedTable = "";
         if (databaseInterval == DatabaseInterval.MINUTE) {
             affectedTable = TABLE_NAME_DATA_PER_MINUTE_TABLE;
-        } else if (databaseInterval == DatabaseInterval.FIVE_MINUTES) {
-            affectedTable = TABLE_NAME_DATA_PER_FIVE_MINUTES_TABLE;
         } else if (databaseInterval == DatabaseInterval.HOUR) {
             affectedTable = TABLE_NAME_DATA_PER_HOUR_TABLE;
         } else if (databaseInterval == DatabaseInterval.DAY) {
@@ -162,7 +154,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void clearDb() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_NAME_DATA_PER_MINUTE_TABLE);
-        db.execSQL("DELETE FROM " + TABLE_NAME_DATA_PER_FIVE_MINUTES_TABLE);
         db.execSQL("DELETE FROM " + TABLE_NAME_DATA_PER_HOUR_TABLE);
         db.execSQL("DELETE FROM " + TABLE_NAME_DATA_PER_DAY_TABLE);
         db.execSQL("DELETE FROM " + TABLE_NAME_DATA_PER_WEEK_TABLE);
@@ -174,11 +165,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getData(DatabaseInterval databaseInterval) {
 
-        String requestedTable = "";
+        String requestedTable;
         if (databaseInterval == DatabaseInterval.MINUTE) {
             requestedTable = TABLE_NAME_DATA_PER_MINUTE_TABLE;
-        } else if (databaseInterval == DatabaseInterval.FIVE_MINUTES) {
-            requestedTable = TABLE_NAME_DATA_PER_FIVE_MINUTES_TABLE;
         } else if (databaseInterval == DatabaseInterval.HOUR) {
             requestedTable = TABLE_NAME_DATA_PER_HOUR_TABLE;
         } else if (databaseInterval == DatabaseInterval.DAY) {
@@ -207,7 +196,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 " FROM " + TABLE_NAME_DATA_PER_MINUTE_TABLE + " WHERE " + PACKAGE_UID + " = " + packageUid + "";
 
-        //TODO: sum for energyconsumtion ist falsch
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
@@ -215,13 +203,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public Cursor getAppIds() {
-        String query = "SELECT DISTINCT " + PACKAGE_UID + " FROM " + TABLE_NAME_DATA_PER_MINUTE_TABLE;
-
+    public double getTotalEnergyConsumptionFor(int packageUid) {
+        String query = "SELECT" +
+                " , SUM(" + ENERGY_CONSUMPTION + ") as " + ENERGY_CONSUMPTION +
+                " FROM " + TABLE_NAME_DATA_PER_MINUTE_TABLE + " WHERE " + PACKAGE_UID + " = " + packageUid + "";
+       
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-
-        return cursor;
+        
+        cursor.moveToFirst();
+        return cursor.getDouble(0); //assuming cursor is not null
     }
 
 

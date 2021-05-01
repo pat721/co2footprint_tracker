@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import java.util.concurrent.TimeUnit;
 
+import de.htwg.co2footprint_tracker.utils.Constants;
+
 // TODO: Raphi -> mit SystemService lösen
 public class KillAppEventHandleReceiver extends BroadcastReceiver {
     @Override

@@ -18,8 +18,8 @@ import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.model.DatabaseInterval;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
-import de.htwg.co2footprint_tracker.helpers.Co2CalculatorHelper;
-import de.htwg.co2footprint_tracker.helpers.Constants;
+import de.htwg.co2footprint_tracker.utils.Co2CalculationUtils;
+import de.htwg.co2footprint_tracker.utils.Constants;
 import de.htwg.co2footprint_tracker.helpers.TimingHelper;
 
 public class NetworkStatsUpdateService extends IntentService {
@@ -185,7 +185,7 @@ public class NetworkStatsUpdateService extends IntentService {
             if (packetHasChanges(packet)) {
 
                 long totalBytes = packet.getReceivedBytesTotal() + packet.getTransmittedBytesTotal();
-                packet.setEnergyConsumption(new Co2CalculatorHelper().calculateTotalEnergyConsumption(1, totalBytes));
+                packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, totalBytes));
                 packet.setTimestamp(timeStamp);
                 databaseHelper.addData(DatabaseInterval.MINUTE, packet);
             }

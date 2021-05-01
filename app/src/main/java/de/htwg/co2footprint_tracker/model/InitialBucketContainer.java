@@ -17,14 +17,12 @@ public class InitialBucketContainer {
     private static boolean newRun = true;
     private static HashMap<String, Long> mappedPackageData = new HashMap<>();
 
-
     //debugging only------
 
     public static HashMap<String, Long> getOurMap() {
         return mappedPackageData;
     }
     //debugging only------
-
 
     public static void putInitialTransmittedWifiData(int uid, long bytes) {
         if (mappedPackageData.containsKey(DATA_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid)) {
@@ -37,13 +35,12 @@ public class InitialBucketContainer {
     }
 
     public static long getInitialTransmittedWifiData(int uid) {
-        if(mappedPackageData.containsKey(DATA_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid)){
+        if (mappedPackageData.containsKey(DATA_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid)) {
             return mappedPackageData.get(DATA_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid);
-        } else{
+        } else {
             return 0;
         }
     }
-
 
     public static void putInitialReceivedWifiData(int uid, long bytes) {
         if (mappedPackageData.containsKey(DATA_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid)) {
@@ -56,9 +53,9 @@ public class InitialBucketContainer {
     }
 
     public static long getInitialReceivedWifiData(int uid) {
-        if(mappedPackageData.containsKey(DATA_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid)){
+        if (mappedPackageData.containsKey(DATA_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid)) {
             return mappedPackageData.get(DATA_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid);
-        } else{
+        } else {
             return 0;
         }
     }
@@ -74,9 +71,9 @@ public class InitialBucketContainer {
     }
 
     public static long getInitialTransmittedWifiPacket(int uid) {
-        if(mappedPackageData.containsKey(PACKET_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid)){
+        if (mappedPackageData.containsKey(PACKET_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid)) {
             return mappedPackageData.get(PACKET_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid);
-        } else{
+        } else {
             return 0;
         }
     }
@@ -92,9 +89,9 @@ public class InitialBucketContainer {
     }
 
     public static long getInitialReceivedWifiPacket(int uid) {
-        if(mappedPackageData.containsKey(PACKET_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid)){
+        if (mappedPackageData.containsKey(PACKET_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid)) {
             return mappedPackageData.get(PACKET_PREFIX + WIFI_PREFIX + RECEIVED_PREFIX + uid);
-        } else{
+        } else {
             return 0;
         }
     }
@@ -111,9 +108,9 @@ public class InitialBucketContainer {
     }
 
     public static long getInitialTransmittedMobileData(int uid) {
-        if(mappedPackageData.containsKey(DATA_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid)){
+        if (mappedPackageData.containsKey(DATA_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid)) {
             return mappedPackageData.get(DATA_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid);
-        } else{
+        } else {
             return 0;
         }
     }
@@ -129,9 +126,9 @@ public class InitialBucketContainer {
     }
 
     public static long getInitialReceivedMobileData(int uid) {
-        if(mappedPackageData.containsKey(DATA_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid)){
+        if (mappedPackageData.containsKey(DATA_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid)) {
             return mappedPackageData.get(DATA_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid);
-        } else{
+        } else {
             return 0;
         }
     }
@@ -147,9 +144,9 @@ public class InitialBucketContainer {
     }
 
     public static long getInitialTransmittedMobilePacket(int uid) {
-        if(mappedPackageData.containsKey(PACKET_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid)){
+        if (mappedPackageData.containsKey(PACKET_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid)) {
             return mappedPackageData.get(PACKET_PREFIX + MOBILE_PREFIX + TRANSMITTED_PREFIX + uid);
-        } else{
+        } else {
             return 0;
         }
     }
@@ -165,14 +162,14 @@ public class InitialBucketContainer {
     }
 
     public static long getInitialReceivedMobilePacket(int uid) {
-        if(mappedPackageData.containsKey(PACKET_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid)){
+        if (mappedPackageData.containsKey(PACKET_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid)) {
             return mappedPackageData.get(PACKET_PREFIX + MOBILE_PREFIX + RECEIVED_PREFIX + uid);
-        } else{
+        } else {
             return 0;
         }
     }
 
-    public static void clearMappedPackageData(){
+    public static void clearMappedPackageData() {
         mappedPackageData.clear();
     }
 

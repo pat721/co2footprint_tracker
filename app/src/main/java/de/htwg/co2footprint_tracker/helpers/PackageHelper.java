@@ -1,4 +1,4 @@
-package de.htwg.co2footprint_tracker.utils;
+package de.htwg.co2footprint_tracker.helpers;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -14,8 +14,8 @@ import de.htwg.co2footprint_tracker.model.Package;
 
 public class PackageHelper {
 
+    // TODO: Refactor naming and co
     public static ArrayList<Package> getPackagesData(Context context) {
-
         ArrayList<Package> packageList;
         PackageManager packageManager = context.getPackageManager();
         List<PackageInfo> packageInfoList = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
@@ -26,16 +26,16 @@ public class PackageHelper {
             packageItem.setPackageName(packageInfo.packageName);
             packageItem.setPackageUid(getPackageUid(context, packageInfo.packageName));
             packageList.add(packageItem);
-            ApplicationInfo ai = null;
+            ApplicationInfo applicationInfo = null;
             try {
-                ai = packageManager.getApplicationInfo(packageInfo.packageName, PackageManager.GET_META_DATA);
+                applicationInfo = packageManager.getApplicationInfo(packageInfo.packageName, PackageManager.GET_META_DATA);
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
-            if (ai == null) {
+            if (applicationInfo == null) {
                 continue;
             }
-            CharSequence appName = packageManager.getApplicationLabel(ai);
+            CharSequence appName = packageManager.getApplicationLabel(applicationInfo);
             if (appName != null) {
                 packageItem.setName(appName.toString());
             }

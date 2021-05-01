@@ -3,11 +3,9 @@ package de.htwg.co2footprint_tracker;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AppOpsManager;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -24,18 +22,17 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
-import de.htwg.co2footprint_tracker.helpers.Constants;
 import de.htwg.co2footprint_tracker.helpers.TimingHelper;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.services.UpdateServiceSchedulerService;
+import de.htwg.co2footprint_tracker.utils.Constants;
 
-import static de.htwg.co2footprint_tracker.helpers.StringUtils.humanReadableByteCountSI;
+import static de.htwg.co2footprint_tracker.helpers.PackageHelper.getPackagesData;
 import static de.htwg.co2footprint_tracker.helpers.TimingHelper.getTestDurationInMins;
-import static de.htwg.co2footprint_tracker.utils.PackageHelper.getPackagesData;
+import static de.htwg.co2footprint_tracker.utils.StringUtils.humanReadableByteCountSI;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -99,16 +96,7 @@ public class MainActivity extends AppCompatActivity {
             if (TimingHelper.getIsTestRunning(this)) {
                 Toast.makeText(this, "Test is already running.  Please stop current test first", Toast.LENGTH_LONG).show();
             } else {
-                TimingHelper.setStartTime(this);
-                TimingHelper.setIsTestRunning(this, true);
-                Toast.makeText(this, "Started test at " + TimingHelper.getStartTimeForUI(this), Toast.LENGTH_LONG).show();
-                Log.e(Constants.LOG.TAG, "creating intent....");
-                Intent updateSchedulerIntent = new Intent(this, UpdateServiceSchedulerService.class);
-                updateSchedulerIntent.putExtra(Constants.PARAMS.PACKAGE_LIST, packageList);
-                updateSchedulerIntent.setAction(Constants.ACTION.UPDATE_SERVICE_SCHEDULER_STARTED);
-                Log.e(Constants.LOG.TAG, "intent created, starting service...");
-                startService(updateSchedulerIntent);
-                Log.e(Constants.LOG.TAG, "service started");
+                startTest();
             }
             return true;
         } else if (id == R.id.menu_update_stats) {
@@ -125,12 +113,7 @@ public class MainActivity extends AppCompatActivity {
             if (!TimingHelper.getIsTestRunning(this)) {
                 Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
             } else {
-                TimingHelper.setIsTestRunning(this, false);
-                stopService(new Intent(this, UpdateServiceSchedulerService.class));
-                long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
-                if (testDurationInMins < Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME) {
-                    Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
-                }
+                stopTest();
             }
             InitialBucketContainer.setNewRun(true);
             InitialBucketContainer.clearMappedPackageData();
@@ -139,6 +122,28 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "clearing database", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void stopTest() {
+        TimingHelper.setIsTestRunning(this, false);
+        stopService(new Intent(this, UpdateServiceSchedulerService.class));
+        long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
+        if (testDurationInMins < Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME) {
+            Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void startTest() {
+        TimingHelper.setStartTime(this);
+        TimingHelper.setIsTestRunning(this, true);
+        Toast.makeText(this, "Started test at " + TimingHelper.getStartTimeForUI(this), Toast.LENGTH_LONG).show();
+        Log.e(Constants.LOG.TAG, "creating intent....");
+        Intent updateSchedulerIntent = new Intent(this, UpdateServiceSchedulerService.class);
+        updateSchedulerIntent.putExtra(Constants.PARAMS.PACKAGE_LIST, packageList);
+        updateSchedulerIntent.setAction(Constants.ACTION.UPDATE_SERVICE_SCHEDULER_STARTED);
+        Log.e(Constants.LOG.TAG, "intent created, starting service...");
+        startService(updateSchedulerIntent);
+        Log.e(Constants.LOG.TAG, "service started");
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,25 +155,9 @@ public class MainActivity extends AppCompatActivity {
         double totalEnergyConsumption = 0;
 
         for (Package packet : packageList) {
-            Cursor cursor = databaseHelper.getTotalsForPackage(packet.getPackageUid());
-            if (cursor.moveToFirst()) {
-                packet.setReceivedBytesWifi(cursor.getLong(0));
-                packet.setReceivedBytesMobile(cursor.getLong(1));
-
-                long receivedBytes = cursor.getLong(2);
-                totalReceivedBytes += receivedBytes;
-                packet.setReceivedBytesTotal(receivedBytes);
-
-                packet.setReceivedPacketsWifi(cursor.getLong(3));
-                packet.setReceivedPacketsMobile(cursor.getLong(4));
-                packet.setReceivedPacketsTotal(cursor.getLong(5));
-
-                double energyConsumption = cursor.getDouble(6);
-                totalEnergyConsumption += energyConsumption;
-                packet.setEnergyConsumption(energyConsumption);
-            }
+            totalReceivedBytes += databaseHelper.getTotalReceivedBytesFor(packet.getPackageUid());
+            totalEnergyConsumption += databaseHelper.getTotalEnergyConsumptionFor(packet.getPackageUid());
         }
-        Collections.sort(packageList);
 
         final TextView dataUsage = findViewById(R.id.data_usage_value);
         final TextView co2equivalent = findViewById(R.id.co2_equivalent_value);

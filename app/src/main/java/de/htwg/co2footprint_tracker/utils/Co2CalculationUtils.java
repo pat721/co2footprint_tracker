@@ -1,6 +1,6 @@
-package de.htwg.co2footprint_tracker.helpers;
+package de.htwg.co2footprint_tracker.utils;
 
-public class Co2CalculatorHelper {
+public class Co2CalculationUtils {
     private static final double ENERGY_IMPACT_SMARTPHONE = 0.000107689;
     private static final double AVERAGE_CONSUMPTION_ACCESS_NETWORK_AND_CPE = 52;
     private static final double AVERAGE_ENGERY_INTESITY_OF_LONG_HAUL_AND_METRO = 0.052;
