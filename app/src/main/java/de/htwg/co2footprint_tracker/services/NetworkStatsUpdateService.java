@@ -173,7 +173,9 @@ public class NetworkStatsUpdateService extends IntentService {
                     packageList.get(i).setTransmittedPacketsWifi(txPacketsWifi);
                     packageList.get(i).setTransmittedPacketsMobile(txPacketsMobile);
                     packageList.get(i).setTransmittedPacketsTotal(txPacketsTotal);
-                    packageList.get(i).setConnectionType(new ConnectionHelper().getGetConnectionType());
+
+
+                    packageList.get(i).setConnectionType(new ConnectionHelper().getNetworkClass(getApplicationContext()));
                 }
                 saveToDatabase(getApplicationContext(), timeOnUpdate, packageList);
             }
