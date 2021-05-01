@@ -149,7 +149,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private void dropTable(SQLiteDatabase db, String tableName) {
-        db.execSQL("DROP IF TABLE EXISTS " + tableName);
+        db.execSQL("DROP TABLE IF EXISTS " + tableName);
         Log.d(TAG, "dropTable: Dropping " + tableName);
     }
 
