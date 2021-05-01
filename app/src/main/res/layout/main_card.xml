@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <data>
+        
+        <variable
+            name="mainCardModel"
+            type="de.htwg.co2footprint_tracker.model.MainCardModel" />
+    </data>
+    
+<androidx.cardview.widget.CardView 
     android:layout_width="match_parent"
     android:layout_height="140dp"
     android:layout_margin="10dp"
@@ -20,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:gravity="center"
-            android:text="10"
+            android:text="@{mainCardModel.totalReceivedBytes}"
             android:textColor="#777"
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -60,7 +70,7 @@
             android:gravity="center"
             android:textColor="#777"
             android:textSize="22sp"
-            android:text="3200"
+            android:text="@{mainCardModel.totalEnergyConsumption}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/divider1"
             app:layout_constraintRight_toRightOf="parent"
@@ -81,3 +91,4 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
+</layout>

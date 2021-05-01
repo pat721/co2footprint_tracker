@@ -1,15 +1,36 @@
 package de.htwg.co2footprint_tracker.utils;
 
+import android.content.Context;
+
+import java.util.HashSet;
+
+import de.htwg.co2footprint_tracker.database.DatabaseHelper;
+import de.htwg.co2footprint_tracker.model.MainCardModel;
+
 public class Co2CalculationUtils {
     private static final double ENERGY_IMPACT_SMARTPHONE = 0.000107689;
     private static final double AVERAGE_CONSUMPTION_ACCESS_NETWORK_AND_CPE = 52;
-    private static final double AVERAGE_ENGERY_INTESITY_OF_LONG_HAUL_AND_METRO = 0.052;
+    private static final double AVERAGE_ENERGY_INTESITY_OF_LONG_HAUL_AND_METRO = 0.052;
     private static final double ELECTRICITY_CONSUMPTION_BY_DATACENTERS = 0.000000000072;
     private static final double KHW_TO_CO2_CONVERSION_VALUE = 515.46;
-    
+
+    public static MainCardModel calculateMainCardData(HashSet<Integer> applicationUidSet, Context context) {
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context);
+
+        long totalReceivedBytes = 0;
+        double totalEnergyConsumption = 0;
+
+        for (Integer uid : applicationUidSet) {
+            totalReceivedBytes += databaseHelper.getTotalReceivedBytesForPackage(uid);
+            totalEnergyConsumption += databaseHelper.getTotalEnergyConsumptionForPackage(uid);
+        }
+
+        return new MainCardModel(totalReceivedBytes, totalEnergyConsumption);
+    }
+
     /**
      * @param time: minutes
-     * @param gb: gb
+     * @param gb:   gb
      * @return energy consumption in kWh
      */
     private double calculateTotalEnergyConsumption(double time, double gb) {
@@ -21,7 +42,7 @@ public class Co2CalculationUtils {
 
         return total;
     }
-    
+
     /**
      * @param time:  minutes
      * @param bytes: bytes
@@ -38,7 +59,7 @@ public class Co2CalculationUtils {
     }
 
     public double calculateInternetEnergyConsumption(double megabyte) {
-        return megabyte * AVERAGE_ENGERY_INTESITY_OF_LONG_HAUL_AND_METRO;
+        return megabyte * AVERAGE_ENERGY_INTESITY_OF_LONG_HAUL_AND_METRO;
     }
 
     public double calculateDataCenterEnergyConsumption(double gigabyte) {
@@ -52,4 +73,6 @@ public class Co2CalculationUtils {
     private double bytesToGB(long bytes) {
         return bytes / 1024.0 / 1024.0 / 1024.0;
     }
+
+
 }

@@ -12,30 +12,33 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.databinding.DataBindingUtil;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.HashSet;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
+import de.htwg.co2footprint_tracker.databinding.MainCardBinding;
 import de.htwg.co2footprint_tracker.helpers.PackageHelper;
 import de.htwg.co2footprint_tracker.helpers.TimingHelper;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
+import de.htwg.co2footprint_tracker.model.MainCardModel;
 import de.htwg.co2footprint_tracker.services.UpdateServiceSchedulerService;
+import de.htwg.co2footprint_tracker.utils.Co2CalculationUtils;
 import de.htwg.co2footprint_tracker.utils.Constants;
 
 import static de.htwg.co2footprint_tracker.helpers.TimingHelper.getTestDurationInMins;
-import static de.htwg.co2footprint_tracker.utils.StringUtils.humanReadableByteCountSI;
 
 public class MainActivity extends AppCompatActivity {
 
     private HashSet<Integer> applicationUidSet;
+    private MainCardBinding mainCardBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         applicationUidSet = PackageHelper.getApplicationUids(this);
+
+        mainCardBinding = DataBindingUtil.setContentView(this, R.layout.main_card);
         updateUi();
     }
 
@@ -147,21 +152,8 @@ public class MainActivity extends AppCompatActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void updateUi() {
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
-
-        long totalReceivedBytes = 0;
-        double totalEnergyConsumption = 0;
-
-        for (Integer uid : applicationUidSet) {
-            totalReceivedBytes += databaseHelper.getTotalReceivedBytesForPackage(uid);
-            totalEnergyConsumption += databaseHelper.getTotalEnergyConsumptionForPackage(uid);
-        }
-
-        final TextView dataUsage = findViewById(R.id.data_usage_value);
-        final TextView co2equivalent = findViewById(R.id.co2_equivalent_value);
-
-        co2equivalent.setText(totalEnergyConsumption + " g");
-        dataUsage.setText(humanReadableByteCountSI(totalReceivedBytes));
+        MainCardModel mainCardModel = Co2CalculationUtils.calculateMainCardData(applicationUidSet, this);
+        mainCardBinding.setMainCardModel(mainCardModel);
     }
 
     //////////////////////////////////// Permissions ////////////////////////////////////////////

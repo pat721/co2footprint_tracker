@@ -25,7 +25,6 @@ public class PackageHelper {
         return uids;
     }
 
-
     // TODO: Refactor naming and co
     public static ArrayList<Package> getPackagesData(Context context) {
         ArrayList<Package> packageList;
