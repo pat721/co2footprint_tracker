@@ -7,6 +7,11 @@ import android.telephony.TelephonyManager;
 
 import de.htwg.co2footprint_tracker.enums.ConnectionType;
 
+/**
+ * Check device's network connectivity and speed
+ * @author emil http://stackoverflow.com/users/220710/emil
+ *
+ */
 public class ConnectionHelper {
 
     /**
