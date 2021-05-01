@@ -9,10 +9,7 @@ import de.htwg.co2footprint_tracker.R;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-/**
- * Created by darry on 01/02/2018.
- */
-
+// TODO: dont use deprecated api
 public class TimingHelper {
 
     public static void setStartTime(Context context)

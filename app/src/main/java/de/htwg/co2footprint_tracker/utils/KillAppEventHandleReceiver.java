@@ -8,11 +8,10 @@ import android.widget.Toast;
 
 import java.util.concurrent.TimeUnit;
 
+// TODO: Raphi -> mit SystemService lösen
 public class KillAppEventHandleReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-
-
 
         try {
             TimeUnit.SECONDS.sleep(5);

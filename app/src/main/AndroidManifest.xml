@@ -35,7 +35,7 @@
             android:name=".NetworkStatsUpdateService"
             android:enabled="true" />
         <service
-            android:name=".utils.UpdateServiceSchedulerService"
+            android:name=".services.UpdateServiceSchedulerService"
             android:enabled="true" />
     </application>
 

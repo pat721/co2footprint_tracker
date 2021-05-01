@@ -6,8 +6,6 @@ import android.app.AppOpsManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -25,59 +23,24 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
+import de.htwg.co2footprint_tracker.services.UpdateServiceSchedulerService;
 import de.htwg.co2footprint_tracker.utils.Constants;
 import de.htwg.co2footprint_tracker.utils.TimingHelper;
-import de.htwg.co2footprint_tracker.utils.UpdateServiceSchedulerService;
 
+import static de.htwg.co2footprint_tracker.utils.PackageHelper.getPackagesData;
+import static de.htwg.co2footprint_tracker.utils.StringUtils.humanReadableByteCountSI;
 import static de.htwg.co2footprint_tracker.utils.TimingHelper.getTestDurationInMins;
-
-//  Credit: Heavily influenced by https://github.com/RobertZagorski/NetworkStats,
-//          particularly requesting permissions and the bootstrapping
 
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Package> packageList;
     private ProgressDialog statsUpdateDialog;
-
-    private static int getPackageUid(Context context, String packageName) {
-        /*
-        uid
-        The kernel user-ID that has been assigned to this application;
-        currently this is not a unique ID (multiple applications can have the same uid).
-         */
-        PackageManager packageManager = context.getPackageManager();
-        int uid = -1;
-        try {
-            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA);
-            uid = packageInfo.applicationInfo.uid;
-        } catch (PackageManager.NameNotFoundException e) {
-        }
-        return uid;
-    }
-
-    private static String humanReadableByteCountSI(long bytes) {
-        if (-1000 < bytes && bytes < 1000) {
-            return bytes + " B";
-        }
-        CharacterIterator ci = new StringCharacterIterator("kMGTPE");
-        while (bytes <= -999_950 || bytes >= 999_950) {
-            bytes /= 1000;
-            ci.next();
-        }
-
-        return String.format("%.1f %cB", bytes / 1000.0, ci.current());
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         statsUpdateDialog = new ProgressDialog(this);
-        packageList = getPackagesData();
+        packageList = getPackagesData(getApplicationContext());
         updateUi();
     }
 
@@ -248,66 +211,6 @@ public class MainActivity extends AppCompatActivity {
         statsUpdateDialog.dismiss();
     }
 
-    //TODO make util class and move methods to it
-    private ArrayList<Package> getPackagesData() {
-        PackageManager packageManager = getPackageManager();
-        List<PackageInfo> packageInfoList = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
-        packageList = new ArrayList<>(packageInfoList.size());
-        for (PackageInfo packageInfo : packageInfoList) {
-            Package packageItem = new Package();
-            packageItem.setVersion(packageInfo.versionName);
-            packageItem.setPackageName(packageInfo.packageName);
-            packageItem.setPackageUid(getPackageUid(getApplicationContext(), packageInfo.packageName));
-            packageList.add(packageItem);
-            ApplicationInfo ai = null;
-            try {
-                ai = packageManager.getApplicationInfo(packageInfo.packageName, PackageManager.GET_META_DATA);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-            if (ai == null) {
-                continue;
-            }
-            CharSequence appName = packageManager.getApplicationLabel(ai);
-            if (appName != null) {
-                packageItem.setName(appName.toString());
-            }
-        }
-        //  Go through the package list and set whether the entries have duplicate uids
-        for (int i = 0; i < packageList.size(); i++) {
-            if (packageList.get(i).getDuplicateUids())
-                continue;
-            int packageUid = packageList.get(i).getPackageUid();
-            for (int j = 0; j < packageList.size(); j++) {
-                if (i == j)
-                    continue;
-                else {
-                    if (packageUid == packageList.get(j).getPackageUid()) {
-                        packageList.get(i).setDuplicateUids(true);
-                        packageList.get(j).setDuplicateUids(true);
-                    }
-                }
-            }
-        }
-
-
-        Set<Integer> usedDuplicatedIds = new HashSet<>();
-        ArrayList<Package> packageListForReturn = new ArrayList<>();
-
-        //rm duplicate uid-packages and return List without duplicate uids
-        for (Package packet : packageList) {
-            if (packet.getDuplicateUids() && usedDuplicatedIds.contains(packet.getPackageUid())) {
-                continue;
-            }
-            if (packet.getDuplicateUids()) {
-                packet.setName("SystemApp" + packet.getPackageUid());
-                packet.setPackageName("internal.uid." + packet.getPackageUid());
-            }
-            usedDuplicatedIds.add(packet.getPackageUid());
-            packageListForReturn.add(packet);
-        }
-        return packageListForReturn;
-    }
 
     private void requestPermissions() {
         if (!hasPermissionToReadNetworkHistory()) {
