@@ -54,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        updateUi();
     }
 
     @Override
@@ -89,9 +87,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.menu_start_test) {
             startTest();
             return true;
-        } else if (id == R.id.menu_update_stats) {
-            updateUi();
-            return true;
         } else if (id == R.id.menu_stop_test) {
             stopTest();
             InitialBucketContainer.setNewRun(true);
@@ -124,13 +119,6 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.content, fragment)
                 .addToBackStack(fragment.getClass().getName())
                 .commit();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public void updateUi() {
-/*        MainCardModel mainCardModel = Co2CalculationUtils.calculateMainCardData(applicationUidSet, this);
-        mainCardBinding.setMainCardModel(mainCardModel);*/
     }
 
 }

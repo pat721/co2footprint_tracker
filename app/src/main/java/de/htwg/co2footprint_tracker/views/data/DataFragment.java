@@ -27,7 +27,6 @@ public class DataFragment extends Fragment {
         return new DataFragment();
     }
 
-
     @Nullable
     @Override
     public View onCreateView(

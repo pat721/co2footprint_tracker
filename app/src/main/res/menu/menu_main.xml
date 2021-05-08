@@ -13,11 +13,6 @@
         android:title="@string/menu_start_test"
         app:showAsAction="never" />
     <item
-        android:id="@+id/menu_update_stats"
-        android:orderInCategory="102"
-        android:title="@string/menu_update_stats"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/menu_stop_test"
         android:orderInCategory="104"
         android:title="@string/menu_stop_test"
