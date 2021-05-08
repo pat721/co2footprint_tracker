@@ -33,6 +33,7 @@ import de.htwg.co2footprint_tracker.model.MainCardModel;
 import de.htwg.co2footprint_tracker.services.UpdateServiceSchedulerService;
 import de.htwg.co2footprint_tracker.utils.Co2CalculationUtils;
 import de.htwg.co2footprint_tracker.utils.Constants;
+import de.htwg.co2footprint_tracker.views.tips.TipsFragment;
 
 import static de.htwg.co2footprint_tracker.helpers.TimingHelper.getTestDurationInMins;
 
@@ -52,12 +53,10 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.tips:
-                        startActivity(new Intent(getApplicationContext(),
-                                Tips.class));
-                        overridePendingTransition(0, 0);
-                        return true;
+                        navigateToFragment(TipsFragment.getInstance());
+                        break;
                     case R.id.data:
-                        return true;
+                        break;
                 }
                 return false;
             }
