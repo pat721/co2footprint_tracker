@@ -85,7 +85,7 @@ public class UpdateServiceSchedulerService extends Service implements Runnable {
             Intent updateStatsIntent = new Intent(context, NetworkStatsUpdateService.class);
             updateStatsIntent.putParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST, packageList);
             updateStatsIntent.putExtra(Constants.PARAMS.SAVE_STATS_TO_FILE, false);
-            updateStatsIntent.setAction(Constants.ACTION.ACTION_UPDATE_STATS);
+            updateStatsIntent.setAction(Constants.ACTION.PROCESS_LATEST_NETWORK_TRAFFIC);
             context.startService(updateStatsIntent);
             Log.e(Constants.LOG.TAG, "...done updating stats");
         }
