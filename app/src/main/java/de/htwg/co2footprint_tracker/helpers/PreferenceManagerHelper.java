@@ -2,6 +2,7 @@ package de.htwg.co2footprint_tracker.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.DisplayMetrics;
 
 import androidx.preference.PreferenceManager;
 
@@ -27,5 +28,24 @@ public class PreferenceManagerHelper {
         editor.apply();
     }
 
+    public static void setDeviceType(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int independentPixelDensity = (int) (displayMetrics.widthPixels / displayMetrics.density);
+
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+
+        if(independentPixelDensity >= 600) {
+            editor.putInt(Constants.PERSISTENCY.DEVICE_IS_TABLET, 1);
+        }else {
+            editor.putInt(Constants.PERSISTENCY.DEVICE_IS_TABLET, 0);
+        }
+
+        editor.apply();
+    }
+
+    public static int getDeviceType(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPref.getInt(Constants.PERSISTENCY.DEVICE_IS_TABLET, -1);
+    }
 
 }
