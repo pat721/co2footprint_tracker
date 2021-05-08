@@ -79,32 +79,36 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        int menuItem = item.getItemId();
 
-        if (id == R.id.menu_start_test) {
-            startTest();
+        if (menuItem == R.id.menu_start_tracking) {
+            //if no time is stored there is no test running
+            if (PreferenceManagerHelper.getStartTime(this) == 0L){
+                startTracking();
+            }else{
+                Toast.makeText(this, "Test already running!", Toast.LENGTH_LONG).show();
+                Log.e(Constants.LOG.TAG, "Tried to start test even tho the test is already running!");
+            }
             return true;
-        } else if (id == R.id.menu_stop_test) {
-            stopTest();
-            InitialBucketContainer.setNewRun(true);
-            InitialBucketContainer.clearMappedPackageData();
-        } else if (id == R.id.menu_purge_db) {
+        } else if (menuItem == R.id.menu_stop_tracking) {
+            stopTracking();
+        } else if (menuItem == R.id.menu_purge_db) {
             DatabaseHelper.getInstance(this).purgeDB();
             Toast.makeText(this, "clearing database", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void stopTest() {
+    private void stopTracking() {
         stopService(new Intent(this, UpdateServiceSchedulerService.class));
+        PreferenceManagerHelper.clearStoredStartTime(this);
+        InitialBucketContainer.setNewRun(true);
+        InitialBucketContainer.clearMappedPackageData();
     }
 
-    private void startTest() {
+    private void startTracking() {
         PreferenceManagerHelper.setStartTime(this);
-        Toast.makeText(this, "Test started!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Tracking started!", Toast.LENGTH_LONG).show();
         Log.e(Constants.LOG.TAG, "creating intent....");
         Intent updateSchedulerIntent = new Intent(this, UpdateServiceSchedulerService.class);
         updateSchedulerIntent.setAction(Constants.ACTION.UPDATE_SERVICE_SCHEDULER);
