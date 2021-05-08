@@ -1,9 +1,6 @@
 apply plugin: 'com.android.application'
 
 android {
-    dataBinding {
-        enabled = true
-    }
     compileSdkVersion 29
     defaultConfig {
         applicationId "de.htwg.co2footprint_tracker"
@@ -19,7 +16,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     buildFeatures {
         dataBinding true
     }

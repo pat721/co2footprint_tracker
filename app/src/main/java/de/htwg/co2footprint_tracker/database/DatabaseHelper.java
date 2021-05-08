@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.HashSet;
+
 import de.htwg.co2footprint_tracker.enums.DatabaseInterval;
 import de.htwg.co2footprint_tracker.model.Package;
 
@@ -139,7 +141,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-
     private void dropTables(SQLiteDatabase db) {
         dropTable(db, TABLE_NAME_DATA_PER_MINUTE_TABLE);
         dropTable(db, TABLE_NAME_DATA_PER_HOUR_TABLE);
@@ -235,6 +236,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             bytes = data.getLong(0);
         }
         return bytes;
+    }
+
+    public double getTotalEnergyConsumption(HashSet<Integer> applicationUIDs) {
+        double energyConsumption = 0.0;
+        for (Integer uid : applicationUIDs) {
+            energyConsumption += getTotalEnergyConsumptionForPackage(uid);
+        }
+        return energyConsumption;
+    }
+
+    public long getTotalReceivedBytes(HashSet<Integer> applicationUIDs) {
+        long reveivedBytes = 0L;
+        for (Integer uid : applicationUIDs) {
+            reveivedBytes += getTotalReceivedBytesForPackage(uid);
+        }
+        return reveivedBytes;
     }
 
 

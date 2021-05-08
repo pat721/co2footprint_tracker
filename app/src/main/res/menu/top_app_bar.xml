@@ -7,7 +7,7 @@
         android:title="@string/settings"
         app:showAsAction="never" />
     <item
-        android:id="@+id/menu_start_test"
+        android:id="@+id/menu_start_tracking"
         android:contentDescription="@string/menu_start_test"
         android:title="@string/menu_start_test"
         app:showAsAction="never" />
@@ -17,7 +17,7 @@
         android:title="@string/menu_update_stats"
         app:showAsAction="never" />
     <item
-        android:id="@+id/menu_stop_test"
+        android:id="@+id/menu_stop_tracking"
         android:contentDescription="@string/menu_stop_test"
         android:title="@string/menu_stop_test"
         app:showAsAction="never" />
