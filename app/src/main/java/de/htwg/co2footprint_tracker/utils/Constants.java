@@ -1,9 +1,5 @@
 package de.htwg.co2footprint_tracker.utils;
 
-/**
- * Created by darry on 01/02/2018.
- */
-
 public class Constants {
     public interface PERMISSION {
         int REQUEST_CODE = 1;
@@ -23,6 +19,7 @@ public class Constants {
 
     public interface PERSISTENCY {
         String PREFERENCE_STARTING_TIME_KEY = "SAVED_START_TIME";
+        String DEVICE_IS_TABLET = "DEVICE_IS_TABLET";
     }
 
     public interface LOG {
