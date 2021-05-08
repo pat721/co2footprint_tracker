@@ -55,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        if(PreferenceManagerHelper.getDeviceType(this) == -1) {
+            PreferenceManagerHelper.setDeviceType(this);
+        }
+
         updateUi();
     }
 
