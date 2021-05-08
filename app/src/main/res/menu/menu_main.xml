@@ -8,12 +8,12 @@
         android:title="@string/menu_request_permissions"
         app:showAsAction="never" />
     <item
-        android:id="@+id/menu_start_test"
+        android:id="@+id/menu_start_tracking"
         android:orderInCategory="101"
         android:title="@string/menu_start_test"
         app:showAsAction="never" />
     <item
-        android:id="@+id/menu_stop_test"
+        android:id="@+id/menu_stop_tracking"
         android:orderInCategory="104"
         android:title="@string/menu_stop_test"
         app:showAsAction="never" />
