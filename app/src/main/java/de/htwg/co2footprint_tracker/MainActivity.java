@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -62,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         applicationUidSet = PackageHelper.getApplicationUids(this);
-
-        mainCardBinding = DataBindingUtil.setContentView(this, R.layout.main_card);
+/*
+        mainCardBinding = DataBindingUtil.setContentView(this, R.layout.main_card);*/
         updateUi();
     }
 
@@ -149,11 +150,20 @@ public class MainActivity extends AppCompatActivity {
         Log.e(Constants.LOG.TAG, "service started");
     }
 
+    public void navigateToFragment(@NonNull Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                .replace(R.id.content, fragment)
+                .addToBackStack(fragment.getClass().getName())
+                .commit();
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void updateUi() {
-        MainCardModel mainCardModel = Co2CalculationUtils.calculateMainCardData(applicationUidSet, this);
-        mainCardBinding.setMainCardModel(mainCardModel);
+/*        MainCardModel mainCardModel = Co2CalculationUtils.calculateMainCardData(applicationUidSet, this);
+        mainCardBinding.setMainCardModel(mainCardModel);*/
     }
 
     //////////////////////////////////// Permissions ////////////////////////////////////////////

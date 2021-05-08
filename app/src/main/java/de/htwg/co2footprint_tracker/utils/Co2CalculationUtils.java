@@ -16,7 +16,6 @@ public class Co2CalculationUtils {
 
     public static MainCardModel calculateMainCardData(HashSet<Integer> applicationUidSet, Context context) {
         DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context);
-
         long totalReceivedBytes = 0;
         double totalEnergyConsumption = 0;
 
