@@ -121,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
     public void navigateToFragment(@NonNull Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .replace(R.id.content, fragment)
                 .addToBackStack(fragment.getClass().getName())
                 .commit();
