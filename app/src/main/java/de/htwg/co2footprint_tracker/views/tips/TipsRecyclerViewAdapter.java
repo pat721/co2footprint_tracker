@@ -10,14 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import de.htwg.co2footprint_tracker.R;
-import de.htwg.co2footprint_tracker.dummy.DummyContent.DummyItem;
 import de.htwg.co2footprint_tracker.model.TipItem;
 import lombok.Getter;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem}.
- * TODO: Replace the implementation with code for your data type.
- */
+
 public class TipsRecyclerViewAdapter extends RecyclerView.Adapter<TipItemViewHolder> {
 
     @Getter

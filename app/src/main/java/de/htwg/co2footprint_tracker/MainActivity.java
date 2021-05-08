@@ -22,48 +22,46 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.HashSet;
-
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
-import de.htwg.co2footprint_tracker.databinding.MainCardBinding;
-import de.htwg.co2footprint_tracker.helpers.PackageHelper;
+import de.htwg.co2footprint_tracker.databinding.ActivityMainBinding;
 import de.htwg.co2footprint_tracker.helpers.TimingHelper;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
-import de.htwg.co2footprint_tracker.model.MainCardModel;
 import de.htwg.co2footprint_tracker.services.UpdateServiceSchedulerService;
-import de.htwg.co2footprint_tracker.utils.Co2CalculationUtils;
 import de.htwg.co2footprint_tracker.utils.Constants;
+import de.htwg.co2footprint_tracker.views.data.DataFragment;
 import de.htwg.co2footprint_tracker.views.tips.TipsFragment;
 
 import static de.htwg.co2footprint_tracker.helpers.TimingHelper.getTestDurationInMins;
 
 public class MainActivity extends AppCompatActivity {
 
-    private HashSet<Integer> applicationUidSet;
-    private MainCardBinding mainCardBinding;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.data);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        this.binding.bottomNavigation.setSelectedItemId(R.id.data);
+        navigateToFragment(DataFragment.getInstance());
+
+        this.binding.bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
+                    case R.id.data:
+                        navigateToFragment(DataFragment.getInstance());
+                        return true;
                     case R.id.tips:
                         navigateToFragment(TipsFragment.getInstance());
-                        break;
-                    case R.id.data:
-                        break;
+                        return true;
                 }
                 return false;
             }
         });
-        applicationUidSet = PackageHelper.getApplicationUids(this);
-/*
-        mainCardBinding = DataBindingUtil.setContentView(this, R.layout.main_card);*/
+
         updateUi();
     }
 
