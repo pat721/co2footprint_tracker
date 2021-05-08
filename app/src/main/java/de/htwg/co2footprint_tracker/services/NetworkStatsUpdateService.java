@@ -21,7 +21,7 @@ import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.utils.Co2CalculationUtils;
 import de.htwg.co2footprint_tracker.utils.Constants;
-import de.htwg.co2footprint_tracker.helpers.TimingHelper;
+import de.htwg.co2footprint_tracker.helpers.PreferenceManagerHelper;
 
 public class NetworkStatsUpdateService extends IntentService {
 
@@ -44,10 +44,10 @@ public class NetworkStatsUpdateService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (Constants.ACTION.ACTION_UPDATE_STATS.equals(action)) {
+            if (Constants.ACTION.PROCESS_LATEST_NETWORK_TRAFFIC.equals(action)) {
                 ArrayList<Package> packageList = intent.getParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST);
 
-                long startTime = TimingHelper.getStartTime(this);
+                long startTime = PreferenceManagerHelper.getStartTime(this);
                 long timeOnUpdate = System.currentTimeMillis();
                 boolean isNewRun = InitialBucketContainer.isNewRun();
                 InitialBucketContainer.setNewRun(false);

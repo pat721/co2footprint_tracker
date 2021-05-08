@@ -1,14 +1,9 @@
 package de.htwg.co2footprint_tracker;
 
-import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.AppOpsManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
@@ -24,14 +18,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.databinding.ActivityMainBinding;
-import de.htwg.co2footprint_tracker.helpers.TimingHelper;
+import de.htwg.co2footprint_tracker.helpers.PermissionHelper;
+import de.htwg.co2footprint_tracker.helpers.PreferenceManagerHelper;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.services.UpdateServiceSchedulerService;
 import de.htwg.co2footprint_tracker.utils.Constants;
 import de.htwg.co2footprint_tracker.views.data.DataFragment;
 import de.htwg.co2footprint_tracker.views.tips.TipsFragment;
-
-import static de.htwg.co2footprint_tracker.helpers.TimingHelper.getTestDurationInMins;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -75,9 +68,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (!hasPermissions()) {
-            requestPermissions();
-        }
+        PermissionHelper ph = new PermissionHelper(this);
+        ph.processPermissionHandling();
     }
 
     @Override
@@ -95,28 +87,13 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.menu_start_test) {
-            if (TimingHelper.getIsTestRunning(this)) {
-                Toast.makeText(this, "Test is already running.  Please stop current test first", Toast.LENGTH_LONG).show();
-            } else {
-                startTest();
-            }
+            startTest();
             return true;
         } else if (id == R.id.menu_update_stats) {
             updateUi();
-            if (!TimingHelper.getIsTestRunning(this)) {
-                Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
-            } else {
-                long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
-                if (testDurationInMins <= Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME)
-                    Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
-            }
             return true;
         } else if (id == R.id.menu_stop_test) {
-            if (!TimingHelper.getIsTestRunning(this)) {
-                Toast.makeText(this, "There is no test running", Toast.LENGTH_LONG).show();
-            } else {
-                stopTest();
-            }
+            stopTest();
             InitialBucketContainer.setNewRun(true);
             InitialBucketContainer.clearMappedPackageData();
         } else if (id == R.id.menu_purge_db) {
@@ -127,21 +104,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void stopTest() {
-        TimingHelper.setIsTestRunning(this, false);
         stopService(new Intent(this, UpdateServiceSchedulerService.class));
-        long testDurationInMins = getTestDurationInMins(System.currentTimeMillis(), this);
-        if (testDurationInMins < Constants.MISC.MINIMUM_RECOMMENDED_TEST_TIME) {
-            Toast.makeText(this, getString(R.string.minimum_duration_error), Toast.LENGTH_LONG).show();
-        }
     }
 
     private void startTest() {
-        TimingHelper.setStartTime(this);
-        TimingHelper.setIsTestRunning(this, true);
-        Toast.makeText(this, "Started test at " + TimingHelper.getStartTimeForUI(this), Toast.LENGTH_LONG).show();
+        PreferenceManagerHelper.setStartTime(this);
+        Toast.makeText(this, "Test started!", Toast.LENGTH_LONG).show();
         Log.e(Constants.LOG.TAG, "creating intent....");
         Intent updateSchedulerIntent = new Intent(this, UpdateServiceSchedulerService.class);
-        updateSchedulerIntent.setAction(Constants.ACTION.UPDATE_SERVICE_SCHEDULER_STARTED);
+        updateSchedulerIntent.setAction(Constants.ACTION.UPDATE_SERVICE_SCHEDULER);
         Log.e(Constants.LOG.TAG, "intent created, starting service...");
         startService(updateSchedulerIntent);
         Log.e(Constants.LOG.TAG, "service started");
@@ -163,72 +134,4 @@ public class MainActivity extends AppCompatActivity {
         mainCardBinding.setMainCardModel(mainCardModel);*/
     }
 
-    //////////////////////////////////// Permissions ////////////////////////////////////////////
-
-    private void requestPermissions() {
-        if (!hasPermissionToReadNetworkHistory()) {
-            return;
-        }
-        if (!hasPermissionToReadPhoneStats()) {
-            requestPhoneStateStats();
-        }
-    }
-
-    private boolean hasPermissions() {
-        return hasPermissionToReadNetworkHistory() && hasPermissionToReadPhoneStats();
-    }
-
-    private boolean hasPermissionToReadPhoneStats() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private void requestPhoneStateStats() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},
-                Constants.PERMISSION.PERMISSION_REQUEST);
-    }
-
-    private boolean hasPermissionToReadNetworkHistory() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        final AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
-        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                android.os.Process.myUid(), getPackageName());
-        if (mode == AppOpsManager.MODE_ALLOWED) {
-            return true;
-        }
-        Toast.makeText(this, "Usage Stats permission is required", Toast.LENGTH_LONG).show();
-        appOps.startWatchingMode(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                getPackageName(),
-                new AppOpsManager.OnOpChangedListener() {
-                    @Override
-                    @TargetApi(Build.VERSION_CODES.M)
-                    public void onOpChanged(String op, String packageName) {
-                        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                                android.os.Process.myUid(), getPackageName());
-                        if (mode != AppOpsManager.MODE_ALLOWED) {
-                            return;
-                        }
-                        appOps.stopWatchingMode(this);
-                        Intent intent = new Intent(MainActivity.this, MainActivity.class);
-                        if (getIntent().getExtras() != null) {
-                            intent.putExtras(getIntent().getExtras());
-                        }
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }
-                });
-        requestReadNetworkHistoryAccess();
-        return false;
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void requestReadNetworkHistoryAccess() {
-        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-        startActivity(intent);
-    }
 }
