@@ -43,7 +43,7 @@ public class TipsFragment extends Fragment implements TipItemViewHolder.ClickLis
                 false
         );
 
-        this.adapter = new TipsRecyclerViewAdapter(this, new ArrayList<TipItem>());
+        this.adapter = new TipsRecyclerViewAdapter(this, new ArrayList<>());
         this.binding.recyclerView.setAdapter(this.adapter);
 
         this.loadTips();
@@ -51,6 +51,8 @@ public class TipsFragment extends Fragment implements TipItemViewHolder.ClickLis
     }
 
     private void loadTips() {
+
+
         // TODO: Load Tips from cloud or so
         // then => renderTips with the fetched tips
     }
