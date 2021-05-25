@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.HashSet;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
+import de.htwg.co2footprint_tracker.helpers.PreferenceManagerHelper;
 import de.htwg.co2footprint_tracker.model.MainCardModel;
 
 public class Co2CalculationUtils {
@@ -47,10 +48,11 @@ public class Co2CalculationUtils {
      * @param bytes: bytes
      * @return energy consumption in g co2
      */
-    public double calculateTotalEnergyConsumption(double time, long bytes) {
+    public double calculateTotalEnergyConsumption(double time, long bytes, String adminArea) {
         double mb = bytesToGB(bytes);
-        double returnval = calculateTotalEnergyConsumption(time, mb) * KHW_TO_CO2_CONVERSION_VALUE;
-        return returnval;
+
+        double returnVal = calculateTotalEnergyConsumption(time, mb) * KHW_TO_CO2_CONVERSION_VALUE * getAdminAreaCalculationFactor(adminArea);
+        return returnVal;
     }
 
     public double calculateSmartphoneEnergyConsumption(double time) {
@@ -73,5 +75,11 @@ public class Co2CalculationUtils {
         return bytes / 1024.0 / 1024.0 / 1024.0;
     }
 
+
+    public double getAdminAreaCalculationFactor(String adminArea) {
+
+        //TODO Swich-Case for different locations
+        return 1;
+    }
 
 }

@@ -6,7 +6,6 @@ import android.util.DisplayMetrics;
 
 import androidx.preference.PreferenceManager;
 
-import de.htwg.co2footprint_tracker.R;
 import de.htwg.co2footprint_tracker.utils.Constants;
 
 public class PreferenceManagerHelper {
@@ -34,9 +33,9 @@ public class PreferenceManagerHelper {
 
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 
-        if(independentPixelDensity >= 600) {
+        if (independentPixelDensity >= 600) {
             editor.putInt(Constants.PERSISTENCY.DEVICE_IS_TABLET, 1);
-        }else {
+        } else {
             editor.putInt(Constants.PERSISTENCY.DEVICE_IS_TABLET, 0);
         }
 
@@ -46,6 +45,18 @@ public class PreferenceManagerHelper {
     public static int getDeviceType(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPref.getInt(Constants.PERSISTENCY.DEVICE_IS_TABLET, -1);
+    }
+
+    public static void setAdminArea(Context context, String adminArea) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putString(Constants.PERSISTENCY.ADMINISTRATION_AREA, adminArea);
+        editor.apply();
+    }
+
+
+    public static String getAdminArea(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPref.getString(Constants.PERSISTENCY.ADMINISTRATION_AREA, "");
     }
 
 }

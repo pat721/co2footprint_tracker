@@ -18,6 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.databinding.ActivityMainBinding;
+import de.htwg.co2footprint_tracker.helpers.LocationHelper;
 import de.htwg.co2footprint_tracker.helpers.PermissionHelper;
 import de.htwg.co2footprint_tracker.helpers.PreferenceManagerHelper;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
@@ -46,19 +47,22 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.data:
                         navigateToFragment(DataFragment.getInstance());
+                        LocationHelper.getInstance(MainActivity.this).updateCurrentAdminArea();
                         return true;
                     case R.id.tips:
                         navigateToFragment(TipsFragment.getInstance());
+                        LocationHelper.getInstance(MainActivity.this).updateCurrentAdminArea();
                         return true;
                 }
                 return false;
             }
         });
 
-        if(PreferenceManagerHelper.getDeviceType(this) == -1) {
+        if (PreferenceManagerHelper.getDeviceType(this) == -1) {
             PreferenceManagerHelper.setDeviceType(this);
         }
 
+        LocationHelper.getInstance(MainActivity.this).updateCurrentAdminArea();
     }
 
     @Override
@@ -88,9 +92,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (menuItem == R.id.menu_start_tracking) {
             //if no time is stored there is no test running
-            if (PreferenceManagerHelper.getStartTime(this) == 0L){
+            if (PreferenceManagerHelper.getStartTime(this) == 0L) {
                 startTracking();
-            }else{
+            } else {
                 Toast.makeText(this, "Test already running!", Toast.LENGTH_LONG).show();
                 Log.e(Constants.LOG.TAG, "Tried to start test even tho the test is already running!");
             }

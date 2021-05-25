@@ -149,8 +149,8 @@ public class NetworkStatsUpdateService extends IntentService {
                         } catch (Exception e) {
                             Log.e(Constants.LOG.TAG, "Remote Exception: Mobile " + e.getMessage());
                         }
-                        
-                        
+
+
                     } else {
                         //  Note: These only return data for our own UID on M and higher
                         //  Note: These only reset to zero after every reboot so the start / stop test logic doesn't
@@ -177,8 +177,8 @@ public class NetworkStatsUpdateService extends IntentService {
                     packageList.get(i).setTransmittedPacketsTotal(txPacketsTotal);
                     packageList.get(i).setConnectionType(new ConnectionHelper().getNetworkClass(getApplicationContext()));
                 }
-                
-                
+
+
                 saveToDatabase(getApplicationContext(), timeOnUpdate, packageList);
             }
         }
@@ -191,7 +191,9 @@ public class NetworkStatsUpdateService extends IntentService {
             if (packetHasChanges(packet)) {
 
                 long totalBytes = packet.getReceivedBytesTotal() + packet.getTransmittedBytesTotal();
-                packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, totalBytes));
+
+                String adminArea = PreferenceManagerHelper.getAdminArea(context);
+                packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, totalBytes, adminArea));
                 packet.setTimestamp(timeStamp);
                 databaseHelper.addData(DatabaseInterval.MINUTE, packet);
             }

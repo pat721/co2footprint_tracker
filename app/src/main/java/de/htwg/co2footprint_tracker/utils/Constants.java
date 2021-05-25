@@ -3,6 +3,7 @@ package de.htwg.co2footprint_tracker.utils;
 public class Constants {
     public interface PERMISSION {
         int REQUEST_CODE = 1;
+        int LOCATION_REQUEST_CODE = 44;
     }
 
     public interface ACTION {
@@ -20,6 +21,7 @@ public class Constants {
     public interface PERSISTENCY {
         String PREFERENCE_STARTING_TIME_KEY = "SAVED_START_TIME";
         String DEVICE_IS_TABLET = "DEVICE_IS_TABLET";
+        String ADMINISTRATION_AREA = "ADMINISTRATION_AREA";
     }
 
     public interface LOG {
