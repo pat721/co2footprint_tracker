@@ -50,7 +50,7 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="@{co2equivalent.value}"
                 app:layout_constraintBottom_toBottomOf="parent"

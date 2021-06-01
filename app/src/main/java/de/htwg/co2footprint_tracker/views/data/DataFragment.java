@@ -30,6 +30,8 @@ public class DataFragment extends Fragment {
         return new DataFragment();
     }
 
+    FragmentDataBinding binding;
+
     @Nullable
     @Override
     public View onCreateView(
@@ -37,28 +39,25 @@ public class DataFragment extends Fragment {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState
     ) {
-        FragmentDataBinding binding = DataBindingUtil.inflate(
+        binding = DataBindingUtil.inflate(
                 inflater,
                 R.layout.fragment_data,
                 container,
                 false
         );
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
-        HashSet<Integer> applicationUids = PackageHelper.getApplicationUids(getContext());
-        final long totalReceivedBytes = databaseHelper.getTotalReceivedBytes(applicationUids);
-        final double totalEnergyConsumption = databaseHelper.getTotalEnergyConsumption(applicationUids);
-        binding.setMainCardModel(new MainCardModel(totalReceivedBytes, totalEnergyConsumption));
-
         binding.co2EquivalentList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-
         DataRecyclerViewAdapter dataRecyclerViewAdapter = new DataRecyclerViewAdapter(getContext(), Co2Equivalent.getEquivalents());
         binding.co2EquivalentList.setAdapter(dataRecyclerViewAdapter);
-
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
+        HashSet<Integer> applicationUids = PackageHelper.getApplicationUids(getContext());
+        final long totalReceivedBytes = databaseHelper.getTotalReceivedBytes(applicationUids);
+        final double totalEnergyConsumption = databaseHelper.getTotalEnergyConsumption(applicationUids);
+        binding.setMainCardModel(new MainCardModel(totalReceivedBytes, totalEnergyConsumption));
         super.onViewCreated(view, savedInstanceState);
     }
 }

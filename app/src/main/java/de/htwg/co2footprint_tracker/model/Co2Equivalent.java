@@ -21,7 +21,7 @@ public class Co2Equivalent {
         co2Equivalents.add(new Co2Equivalent("1.55", "km flown", R.drawable.plane));
         co2Equivalents.add(new Co2Equivalent("10.75", "hours lit", R.drawable.bulb));
         co2Equivalents.add(new Co2Equivalent("12.75", "hours netflix", R.drawable.netflix));
-        co2Equivalents.add(new Co2Equivalent("3.75", "hours charged", R.drawable.charge));
+        co2Equivalents.add(new Co2Equivalent("3.75", "times charged", R.drawable.charge));
         co2Equivalents.add(new Co2Equivalent("0.6", "trees planted", R.drawable.tree));
 
         return co2Equivalents;
