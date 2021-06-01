@@ -17,10 +17,12 @@ public class Co2Equivalent {
 
     public static List<Co2Equivalent> getEquivalents() {
         List<Co2Equivalent> co2Equivalents = new ArrayList<>();
-        co2Equivalents.add(new Co2Equivalent("1.01", "km driven", R.drawable.ic_signal_wifi_3_bar_black_24dp));
-        co2Equivalents.add(new Co2Equivalent("1.55", "km flown", R.drawable.baseline_sync_alt_black_24dp));
-        co2Equivalents.add(new Co2Equivalent("10.75", "hours lit", R.drawable.baseline_eco_black_24dp));
-        co2Equivalents.add(new Co2Equivalent("12.75", "hours netflix", R.drawable.outline_settings_24));
+        co2Equivalents.add(new Co2Equivalent("1.01", "km driven", R.drawable.car));
+        co2Equivalents.add(new Co2Equivalent("1.55", "km flown", R.drawable.plane));
+        co2Equivalents.add(new Co2Equivalent("10.75", "hours lit", R.drawable.bulb));
+        co2Equivalents.add(new Co2Equivalent("12.75", "hours netflix", R.drawable.netflix));
+        co2Equivalents.add(new Co2Equivalent("3.75", "hours charged", R.drawable.charge));
+        co2Equivalents.add(new Co2Equivalent("0.6", "trees planted", R.drawable.tree));
 
         return co2Equivalents;
     }
