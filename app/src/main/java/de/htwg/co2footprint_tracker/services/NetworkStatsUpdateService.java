@@ -196,6 +196,7 @@ public class NetworkStatsUpdateService extends IntentService {
                 packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, totalBytes, adminArea));
                 packet.setTimestamp(timeStamp);
                 databaseHelper.addData(DatabaseInterval.MINUTE, packet);
+                databaseHelper.addData(DatabaseInterval.DAY, packet);
             }
         }
     }
