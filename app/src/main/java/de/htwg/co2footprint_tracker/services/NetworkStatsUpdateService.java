@@ -21,7 +21,7 @@ import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.utils.Co2CalculationUtils;
 import de.htwg.co2footprint_tracker.utils.Constants;
-import de.htwg.co2footprint_tracker.helpers.TimingHelper;
+import de.htwg.co2footprint_tracker.helpers.PreferenceManagerHelper;
 
 public class NetworkStatsUpdateService extends IntentService {
 
@@ -44,10 +44,10 @@ public class NetworkStatsUpdateService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (Constants.ACTION.ACTION_UPDATE_STATS.equals(action)) {
+            if (Constants.ACTION.PROCESS_LATEST_NETWORK_TRAFFIC.equals(action)) {
                 ArrayList<Package> packageList = intent.getParcelableArrayListExtra(Constants.PARAMS.PACKAGE_LIST);
 
-                long startTime = TimingHelper.getStartTime(this);
+                long startTime = PreferenceManagerHelper.getStartTime(this);
                 long timeOnUpdate = System.currentTimeMillis();
                 boolean isNewRun = InitialBucketContainer.isNewRun();
                 InitialBucketContainer.setNewRun(false);
@@ -149,8 +149,8 @@ public class NetworkStatsUpdateService extends IntentService {
                         } catch (Exception e) {
                             Log.e(Constants.LOG.TAG, "Remote Exception: Mobile " + e.getMessage());
                         }
-                        
-                        
+
+
                     } else {
                         //  Note: These only return data for our own UID on M and higher
                         //  Note: These only reset to zero after every reboot so the start / stop test logic doesn't
@@ -177,8 +177,8 @@ public class NetworkStatsUpdateService extends IntentService {
                     packageList.get(i).setTransmittedPacketsTotal(txPacketsTotal);
                     packageList.get(i).setConnectionType(new ConnectionHelper().getNetworkClass(getApplicationContext()));
                 }
-                
-                
+
+
                 saveToDatabase(getApplicationContext(), timeOnUpdate, packageList);
             }
         }
@@ -191,7 +191,9 @@ public class NetworkStatsUpdateService extends IntentService {
             if (packetHasChanges(packet)) {
 
                 long totalBytes = packet.getReceivedBytesTotal() + packet.getTransmittedBytesTotal();
-                packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, totalBytes));
+
+                String adminArea = PreferenceManagerHelper.getAdminArea(context);
+                packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, totalBytes, adminArea));
                 packet.setTimestamp(timeStamp);
                 databaseHelper.addData(DatabaseInterval.MINUTE, packet);
             }
