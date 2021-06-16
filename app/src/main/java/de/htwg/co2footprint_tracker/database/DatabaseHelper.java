@@ -153,12 +153,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private String generateMergeKey(Package packageModel) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.GERMANY);
-        Date packageTimestampDate = new Date(packageModel.getTimestamp() * 1000);
-        String packageTimestamp = sdf.format(packageTimestampDate);
-
-        return packageModel.getPackageUid() + "" + packageModel.getConnectionType() + "" + packageTimestamp + "";
+        long todayMidnightTimestamp = UnitUtils.getMidnightTimestamp();
+        return packageModel.getPackageUid() + "" + packageModel.getConnectionType() + "" + todayMidnightTimestamp + "";
     }
 
     private void createTables(SQLiteDatabase db) {
@@ -247,12 +243,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public Long getTotalReceivedBytes() {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " +
+        String queryTxBytes = "SELECT " +
+                " SUM(" + TRANSMITTED_BYTES_TOTAL + ") as " + TRANSMITTED_BYTES_TOTAL +
+                " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE;
+        Cursor txBytesCursor = db.rawQuery(queryTxBytes, null);
+        txBytesCursor.moveToFirst();
+        long txBytes = txBytesCursor.getLong(0);
+
+
+        String queryRxBytes = "SELECT " +
                 " SUM(" + RECEIVED_BYTES_TOTAL + ") as " + RECEIVED_BYTES_TOTAL +
                 " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE;
-        Cursor data = db.rawQuery(query, null);
-        data.moveToFirst();
-        return data.getLong(0);
+        Cursor rxBytesCursor = db.rawQuery(queryRxBytes, null);
+        rxBytesCursor.moveToFirst();
+        long rxBytes = rxBytesCursor.getLong(0);
+
+        return rxBytes + txBytes;
     }
 
 
@@ -260,38 +266,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return energy consumption in g co2 for current day
      */
     public Double getEnergyConsumptionForToday() {
-        long oneDayAgo = (System.currentTimeMillis() / 1000L) - 86400; //time now - 24 hrs as seconds
-
-        long now = System.currentTimeMillis() / 1000;
-        long todayMidnightTimestamp = UnitUtils.getMidnightTimestamp(now);
+        long todayMidnightTimestamp = UnitUtils.getMidnightTimestamp();
 
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " +
                 " SUM(" + ENERGY_CONSUMPTION + ") as " + ENERGY_CONSUMPTION +
                 " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE +
-                " WHERE " + TIMESTAMP + " < " + todayMidnightTimestamp;
+                " WHERE " + TIMESTAMP + " > " + todayMidnightTimestamp;
         Cursor data = db.rawQuery(query, null);
         data.moveToFirst();
         return data.getDouble(0);
     }
 
     /**
-     * @return received bytes for the current day
+     * @return bytes for the current day
      */
-    public Long getReceivedBytesForToday() {
-        long oneDayAgo = (System.currentTimeMillis() / 1000L) - 86400; //time now - 24 hrs as seconds
-
-        long now = System.currentTimeMillis() / 1000;
-        long todayMidnightTimestamp = UnitUtils.getMidnightTimestamp(now);
+    public Long getTotalBytesForToday() {
+        long todayMidnightTimestamp = UnitUtils.getMidnightTimestamp();
 
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " +
+        String queryTxBytes = "SELECT " +
+                " SUM(" + TRANSMITTED_BYTES_TOTAL + ") as " + TRANSMITTED_BYTES_TOTAL +
+                " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE +
+                " WHERE " + TIMESTAMP + " > " + todayMidnightTimestamp;
+        Cursor txBytesCursor = db.rawQuery(queryTxBytes, null);
+        txBytesCursor.moveToFirst();
+        long txBytes = txBytesCursor.getLong(0);
+
+        String queryRxBytes = "SELECT " +
                 " SUM(" + RECEIVED_BYTES_TOTAL + ") as " + RECEIVED_BYTES_TOTAL +
                 " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE +
-                " WHERE " + TIMESTAMP + " < " + todayMidnightTimestamp;
-        Cursor data = db.rawQuery(query, null);
-        data.moveToFirst();
-        return data.getLong(0);
+                " WHERE " + TIMESTAMP + " > " + todayMidnightTimestamp;
+        Cursor rxBytesCursor = db.rawQuery(queryRxBytes, null);
+        rxBytesCursor.moveToFirst();
+        long rxBytes = rxBytesCursor.getLong(0);
+
+        return rxBytes + txBytes;
     }
 
 

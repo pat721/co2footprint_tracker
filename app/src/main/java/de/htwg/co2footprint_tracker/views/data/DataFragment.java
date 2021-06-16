@@ -12,12 +12,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import java.util.HashSet;
-
 import de.htwg.co2footprint_tracker.R;
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.databinding.FragmentDataBinding;
-import de.htwg.co2footprint_tracker.helpers.PackageHelper;
 import de.htwg.co2footprint_tracker.model.Co2Equivalent;
 import de.htwg.co2footprint_tracker.model.MainCardModel;
 import de.htwg.co2footprint_tracker.utils.Constants;
@@ -75,7 +72,7 @@ public class DataFragment extends Fragment {
     }
 
     private void bindTodayData() {
-        final long todayReceivedBytes = databaseHelper.getReceivedBytesForToday();
+        final long todayReceivedBytes = databaseHelper.getTotalBytesForToday();
         final double todayEnergyConsumption = databaseHelper.getEnergyConsumptionForToday();
         binding.setMainCardModel(new MainCardModel(todayReceivedBytes, todayEnergyConsumption));
     }

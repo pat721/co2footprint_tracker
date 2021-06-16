@@ -18,8 +18,9 @@ public class UnitUtils {
     /**
      * @return unix timestamp converted to midnight
      * */
-    public static long getMidnightTimestamp(long timestamp) {
-        return timestamp - timestamp % 86400; // 24 * 60 * 60 sec in one day
+    public static long getMidnightTimestamp() {
+        long now = System.currentTimeMillis() / 1000;
+        return now - now % 86400; // 24 * 60 * 60 sec in one day
     }
 
 }
