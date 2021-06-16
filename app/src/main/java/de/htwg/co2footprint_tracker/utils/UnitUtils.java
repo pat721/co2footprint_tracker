@@ -1,6 +1,6 @@
 package de.htwg.co2footprint_tracker.utils;
 
-public class StringUtils {
+public class UnitUtils {
 
     public static String humanReadableByteCountSI(long bytes) {
 
@@ -12,6 +12,14 @@ public class StringUtils {
             return (bytes / 1024) + " KB";
         } else
             return bytes + " b";
+    }
+
+
+    /**
+     * @return unix timestamp converted to midnight
+     * */
+    public static long getMidnightTimestamp(long timestamp) {
+        return timestamp - timestamp % 86400; // 24 * 60 * 60 sec in one day
     }
 
 }

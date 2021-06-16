@@ -8,12 +8,18 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 
 import de.htwg.co2footprint_tracker.enums.DatabaseInterval;
 import de.htwg.co2footprint_tracker.model.Package;
+import de.htwg.co2footprint_tracker.utils.Co2CalculationUtils;
+import de.htwg.co2footprint_tracker.utils.UnitUtils;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -62,6 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Adds the data on a per app base to the database.
+     *
      * @param packageModel
      */
     public void addData(Package packageModel) {
@@ -102,6 +109,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Method adds and cumulates the data on a app/connection-type/date base.
+     *
      * @param packageModel
      */
     public void cumulateDailyData(ContentValues contentValues, Package packageModel) {
@@ -227,6 +235,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    /**
+     * @return energy consumption in g co2 for entire track record
+     */
+    public Double getTotalEnergyConsumption() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " +
+                " SUM(" + ENERGY_CONSUMPTION + ") as " + ENERGY_CONSUMPTION +
+                " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE;
+        Cursor data = db.rawQuery(query, null);
+        data.moveToFirst();
+        return data.getDouble(0);
+    }
+
+
+
+    /**
+     * @return energy consumption in g co2 for current day
+     */
+    public Double getEnergyConsumptionForToday() {
+        long oneDayAgo = (System.currentTimeMillis() / 1000L) - 86400; //time now - 24 hrs as seconds
+
+        long now =  System.currentTimeMillis() / 1000;
+        long todayMidnightTimestamp = UnitUtils.getMidnightTimestamp(now);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " +
+                " SUM(" + ENERGY_CONSUMPTION + ") as " + ENERGY_CONSUMPTION +
+                " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE +
+                " WHERE "+ TIMESTAMP  + " < " + todayMidnightTimestamp;
+        Cursor data = db.rawQuery(query, null);
+        data.moveToFirst();
+        return data.getDouble(0);
+    }
+
+
     public Cursor getData(DatabaseInterval databaseInterval) {
 
         String requestedTable;
@@ -309,6 +352,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return reveivedBytes;
     }
 
+    /**
+     * clears entries older than one day from the 'minute_table'
+     **/
+    public void clearOldDbEntries() {
+        long oneDayAgo = (System.currentTimeMillis() / 1000L) - 86400; //time now minus 24 hrs in seconds
+        String query = "DELETE FROM TABLE " + TABLE_NAME_DATA_PER_MINUTE_TABLE + " WHERE " + TIMESTAMP + " < " + oneDayAgo;
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {

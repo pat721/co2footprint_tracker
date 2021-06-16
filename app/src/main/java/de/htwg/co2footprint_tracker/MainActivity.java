@@ -47,11 +47,9 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.data:
                         navigateToFragment(DataFragment.getInstance());
-                        LocationHelper.getInstance(MainActivity.this).updateCurrentAdminArea();
                         return true;
                     case R.id.tips:
                         navigateToFragment(TipsFragment.getInstance());
-                        LocationHelper.getInstance(MainActivity.this).updateCurrentAdminArea();
                         return true;
                 }
                 return false;
@@ -77,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         PermissionHelper ph = new PermissionHelper(this);
         ph.processPermissionHandling();
+        LocationHelper.getInstance(MainActivity.this).updateCurrentAdminArea();
     }
 
     @Override
