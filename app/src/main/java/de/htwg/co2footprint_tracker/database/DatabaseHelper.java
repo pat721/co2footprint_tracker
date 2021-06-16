@@ -108,12 +108,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String query = "SELECT * FROM " + TABLE_NAME_DATA_PER_DAY_TABLE + " WHERE " + MERGE_KEY + " = " + generateMergeKey(packageModel);
+        String query = "SELECT * FROM " + TABLE_NAME_DATA_PER_DAY_TABLE + " WHERE " + MERGE_KEY + " = '" + generateMergeKey(packageModel) + "'";
         SQLiteDatabase db1 = this.getWritableDatabase();
         Cursor cursor = db1.rawQuery(query, null);
         cursor.moveToFirst();
 
-        if (cursor.isNull(0)) {
+        if (cursor.getCount() <= 0) {
             db.insert(TABLE_NAME_DATA_PER_DAY_TABLE, null, contentValues);
         } else {
             long rbw = cursor.getLong(cursor.getColumnIndex(RECEIVED_BYTES_WIFI));
@@ -128,23 +128,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             long tpw = cursor.getLong(cursor.getColumnIndex(TRANSMITTED_PACKETS_WIFI));
             long tpm = cursor.getLong(cursor.getColumnIndex(TRANSMITTED_PACKETS_MOBILE));
             long tpt = cursor.getLong(cursor.getColumnIndex(TRANSMITTED_PACKETS_TOTAL));
-            long energyConsumption = cursor.getLong(cursor.getColumnIndex(ENERGY_CONSUMPTION));
+            double energyConsumption = cursor.getDouble(cursor.getColumnIndex(ENERGY_CONSUMPTION));
 
             String cumulateDailyData = "UPDATE " + TABLE_NAME_DATA_PER_DAY_TABLE + " SET " +
-                    RECEIVED_BYTES_WIFI + " = " + (rbw + packageModel.getReceivedBytesWifi()) + " " +
-                    RECEIVED_BYTES_MOBILE + " = " + (rbm + packageModel.getReceivedBytesMobile()) + " " +
-                    RECEIVED_BYTES_TOTAL + " = " + (rbt + packageModel.getReceivedBytesTotal()) + " " +
-                    TRANSMITTED_BYTES_WIFI + " = " + (tbw + packageModel.getTransmittedBytesWifi()) + " " +
-                    TRANSMITTED_BYTES_MOBILE + " = " + (tbm + packageModel.getTransmittedBytesMobile()) + " " +
-                    TRANSMITTED_BYTES_TOTAL + " = " + (tmt + packageModel.getTransmittedBytesTotal()) + " " +
-                    RECEIVED_PACKETS_WIFI + " = " + (rpw + packageModel.getReceivedPacketsWifi()) + " " +
-                    RECEIVED_PACKETS_MOBILE + " = " + (rpm + packageModel.getReceivedPacketsMobile()) + " " +
-                    RECEIVED_PACKETS_TOTAL + " = " + (rpt + packageModel.getReceivedPacketsTotal()) + " " +
-                    TRANSMITTED_PACKETS_WIFI + " = " + (tpw + packageModel.getTransmittedPacketsWifi()) + " " +
-                    TRANSMITTED_PACKETS_MOBILE + " = " + (tpm + packageModel.getTransmittedPacketsMobile()) + " " +
-                    TRANSMITTED_PACKETS_TOTAL + " = " + (tpt + packageModel.getTransmittedPacketsTotal()) + " " +
+                    RECEIVED_BYTES_WIFI + " = " + (rbw + packageModel.getReceivedBytesWifi()) + " ," +
+                    RECEIVED_BYTES_MOBILE + " = " + (rbm + packageModel.getReceivedBytesMobile()) + " ," +
+                    RECEIVED_BYTES_TOTAL + " = " + (rbt + packageModel.getReceivedBytesTotal()) + " ," +
+                    TRANSMITTED_BYTES_WIFI + " = " + (tbw + packageModel.getTransmittedBytesWifi()) + " ," +
+                    TRANSMITTED_BYTES_MOBILE + " = " + (tbm + packageModel.getTransmittedBytesMobile()) + " ," +
+                    TRANSMITTED_BYTES_TOTAL + " = " + (tmt + packageModel.getTransmittedBytesTotal()) + " ," +
+                    RECEIVED_PACKETS_WIFI + " = " + (rpw + packageModel.getReceivedPacketsWifi()) + " ," +
+                    RECEIVED_PACKETS_MOBILE + " = " + (rpm + packageModel.getReceivedPacketsMobile()) + " ," +
+                    RECEIVED_PACKETS_TOTAL + " = " + (rpt + packageModel.getReceivedPacketsTotal()) + " ," +
+                    TRANSMITTED_PACKETS_WIFI + " = " + (tpw + packageModel.getTransmittedPacketsWifi()) + " ," +
+                    TRANSMITTED_PACKETS_MOBILE + " = " + (tpm + packageModel.getTransmittedPacketsMobile()) + " ," +
+                    TRANSMITTED_PACKETS_TOTAL + " = " + (tpt + packageModel.getTransmittedPacketsTotal()) + " ," +
                     ENERGY_CONSUMPTION + " = " + (energyConsumption + packageModel.getEnergyConsumption()) +
-                    " WHERE " + MERGE_KEY + " = " + generateMergeKey(packageModel);
+                    " WHERE " + MERGE_KEY + " = '" + generateMergeKey(packageModel) + "'";
             db.execSQL(cumulateDailyData);
         }
     }
@@ -189,7 +189,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TRANSMITTED_PACKETS_MOBILE + " TEXT" + "," +
                 TRANSMITTED_PACKETS_TOTAL + " TEXT" + "," +
                 ENERGY_CONSUMPTION + " REAL" + "," +
-                CONNECTION_TYPE + " TEXT" +
+                CONNECTION_TYPE + " TEXT" + "," +
+                MERGE_KEY + " TEXT" +
                 ")";
         db.execSQL(createTable);
     }
