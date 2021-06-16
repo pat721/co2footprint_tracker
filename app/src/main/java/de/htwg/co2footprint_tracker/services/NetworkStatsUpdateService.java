@@ -15,7 +15,6 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
-import de.htwg.co2footprint_tracker.enums.DatabaseInterval;
 import de.htwg.co2footprint_tracker.helpers.ConnectionHelper;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
@@ -195,7 +194,7 @@ public class NetworkStatsUpdateService extends IntentService {
                 String adminArea = PreferenceManagerHelper.getAdminArea(context);
                 packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, totalBytes, adminArea));
                 packet.setTimestamp(timeStamp);
-                databaseHelper.addData(DatabaseInterval.MINUTE, packet);
+                databaseHelper.addData(packet);
             }
         }
     }

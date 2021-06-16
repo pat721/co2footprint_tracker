@@ -7,10 +7,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 
 import de.htwg.co2footprint_tracker.enums.DatabaseInterval;
 import de.htwg.co2footprint_tracker.model.Package;
+import de.htwg.co2footprint_tracker.utils.Co2CalculationUtils;
+import de.htwg.co2footprint_tracker.utils.UnitUtils;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -41,6 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TRANSMITTED_PACKETS_TOTAL = "transmitted_packets_total";
     private static final String ENERGY_CONSUMPTION = "energy_consumption";
     private static final String CONNECTION_TYPE = "connection_type";
+    private static final String MERGE_KEY = "merge_key";
 
     private static DatabaseHelper databaseHelperInstance = null;
 
@@ -56,22 +66,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean addData(DatabaseInterval databaseInterval, Package packageModel) {
+    /**
+     * Adds the data on a per app base to the database.
+     *
+     * @param packageModel
+     */
+    public void addData(Package packageModel) {
 
         Log.d(TAG, "attemting to addData");
-
-        String affectedTable = "";
-        if (databaseInterval == DatabaseInterval.MINUTE) {
-            affectedTable = TABLE_NAME_DATA_PER_MINUTE_TABLE;
-        } else if (databaseInterval == DatabaseInterval.HOUR) {
-            affectedTable = TABLE_NAME_DATA_PER_HOUR_TABLE;
-        } else if (databaseInterval == DatabaseInterval.DAY) {
-            affectedTable = TABLE_NAME_DATA_PER_DAY_TABLE;
-        } else if (databaseInterval == DatabaseInterval.WEEK) {
-            affectedTable = TABLE_NAME_DATA_PER_WEEK_TABLE;
-        } else {
-            affectedTable = TABLE_NAME_DATA_PER_MONTH_TABLE; //Default
-        }
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -96,14 +98,74 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(TRANSMITTED_PACKETS_TOTAL, packageModel.getTransmittedPacketsTotal());
         contentValues.put(ENERGY_CONSUMPTION, packageModel.getEnergyConsumption());
         contentValues.put(CONNECTION_TYPE, packageModel.getConnectionType().toString());
+        contentValues.put(MERGE_KEY, generateMergeKey(packageModel));
 
-        Log.d(TAG, "addData: Adding " + packageModel.getPackageName() + " to " + affectedTable);
+        cumulateDailyData(contentValues, packageModel);
 
-        long result = db.insert(affectedTable, null, contentValues);
+        Log.d(TAG, "addData: Adding " + packageModel.getPackageName() + " to " + TABLE_NAME_DATA_PER_MINUTE_TABLE);
 
-        //if date as inserted incorrectly it will return -1
-        return result != -1;
+        db.insert(TABLE_NAME_DATA_PER_MINUTE_TABLE, null, contentValues);
     }
+
+    /**
+     * Method adds and cumulates the data on a app/connection-type/date base.
+     *
+     * @param packageModel
+     */
+    public void cumulateDailyData(ContentValues contentValues, Package packageModel) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_NAME_DATA_PER_DAY_TABLE + " WHERE " + MERGE_KEY + " = '" + generateMergeKey(packageModel) + "'";
+        SQLiteDatabase db1 = this.getWritableDatabase();
+        Cursor cursor = db1.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        if (cursor.getCount() <= 0) {
+            db.insert(TABLE_NAME_DATA_PER_DAY_TABLE, null, contentValues);
+        } else {
+            long rbw = cursor.getLong(cursor.getColumnIndex(RECEIVED_BYTES_WIFI));
+            long rbm = cursor.getLong(cursor.getColumnIndex(RECEIVED_BYTES_MOBILE));
+            long rbt = cursor.getLong(cursor.getColumnIndex(RECEIVED_BYTES_TOTAL));
+            long tbw = cursor.getLong(cursor.getColumnIndex(TRANSMITTED_BYTES_WIFI));
+            long tbm = cursor.getLong(cursor.getColumnIndex(TRANSMITTED_BYTES_MOBILE));
+            long tmt = cursor.getLong(cursor.getColumnIndex(TRANSMITTED_BYTES_TOTAL));
+            long rpw = cursor.getLong(cursor.getColumnIndex(RECEIVED_PACKETS_WIFI));
+            long rpm = cursor.getLong(cursor.getColumnIndex(RECEIVED_PACKETS_MOBILE));
+            long rpt = cursor.getLong(cursor.getColumnIndex(RECEIVED_PACKETS_TOTAL));
+            long tpw = cursor.getLong(cursor.getColumnIndex(TRANSMITTED_PACKETS_WIFI));
+            long tpm = cursor.getLong(cursor.getColumnIndex(TRANSMITTED_PACKETS_MOBILE));
+            long tpt = cursor.getLong(cursor.getColumnIndex(TRANSMITTED_PACKETS_TOTAL));
+            double energyConsumption = cursor.getDouble(cursor.getColumnIndex(ENERGY_CONSUMPTION));
+
+            String cumulateDailyData = "UPDATE " + TABLE_NAME_DATA_PER_DAY_TABLE + " SET " +
+                    RECEIVED_BYTES_WIFI + " = " + (rbw + packageModel.getReceivedBytesWifi()) + " ," +
+                    RECEIVED_BYTES_MOBILE + " = " + (rbm + packageModel.getReceivedBytesMobile()) + " ," +
+                    RECEIVED_BYTES_TOTAL + " = " + (rbt + packageModel.getReceivedBytesTotal()) + " ," +
+                    TRANSMITTED_BYTES_WIFI + " = " + (tbw + packageModel.getTransmittedBytesWifi()) + " ," +
+                    TRANSMITTED_BYTES_MOBILE + " = " + (tbm + packageModel.getTransmittedBytesMobile()) + " ," +
+                    TRANSMITTED_BYTES_TOTAL + " = " + (tmt + packageModel.getTransmittedBytesTotal()) + " ," +
+                    RECEIVED_PACKETS_WIFI + " = " + (rpw + packageModel.getReceivedPacketsWifi()) + " ," +
+                    RECEIVED_PACKETS_MOBILE + " = " + (rpm + packageModel.getReceivedPacketsMobile()) + " ," +
+                    RECEIVED_PACKETS_TOTAL + " = " + (rpt + packageModel.getReceivedPacketsTotal()) + " ," +
+                    TRANSMITTED_PACKETS_WIFI + " = " + (tpw + packageModel.getTransmittedPacketsWifi()) + " ," +
+                    TRANSMITTED_PACKETS_MOBILE + " = " + (tpm + packageModel.getTransmittedPacketsMobile()) + " ," +
+                    TRANSMITTED_PACKETS_TOTAL + " = " + (tpt + packageModel.getTransmittedPacketsTotal()) + " ," +
+                    ENERGY_CONSUMPTION + " = " + (energyConsumption + packageModel.getEnergyConsumption()) +
+                    " WHERE " + MERGE_KEY + " = '" + generateMergeKey(packageModel) + "'";
+            db.execSQL(cumulateDailyData);
+        }
+    }
+
+    private String generateMergeKey(Package packageModel) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.GERMANY);
+        Date packageTimestampDate = new Date(packageModel.getTimestamp() * 1000);
+        String packageTimestamp = sdf.format(packageTimestampDate);
+
+        return packageModel.getPackageUid() + "" + packageModel.getConnectionType() + "" + packageTimestamp + "";
+    }
+
 
     private void createTables(SQLiteDatabase db) {
         createTableFor(TABLE_NAME_DATA_PER_MINUTE_TABLE, db);
@@ -135,7 +197,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TRANSMITTED_PACKETS_MOBILE + " TEXT" + "," +
                 TRANSMITTED_PACKETS_TOTAL + " TEXT" + "," +
                 ENERGY_CONSUMPTION + " REAL" + "," +
-                CONNECTION_TYPE + " TEXT" +
+                CONNECTION_TYPE + " TEXT" + "," +
+                MERGE_KEY + " TEXT" +
                 ")";
         db.execSQL(createTable);
     }
@@ -169,6 +232,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         clearDb();
         onUpgrade(db, db.getVersion(), db.getVersion() + 1);
+    }
+
+
+    /**
+     * @return energy consumption in g co2 for entire track record
+     */
+    public Double getTotalEnergyConsumption() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " +
+                " SUM(" + ENERGY_CONSUMPTION + ") as " + ENERGY_CONSUMPTION +
+                " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE;
+        Cursor data = db.rawQuery(query, null);
+        data.moveToFirst();
+        return data.getDouble(0);
+    }
+
+
+
+    /**
+     * @return energy consumption in g co2 for current day
+     */
+    public Double getEnergyConsumptionForToday() {
+        long oneDayAgo = (System.currentTimeMillis() / 1000L) - 86400; //time now - 24 hrs as seconds
+
+        long now =  System.currentTimeMillis() / 1000;
+        long todayMidnightTimestamp = UnitUtils.getMidnightTimestamp(now);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " +
+                " SUM(" + ENERGY_CONSUMPTION + ") as " + ENERGY_CONSUMPTION +
+                " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE +
+                " WHERE "+ TIMESTAMP  + " < " + todayMidnightTimestamp;
+        Cursor data = db.rawQuery(query, null);
+        data.moveToFirst();
+        return data.getDouble(0);
     }
 
 
@@ -254,6 +352,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return reveivedBytes;
     }
 
+    /**
+     * clears entries older than one day from the 'minute_table'
+     **/
+    public void clearOldDbEntries() {
+        long oneDayAgo = (System.currentTimeMillis() / 1000L) - 86400; //time now minus 24 hrs in seconds
+        String query = "DELETE FROM TABLE " + TABLE_NAME_DATA_PER_MINUTE_TABLE + " WHERE " + TIMESTAMP + " < " + oneDayAgo;
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {

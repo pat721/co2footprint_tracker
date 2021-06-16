@@ -1,6 +1,6 @@
 package de.htwg.co2footprint_tracker.model;
 
-import de.htwg.co2footprint_tracker.utils.StringUtils;
+import de.htwg.co2footprint_tracker.utils.UnitUtils;
 
 public class MainCardModel {
 
@@ -13,7 +13,7 @@ public class MainCardModel {
     }
 
     public String getTotalReceivedBytes() {
-        return StringUtils.humanReadableByteCountSI(totalReceivedBytes);
+        return UnitUtils.humanReadableByteCountSI(totalReceivedBytes);
     }
 
     public String getTotalEnergyConsumption() {
