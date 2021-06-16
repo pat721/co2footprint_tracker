@@ -6,4 +6,5 @@
     <color name="my_app_error_color">#CD2F2F</color>
     <color name="my_app_background_color">#C3D6D2</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="transparent">@android:color/transparent</color>
 </resources>
