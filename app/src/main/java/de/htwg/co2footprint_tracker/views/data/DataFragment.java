@@ -75,13 +75,14 @@ public class DataFragment extends Fragment {
     }
 
     private void bindTodayData() {
-        HashSet<Integer> applicationUids = PackageHelper.getApplicationUids(getContext());
-        final long totalReceivedBytes = databaseHelper.getTotalReceivedBytes(applicationUids);
-        final double totalEnergyConsumption = databaseHelper.getTotalEnergyConsumption(applicationUids);
-        binding.setMainCardModel(new MainCardModel(totalReceivedBytes, totalEnergyConsumption));
+        final long todayReceivedBytes = databaseHelper.getReceivedBytesForToday();
+        final double todayEnergyConsumption = databaseHelper.getEnergyConsumptionForToday();
+        binding.setMainCardModel(new MainCardModel(todayReceivedBytes, todayEnergyConsumption));
     }
 
     private void bindTotalData() {
-        // TODO bind total data like in today data
+        final long totalReceivedBytes = databaseHelper.getTotalReceivedBytes();
+        final double totalEnergyConsumption = databaseHelper.getTotalEnergyConsumption();
+        binding.setMainCardModel(new MainCardModel(totalReceivedBytes, totalEnergyConsumption));
     }
 }

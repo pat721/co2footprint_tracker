@@ -8,17 +8,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 
 import de.htwg.co2footprint_tracker.enums.DatabaseInterval;
 import de.htwg.co2footprint_tracker.model.Package;
-import de.htwg.co2footprint_tracker.utils.Co2CalculationUtils;
 import de.htwg.co2footprint_tracker.utils.UnitUtils;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -166,7 +161,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return packageModel.getPackageUid() + "" + packageModel.getConnectionType() + "" + packageTimestamp + "";
     }
 
-
     private void createTables(SQLiteDatabase db) {
         createTableFor(TABLE_NAME_DATA_PER_MINUTE_TABLE, db);
         createTableFor(TABLE_NAME_DATA_PER_HOUR_TABLE, db);
@@ -248,6 +242,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data.getDouble(0);
     }
 
+    /**
+     * @return received bytes for the entire track record
+     */
+    public Long getTotalReceivedBytes() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " +
+                " SUM(" + RECEIVED_BYTES_TOTAL + ") as " + RECEIVED_BYTES_TOTAL +
+                " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE;
+        Cursor data = db.rawQuery(query, null);
+        data.moveToFirst();
+        return data.getLong(0);
+    }
 
 
     /**
@@ -256,17 +262,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Double getEnergyConsumptionForToday() {
         long oneDayAgo = (System.currentTimeMillis() / 1000L) - 86400; //time now - 24 hrs as seconds
 
-        long now =  System.currentTimeMillis() / 1000;
+        long now = System.currentTimeMillis() / 1000;
         long todayMidnightTimestamp = UnitUtils.getMidnightTimestamp(now);
 
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " +
                 " SUM(" + ENERGY_CONSUMPTION + ") as " + ENERGY_CONSUMPTION +
                 " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE +
-                " WHERE "+ TIMESTAMP  + " < " + todayMidnightTimestamp;
+                " WHERE " + TIMESTAMP + " < " + todayMidnightTimestamp;
         Cursor data = db.rawQuery(query, null);
         data.moveToFirst();
         return data.getDouble(0);
+    }
+
+    /**
+     * @return received bytes for the current day
+     */
+    public Long getReceivedBytesForToday() {
+        long oneDayAgo = (System.currentTimeMillis() / 1000L) - 86400; //time now - 24 hrs as seconds
+
+        long now = System.currentTimeMillis() / 1000;
+        long todayMidnightTimestamp = UnitUtils.getMidnightTimestamp(now);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " +
+                " SUM(" + RECEIVED_BYTES_TOTAL + ") as " + RECEIVED_BYTES_TOTAL +
+                " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE +
+                " WHERE " + TIMESTAMP + " < " + todayMidnightTimestamp;
+        Cursor data = db.rawQuery(query, null);
+        data.moveToFirst();
+        return data.getLong(0);
     }
 
 
