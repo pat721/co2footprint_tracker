@@ -63,7 +63,6 @@ public class DataFragment extends Fragment {
                     break;
             }
         });
-
         return binding.getRoot();
     }
 

@@ -12,11 +12,11 @@ public class MainCardModel {
         this.totalEnergyConsumption = totalEnergyConsumption;
     }
 
-    public String getTotalReceivedBytes() {
+    public String getReceivedBytes() {
         return UnitUtils.humanReadableByteCountSI(totalReceivedBytes);
     }
 
     public String getTotalEnergyConsumption() {
-        return totalEnergyConsumption + " g";
+        return UnitUtils.RoundTo2Decimals(totalEnergyConsumption) + " g";
     }
 }

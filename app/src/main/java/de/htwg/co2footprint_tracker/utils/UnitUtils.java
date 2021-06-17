@@ -1,5 +1,7 @@
 package de.htwg.co2footprint_tracker.utils;
 
+import java.text.DecimalFormat;
+
 public class UnitUtils {
 
     public static String humanReadableByteCountSI(long bytes) {
@@ -20,6 +22,11 @@ public class UnitUtils {
      * */
     public static long getMidnightTimestamp(long timestamp) {
         return timestamp - timestamp % 86400; // 24 * 60 * 60 sec in one day
+    }
+
+    public static double RoundTo2Decimals(double val) {
+        DecimalFormat df2 = new DecimalFormat("###.##");
+        return Double.parseDouble(df2.format(val));
     }
 
 }
