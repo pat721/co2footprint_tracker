@@ -25,9 +25,9 @@ public class UnitUtils {
         return now - now % 86400; // 24 * 60 * 60 sec in one day
     }
 
-    public static double RoundTo2Decimals(double val) {
+    public static String RoundTo2Decimals(double val) {
         DecimalFormat df2 = new DecimalFormat("###.##");
-        return Double.parseDouble(df2.format(val));
+        return df2.format(val);
     }
 
 }
