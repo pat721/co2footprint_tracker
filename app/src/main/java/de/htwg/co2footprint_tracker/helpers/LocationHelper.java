@@ -1,5 +1,6 @@
 package de.htwg.co2footprint_tracker.helpers;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -36,7 +37,7 @@ public class LocationHelper {
     }
 
     public static LocationHelper getInstance(Activity activity) {
-        if (locationHelper == null){
+        if (locationHelper == null) {
             locationHelper = new LocationHelper(activity);
         }
         return locationHelper;
@@ -46,11 +47,11 @@ public class LocationHelper {
     public void updateCurrentAdminArea() {
         Log.e(Constants.LOG.TAG, "Getting Location");
 
+        //duplicated code because android needs to check the permisstion each time it does use the permission
         if (ActivityCompat.checkSelfPermission(activity.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(activity.getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.e(Constants.LOG.TAG, "Location Permission error");
-
-            //TODO --> move to permission helper
+            
             ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, Constants.PERMISSION.LOCATION_REQUEST_CODE);
             return;
         }
@@ -69,7 +70,7 @@ public class LocationHelper {
 
 
                         PreferenceManagerHelper.setAdminArea(activity.getApplicationContext(), addresses.get(0).getAdminArea());
-                        Log.e(Constants.LOG.TAG, "Area:" + addresses.get(0).getAdminArea() + " was set to storage");
+                        Log.e(Constants.LOG.TAG, "Area: \"" + addresses.get(0).getAdminArea() + "\" was set to storage");
 
 
                     } catch (IOException e) {
