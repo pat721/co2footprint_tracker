@@ -62,7 +62,6 @@ public class Co2CalculationUtils {
         switch (adminArea) {
             case "Baden-Württemberg":
                 returnVal = Constants.ELECTRICITY.BADEN_WUERTTEMBERG_FACTOR * energyConsumption;
-                Log.e(Constants.LOG.TAG, "calculated c02 in bawü");
                 break;
             case "Bayern":
                 returnVal = Constants.ELECTRICITY.BAYERN_FACTOR * energyConsumption;
@@ -95,7 +94,6 @@ public class Co2CalculationUtils {
                 returnVal = Constants.ELECTRICITY.LICHTENSTEIN_FACTOR * energyConsumption;
                 break;
             default:
-                Log.e(Constants.LOG.TAG, "calculated c02 in somewhere");
                 returnVal = calculateTotalEnergyConsumption(time, mb) * KHW_TO_CO2_CONVERSION_VALUE;
         }
 
