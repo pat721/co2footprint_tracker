@@ -1,11 +1,11 @@
 package de.htwg.co2footprint_tracker.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.HashSet;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
-import de.htwg.co2footprint_tracker.helpers.PreferenceManagerHelper;
 import de.htwg.co2footprint_tracker.model.MainCardModel;
 
 public class Co2CalculationUtils {
@@ -49,9 +49,54 @@ public class Co2CalculationUtils {
      * @return energy consumption in g co2
      */
     public double calculateTotalEnergyConsumption(double time, long bytes, String adminArea) {
-        double mb = bytesToGB(bytes);
 
-        double returnVal = calculateTotalEnergyConsumption(time, mb) * KHW_TO_CO2_CONVERSION_VALUE * getAdminAreaCalculationFactor(adminArea);
+        double mb = bytesToGB(bytes);
+        double energyConsumption = calculateTotalEnergyConsumption(time, mb);
+        double returnVal = 0;
+
+        if (adminArea == null) { //base case
+            Log.e(Constants.LOG.TAG, "calculated c02 with null");
+            return calculateTotalEnergyConsumption(time, mb) * KHW_TO_CO2_CONVERSION_VALUE;
+        }
+
+        switch (adminArea) {
+            case "Baden-Württemberg":
+                returnVal = Constants.ELECTRICITY.BADEN_WUERTTEMBERG_FACTOR * energyConsumption;
+                break;
+            case "Bayern":
+                returnVal = Constants.ELECTRICITY.BAYERN_FACTOR * energyConsumption;
+                break;
+            case "Thurgau": //thurgau
+                returnVal = Constants.ELECTRICITY.THURGAU_FACTOR * energyConsumption;
+                break;
+            case "Vorarlberg": //vorarlberg
+                returnVal = Constants.ELECTRICITY.VORARLBERG_FACTOR * energyConsumption;
+                break;
+            case "Appenzell Innerrhoden":
+                returnVal = Constants.ELECTRICITY.APPENZELL_INN_FACTOR * energyConsumption;
+                break;
+            case "Appenzell Ausserrhoden":
+                returnVal = Constants.ELECTRICITY.APPENZELL_AUSS_FACTOR * energyConsumption;
+                break;
+            case "Zürich":
+                returnVal = Constants.ELECTRICITY.ZUERICH_FACTOR * energyConsumption;
+                break;
+            case "Schaffhausen":
+                returnVal = Constants.ELECTRICITY.SCHAFFHAUSEN_FACTOR * energyConsumption;
+                break;
+            case "Sankt Gallen":
+                returnVal = Constants.ELECTRICITY.ST_GALLEN_FACTOR * energyConsumption;
+                break;
+            case "Schaan": //lichtenstein
+            case "Balzers":
+            case "Ruggell":
+            case "Triesen":
+                returnVal = Constants.ELECTRICITY.LICHTENSTEIN_FACTOR * energyConsumption;
+                break;
+            default:
+                returnVal = calculateTotalEnergyConsumption(time, mb) * KHW_TO_CO2_CONVERSION_VALUE;
+        }
+
         return returnVal;
     }
 
@@ -75,11 +120,5 @@ public class Co2CalculationUtils {
         return bytes / 1024.0 / 1024.0 / 1024.0;
     }
 
-
-    public double getAdminAreaCalculationFactor(String adminArea) {
-
-        //TODO Swich-Case for different locations
-        return 1;
-    }
 
 }

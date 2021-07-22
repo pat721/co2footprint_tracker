@@ -32,7 +32,7 @@ public class PermissionHelper {
     }
 
     private boolean permissionsGranted() {
-        return hasNetworkHistoryPermission() && hasPhoneStatsPermission();
+        return hasNetworkHistoryPermission() && hasPhoneStatsPermission() && hasLocationPermission();
     }
 
     private void requestPermissions() {
@@ -40,11 +40,18 @@ public class PermissionHelper {
             //nop
         } else if (!hasPhoneStatsPermission()) {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_PHONE_STATE}, Constants.PERMISSION.REQUEST_CODE);
+        } else if (hasLocationPermission()) {
+            ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, Constants.PERMISSION.LOCATION_REQUEST_CODE);
         }
     }
 
     private boolean hasPhoneStatsPermission() {
         return !(ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED);
+    }
+
+    public boolean hasLocationPermission() {
+        return ActivityCompat.checkSelfPermission(activity.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(activity.getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
     }
 
     private boolean hasNetworkHistoryPermission() {

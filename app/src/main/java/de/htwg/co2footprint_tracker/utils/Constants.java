@@ -27,4 +27,17 @@ public class Constants {
     public interface LOG {
         String TAG = "FootprintTracker";
     }
+
+    public interface ELECTRICITY {
+        double VORARLBERG_FACTOR = 0.019528684;
+        double APPENZELL_AUSS_FACTOR = 0.014425932;
+        double APPENZELL_INN_FACTOR = 0.00223616;
+        double SCHAFFHAUSEN_FACTOR = 0.023133478;
+        double ST_GALLEN_FACTOR = 0.031782046;
+        double THURGAU_FACTOR = 0.010749989;
+        double ZUERICH_FACTOR = 0.013780631;
+        double BADEN_WUERTTEMBERG_FACTOR = 0.13439065;
+        double BAYERN_FACTOR = 0.04230199;
+        double LICHTENSTEIN_FACTOR = 0.028816243;
+    }
 }
