@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
@@ -24,15 +23,17 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:text="Here are some helpful tips which can help you to reduce your CO2 Footprint caused by your data usage."
             android:textSize="14sp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <ExpandableListView
+            android:id="@+id/expandable_tip_list"
             android:layout_width="match_parent"
-            android:layout_height= "match_parent"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="1" />
-
+            android:layout_height="match_parent"
+            android:childDivider="@android:color/transparent"
+            android:scrollbars="none"
+            android:choiceMode="singleChoice"
+            android:layoutDirection="rtl" />
     </LinearLayout>
 </layout>

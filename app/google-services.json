@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1017131584096",
+    "project_id": "co2footprint-tracker",
+    "storage_bucket": "co2footprint-tracker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1017131584096:android:06b75a337ae752c1dbd105",
+        "android_client_info": {
+          "package_name": "de.htwg.co2footprint_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1017131584096-9ukoa1v69ak1efqndjg47p512vuelofl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1r3_whzvDmGP2w59FMN3QpEVUyI-z7V0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1017131584096-9ukoa1v69ak1efqndjg47p512vuelofl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
