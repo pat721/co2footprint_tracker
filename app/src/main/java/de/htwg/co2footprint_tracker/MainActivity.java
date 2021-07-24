@@ -25,7 +25,7 @@ import de.htwg.co2footprint_tracker.helpers.LocationHelper;
 import de.htwg.co2footprint_tracker.helpers.PermissionHelper;
 import de.htwg.co2footprint_tracker.helpers.PreferenceManagerHelper;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
-import de.htwg.co2footprint_tracker.services.UpdateServiceSchedulerService;
+import de.htwg.co2footprint_tracker.services.NetworkStatsExecutorService;
 import de.htwg.co2footprint_tracker.utils.Constants;
 import de.htwg.co2footprint_tracker.views.data.DataFragment;
 import de.htwg.co2footprint_tracker.views.tips.TipsFragment;
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void stopTracking() {
-        stopService(new Intent(this, UpdateServiceSchedulerService.class));
+        foregroundServiceAction(Constants.ACTION.STOP_SERVICE);
         PreferenceManagerHelper.clearStoredStartTime(this);
         InitialBucketContainer.setNewRun(true);
         InitialBucketContainer.clearMappedPackageData();
@@ -129,12 +129,7 @@ public class MainActivity extends AppCompatActivity {
     private void startTracking() {
         PreferenceManagerHelper.setStartTime(this);
         Toast.makeText(this, "Tracking started!", Toast.LENGTH_LONG).show();
-        Log.e(Constants.LOG.TAG, "creating intent....");
-        Intent updateSchedulerIntent = new Intent(this, UpdateServiceSchedulerService.class);
-        updateSchedulerIntent.setAction(Constants.ACTION.UPDATE_SERVICE_SCHEDULER);
-        Log.e(Constants.LOG.TAG, "intent created, starting service...");
-        startService(updateSchedulerIntent);
-        Log.e(Constants.LOG.TAG, "service started");
+        foregroundServiceAction(Constants.ACTION.START_SERVICE);
     }
 
     public void navigateToFragment(@NonNull Fragment fragment) {
@@ -143,6 +138,25 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.content, fragment)
                 .addToBackStack(fragment.getClass().getName())
                 .commit();
+    }
+
+
+    private void foregroundServiceAction(String action) {
+
+        if (PreferenceManagerHelper.getServiceState(this).equals(Constants.PERSISTENCY.SERVICE_STOPPED)
+                && action.equals(Constants.ACTION.STOP_SERVICE)) {
+            return;
+        }
+
+        Intent foregroundServiceIntent = new Intent(this, NetworkStatsExecutorService.class);
+        foregroundServiceIntent.setAction(action);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(foregroundServiceIntent);
+        } else {
+            startService(foregroundServiceIntent);
+        }
+        Log.e(Constants.LOG.TAG, "service started with action: '" + action + "'");
     }
 
 }

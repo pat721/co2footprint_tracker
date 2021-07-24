@@ -11,6 +11,8 @@ public class Constants {
         String PACKAGE_LIST_UPDATED = "de.htwg.co2footprint_tracker.action.PACKAGE_LIST_UPDATED";
         String UPDATE_SERVICE_SCHEDULER = "de.htwg.co2footprint_tracker.action.UPDATE_SERVICE_SCHEDULER_STARTED";
         String RESTART_SCHEDULER_SERVICE = "de.htwg.co2footprint_tracker.action.RESTART_SCHEDULER_SERVICE";
+        String START_SERVICE = "START";
+        String STOP_SERVICE = "STOP";
     }
 
     public interface PARAMS {
@@ -22,6 +24,8 @@ public class Constants {
         String PREFERENCE_STARTING_TIME_KEY = "SAVED_START_TIME";
         String DEVICE_IS_TABLET = "DEVICE_IS_TABLET";
         String ADMINISTRATION_AREA = "ADMINISTRATION_AREA";
+        String SERVICE_STARTED = "STARTED";
+        String SERVICE_STOPPED = "STOPPED";
     }
 
     public interface LOG {

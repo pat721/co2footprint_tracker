@@ -53,10 +53,19 @@ public class PreferenceManagerHelper {
         editor.apply();
     }
 
-
     public static String getAdminArea(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPref.getString(Constants.PERSISTENCY.ADMINISTRATION_AREA, "");
     }
 
+    public static void setServiceState(Context context, String serviceState) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putString(Constants.PERSISTENCY.SERVICE_STARTED, serviceState);
+        editor.apply();
+    }
+
+    public static String getServiceState(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPref.getString(Constants.PERSISTENCY.SERVICE_STARTED, "");
+    }
 }
