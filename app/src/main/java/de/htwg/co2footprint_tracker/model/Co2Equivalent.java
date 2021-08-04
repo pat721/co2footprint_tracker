@@ -11,12 +11,14 @@ public class Co2Equivalent {
     private String value;
     private String label;
     private String description;
+    private String co2;
     private int image;
 
-    public Co2Equivalent(String value, String label, String description, int image) {
+    public Co2Equivalent(String value, String label, String description, String co2, int image) {
         this.value = value;
         this.label = label;
         this.description = description;
+        this.co2 = co2;
         this.image = image;
     }
 
@@ -25,25 +27,26 @@ public class Co2Equivalent {
         DatabaseHelper db = DatabaseHelper.getInstanceObject();
         double co2 = 0;
 
-        if (db != null){
-             co2 = db.getTotalEnergyConsumption();
+        if (db != null) {
+            co2 = db.getTotalEnergyConsumption();
         }
 
         //TODO get consuption for today and total toggle
 
+
         List<Co2Equivalent> co2Equivalents = new ArrayList<>();
-        co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 139), "km driven", "The use of your Smartphone generated 214.91 g of CO2 today. With this amount of produced CO2 you could have traveled 0.45 km by car.", R.drawable.car));
-        co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 201), "km flown","The use of your Smartphone generated 214.91 g of CO2 today. With this amount of produced CO2 you could have traveled 0.45 km by car.", R.drawable.plane));
-        co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 20), "hours lit","The use of your Smartphone generated 214.91 g of CO2 today. With this amount of produced CO2 you could have traveled 0.45 km by car.", R.drawable.bulb));
+        co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 139), "km driven", "The use of your Smartphone generated %s g of CO2 today. With this amount of produced CO2 you could have traveled %s km by car.", String.valueOf(co2), R.drawable.car));
+        co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 201), "km flown", "The use of your Smartphone generated %s g of CO2 today. With this amount of produced CO2 you could have traveled %s km by car.", String.valueOf(co2), R.drawable.plane));
+        co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 20), "hours lit", "The use of your Smartphone generated %s g of CO2 today. With this amount of produced CO2 you could have traveled %s km by car.", String.valueOf(co2), R.drawable.bulb));
         //https://www.livemint.com/news/world/your-netflix-habit-has-a-carbon-footprint-but-not-a-big-one-11623368952984.html
         // 1h netfix ~ 100g co2
-        co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 100), "hours netflix","The use of your Smartphone generated 214.91 g of CO2 today. With this amount of produced CO2 you could have traveled 0.45 km by car.", R.drawable.netflix));
+        co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 100), "hours netflix", "The use of your Smartphone generated %s g of CO2 today. With this amount of produced CO2 you could have traveled %s km by car.", String.valueOf(co2), R.drawable.netflix));
         // avg g CO2e/kWh in EU 2019: 255
         // 0,00925 kWh * 255 g CO2e/kWh = 2,35875
         // X g CO2e / 2,35875 g CO2e = X Times
-        co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 2.35875), "times charged","The use of your Smartphone generated 214.91 g of CO2 today. With this amount of produced CO2 you could have traveled 0.45 km by car.", R.drawable.charge));
+        co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 2.35875), "times charged", "The use of your Smartphone generated %s g of CO2 today. With this amount of produced CO2 you could have traveled %s km by car.", String.valueOf(co2), R.drawable.charge));
         //1 baum nimmt 200k g co2 auf
-        co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 200000), "trees planted","The use of your Smartphone generated 214.91 g of CO2 today. With this amount of produced CO2 you could have traveled 0.45 km by car.", R.drawable.tree));
+        co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 200000), "trees planted", "The use of your Smartphone generated %s g of CO2 today. With this amount of produced CO2 you could have traveled %s km by car.", String.valueOf(co2), R.drawable.tree));
 
         return co2Equivalents;
     }
@@ -72,15 +75,23 @@ public class Co2Equivalent {
         this.image = image;
     }
 
-    private static String buildCo2String(double co2, double quotient){
+    private static String buildCo2String(double co2, double quotient) {
         return UnitUtils.RoundTo2Decimals(co2 / quotient);
     }
 
     public String getDescription() {
-        return description;
+        return String.format(description, co2, value);
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCo2() {
+        return co2;
+    }
+
+    public void setCo2(String co2) {
+        this.co2 = co2;
     }
 }
