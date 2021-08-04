@@ -12,7 +12,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="16dp">
+
 
         <ImageView
             android:id="@+id/imageView"
@@ -20,17 +23,38 @@
             android:layout_height="86dp"
             android:contentDescription="@string/icon_of_co2_equivalent"
             app:imageResource="@{co2Equivalent.image}"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/imageView"
-            app:layout_constraintRight_toLeftOf="parent"
-            android:text="@{co2Equivalent.description}">
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            app:layout_constraintLeft_toRightOf="@id/imageView"
+            app:layout_constraintRight_toRightOf="parent">
 
-        </TextView>
+            <TextView
+                android:id="@+id/firstParagraph"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{co2Equivalent.description}"
+                tools:text="The use of your Smartphone generated 214.91 g of CO2 today. With this amount of produced CO2 you could have traveled 0.45 km by car.">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/secondParagraph"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{co2Equivalent.description}"
+                tools:text="The use of your Smartphone generated 214.91 g of CO2 today. With this amount of produced CO2 you could have traveled 0.45 km by car.">
+
+            </TextView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
