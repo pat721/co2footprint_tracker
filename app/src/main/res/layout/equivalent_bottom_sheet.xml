@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="co2Equivalent"
+            type="de.htwg.co2footprint_tracker.model.Co2Equivalent" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="55dp"
+            android:layout_height="86dp"
+            android:contentDescription="@string/icon_of_co2_equivalent"
+            app:imageResource="@{co2Equivalent.image}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/imageView"
+            app:layout_constraintRight_toLeftOf="parent"
+            android:text="@{co2Equivalent.description}">
+
+        </TextView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,16 +1,18 @@
 package de.htwg.co2footprint_tracker.helpers;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Process;
 import android.telephony.TelephonyManager;
 
 import de.htwg.co2footprint_tracker.enums.ConnectionType;
 
 /**
  * Check device's network connectivity and speed
- * @author emil http://stackoverflow.com/users/220710/emil
  *
+ * @author emil http://stackoverflow.com/users/220710/emil
  */
 public class ConnectionHelper {
 
@@ -45,6 +47,8 @@ public class ConnectionHelper {
 
         TelephonyManager mTelephonyManager = (TelephonyManager)
                 context.getSystemService(Context.TELEPHONY_SERVICE);
+        int permission = context.checkPermission("android.permission.READ_PHONE_STATE", Process.myPid(), Process.myUid());
+        if (permission == PackageManager.PERMISSION_DENIED) return ConnectionType.WIFI;
         int networkType = mTelephonyManager.getNetworkType();
         switch (networkType) {
             case TelephonyManager.NETWORK_TYPE_GPRS:
