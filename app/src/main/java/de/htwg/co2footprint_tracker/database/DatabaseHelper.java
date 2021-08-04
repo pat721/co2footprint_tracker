@@ -60,6 +60,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return databaseHelperInstance;
     }
 
+    public static DatabaseHelper getInstanceObject(){
+        return databaseHelperInstance;
+    }
+
 
     /**
      * Adds the data on a per app base to the database.
