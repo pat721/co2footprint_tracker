@@ -193,7 +193,7 @@ public class NetworkStatsUpdateService extends IntentService {
 
                 String adminArea = PreferenceManagerHelper.getAdminArea(context);
                 packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, totalBytes, adminArea));
-                packet.setTimestamp(timeStamp);
+                packet.setTimestamp(timeStamp/1000);
                 databaseHelper.addData(packet);
             }
         }
