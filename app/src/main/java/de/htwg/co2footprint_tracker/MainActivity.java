@@ -1,6 +1,9 @@
 package de.htwg.co2footprint_tracker;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
+import android.app.KeyguardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +23,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.databinding.ActivityMainBinding;
@@ -34,7 +38,8 @@ import de.htwg.co2footprint_tracker.views.tips.TipsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static WeakReference<MainActivity> weakActivity;
+    private static WeakReference<MainActivity> weakActivity;
+    private boolean isInForeground = false;
 
     public static MainActivity getWeakInstanceActivity() {
         return weakActivity.get();
@@ -46,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         weakActivity = new WeakReference<>(MainActivity.this);
+        isInForeground = true;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -92,12 +99,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     @TargetApi(Build.VERSION_CODES.M)
     protected void onResume() {
-        super.onResume();
-
+        isInForeground = true;
         PermissionHelper ph = new PermissionHelper(this);
         ph.processPermissionHandling();
         LocationHelper.getInstance(MainActivity.this).updateCurrentAdminArea();
+        super.onResume();
     }
+
+    @Override
+    protected void onPause() {
+        isInForeground = false;
+        super.onPause();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -127,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     private void stopTracking() {
         foregroundServiceAction(Constants.ACTION.STOP_SERVICE);
@@ -169,7 +184,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void refreshUi(){
-        navigateToFragment(DataFragment.getInstance());
+    public void refreshUi() {
+
+        if (isInForeground) {
+            navigateToFragment(DataFragment.getInstance());
+        }
+
     }
 }
