@@ -42,6 +42,7 @@ public class Co2Equivalent {
         // 1h netfix ~ 100g co2
         co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 100), "hours netflix", "The use of your Smartphone generated %s g of CO2 today. With this amount of produced CO2 you could have traveled %s km by car.", String.valueOf(co2), R.drawable.netflix));
         // avg g CO2e/kWh in EU 2019: 255
+        // avg smartphone battery capacity 2500 mAh, 3,7V = 0,00925 kWh
         // 0,00925 kWh * 255 g CO2e/kWh = 2,35875
         // X g CO2e / 2,35875 g CO2e = X Times
         co2Equivalents.add(new Co2Equivalent(buildCo2String(co2, 2.35875), "times charged", "The use of your Smartphone generated %s g of CO2 today. With this amount of produced CO2 you could have traveled %s km by car.", String.valueOf(co2), R.drawable.charge));
