@@ -60,7 +60,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return databaseHelperInstance;
     }
 
-    public static DatabaseHelper getInstanceObject(){
+    /**
+     * @return DatabaseHelper object. Might be null. Only call this method, if there is no way to call the getInstance Method
+     */
+    public static DatabaseHelper getInstanceObject() {
         return databaseHelperInstance;
     }
 

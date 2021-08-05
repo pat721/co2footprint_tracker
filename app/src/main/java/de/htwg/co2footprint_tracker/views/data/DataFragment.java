@@ -55,8 +55,7 @@ public class DataFragment extends Fragment {
                 false
         );
 
-        co2Equivalents = Co2Equivalent.getEquivalents();
-
+        co2Equivalents = Co2Equivalent.getEquivalents(getActivity().getApplicationContext());
         BottomSheetDialog sheetDialog = new BottomSheetDialog(getContext());
 
         binding.co2EquivalentList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
