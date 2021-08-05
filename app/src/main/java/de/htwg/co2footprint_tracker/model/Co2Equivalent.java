@@ -1,12 +1,9 @@
 package de.htwg.co2footprint_tracker.model;
 
-import android.content.Context;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import de.htwg.co2footprint_tracker.R;
-import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.utils.UnitUtils;
 
 public class Co2Equivalent {
@@ -24,15 +21,7 @@ public class Co2Equivalent {
         this.image = image;
     }
 
-    public static List<Co2Equivalent> getEquivalents(Context ctx) {
-
-        double co2 = 0;
-        if (ctx != null) {
-            DatabaseHelper db = DatabaseHelper.getInstance(ctx);
-            co2 = db.getTotalEnergyConsumption();
-        }
-
-        //TODO get consuption for today and total toggle
+    public static List<Co2Equivalent> getEquivalents(double co2) {
 
 
         List<Co2Equivalent> co2Equivalents = new ArrayList<>();
