@@ -19,6 +19,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
+import java.lang.ref.WeakReference;
+
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.databinding.ActivityMainBinding;
 import de.htwg.co2footprint_tracker.helpers.LocationHelper;
@@ -32,11 +34,18 @@ import de.htwg.co2footprint_tracker.views.tips.TipsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static WeakReference<MainActivity> weakActivity;
+
+    public static MainActivity getWeakInstanceActivity() {
+        return weakActivity.get();
+    }
+
     private ActivityMainBinding binding;
     FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        weakActivity = new WeakReference<>(MainActivity.this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -159,4 +168,8 @@ public class MainActivity extends AppCompatActivity {
         Log.e(Constants.LOG.TAG, "service started with action: '" + action + "'");
     }
 
+
+    public void refreshUi(){
+        navigateToFragment(DataFragment.getInstance());
+    }
 }

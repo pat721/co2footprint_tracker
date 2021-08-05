@@ -7,11 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Locale;
 
+import de.htwg.co2footprint_tracker.MainActivity;
 import de.htwg.co2footprint_tracker.enums.DatabaseInterval;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.utils.UnitUtils;
@@ -157,6 +155,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     " WHERE " + MERGE_KEY + " = '" + generateMergeKey(packageModel) + "'";
             db.execSQL(cumulateDailyData);
         }
+        MainActivity.getWeakInstanceActivity().refreshUi();
     }
 
     private String generateMergeKey(Package packageModel) {
