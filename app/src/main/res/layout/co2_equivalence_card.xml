@@ -28,7 +28,7 @@
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="48dp"
-                android:layout_height="56dp"
+                android:layout_height="64dp"
                 app:imageResource="@{co2equivalent.image}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

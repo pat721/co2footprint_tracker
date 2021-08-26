@@ -10,10 +10,6 @@ public class Consumer {
     private String name;
     private double energyConsumption;
 
-    public Consumer() {
-        //default constructor, nop
-    }
-
     public Consumer(double energyConsumption, String name, Drawable logo) {
         this.logo = logo;
         this.name = name;
@@ -29,7 +25,7 @@ public class Consumer {
     }
 
     public String getEnergyConsumption() {
-        return UnitUtils.RoundTo2Decimals(energyConsumption) + " g";
+        return UnitUtils.RoundTo2Decimals(energyConsumption) + " g co2";
     }
 
     public void setEnergyConsumption(double energyConsumption) {

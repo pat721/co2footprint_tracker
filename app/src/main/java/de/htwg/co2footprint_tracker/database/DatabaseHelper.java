@@ -402,7 +402,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public ArrayList<Consumer> getTopConsumingApps(Context context) {
         //TODO join with minute table
-        String query = "SELECT " + NAME + ", " + ENERGY_CONSUMPTION + "," + PACKAGE_NAME + " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE + " ORDER BY " + ENERGY_CONSUMPTION;
+        String query = "SELECT " + NAME + ", " + ENERGY_CONSUMPTION + "," + PACKAGE_NAME + " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE + " ORDER BY " + ENERGY_CONSUMPTION + " DESC ";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor data = db.rawQuery(query, null);
         ArrayList<Consumer> consumers = new ArrayList<>();
