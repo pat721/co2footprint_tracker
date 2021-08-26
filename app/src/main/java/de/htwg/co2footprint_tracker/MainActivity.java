@@ -145,14 +145,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void stopTracking() {
+    public void stopTracking() {
         foregroundServiceAction(Constants.ACTION.STOP_SERVICE);
         PreferenceManagerHelper.clearStoredStartTime(this);
         InitialBucketContainer.setNewRun(true);
         InitialBucketContainer.clearMappedPackageData();
     }
 
-    private void startTracking() {
+    public void startTracking() {
         PreferenceManagerHelper.setStartTime(this);
         Toast.makeText(this, "Tracking started!", Toast.LENGTH_LONG).show();
         foregroundServiceAction(Constants.ACTION.START_SERVICE);

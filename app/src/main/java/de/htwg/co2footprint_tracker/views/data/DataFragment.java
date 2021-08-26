@@ -17,10 +17,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.htwg.co2footprint_tracker.MainActivity;
 import de.htwg.co2footprint_tracker.R;
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.databinding.EquivalentBottomSheetBinding;
 import de.htwg.co2footprint_tracker.databinding.FragmentDataBinding;
+import de.htwg.co2footprint_tracker.helpers.PreferenceManagerHelper;
+import de.htwg.co2footprint_tracker.helpers.TrackingHelper;
+import de.htwg.co2footprint_tracker.helpers.UiHelper;
 import de.htwg.co2footprint_tracker.model.Co2Equivalent;
 import de.htwg.co2footprint_tracker.model.Consumer;
 import de.htwg.co2footprint_tracker.model.MainCardModel;
@@ -92,6 +96,22 @@ public class DataFragment extends Fragment {
                     break;
             }
         });
+
+        UiHelper.getInstance().changeStartStopButtonAccordingToCurrentState(binding.startStopButton, getActivity());
+        binding.startStopButton.setOnClickListener((v) -> {
+
+            TrackingHelper th = TrackingHelper.getInstance();
+            if (PreferenceManagerHelper.getStartTime(getActivity().getApplicationContext()) == 0L) {
+                //th.startTracking(getContext());
+                MainActivity.getWeakInstanceActivity().startTracking();
+            } else {
+                //th.stopTracking(getContext());
+                MainActivity.getWeakInstanceActivity().stopTracking();
+            }
+            UiHelper.getInstance().changeStartStopButtonAccordingToCurrentState(binding.startStopButton, getActivity());
+        });
+
+
         return binding.getRoot();
     }
 
