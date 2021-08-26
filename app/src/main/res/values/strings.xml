@@ -16,4 +16,5 @@
     <string name="co2_equivalent">co2</string>
     <string name="icon_of_co2_equivalent">icon of co2 equivalent</string>
     <string name="equates_to">Equates to</string>
+    <string name="greatest_consumers">Top 3 consumers</string>
 </resources>
