@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,12 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.htwg.co2footprint_tracker.R;
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.databinding.EquivalentBottomSheetBinding;
 import de.htwg.co2footprint_tracker.databinding.FragmentDataBinding;
+import de.htwg.co2footprint_tracker.model.AppNameAndConsumptionModel;
 import de.htwg.co2footprint_tracker.model.Co2Equivalent;
 import de.htwg.co2footprint_tracker.model.MainCardModel;
 import de.htwg.co2footprint_tracker.utils.Constants;
@@ -59,6 +63,20 @@ public class DataFragment extends Fragment {
         co2Equivalents = Co2Equivalent.getEquivalents(db.getTotalEnergyConsumption()); //create initial list to prevent crashing
 
 
+//        ----------------------
+
+        List<AppNameAndConsumptionModel> consumers = db.getTopConsumingApps();
+        ArrayList<String> topConsumerNames = new ArrayList();
+        for (AppNameAndConsumptionModel consumer : consumers) {
+            topConsumerNames.add(consumer.getName());
+        }
+
+        final View view = inflater.inflate(R.layout.fragment_data, container, false);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, topConsumerNames.toArray(new String[0]));
+        ListView consumerList = view.findViewById(R.id.top_consumer_list);
+        consumerList.setAdapter(adapter);
+
+//        ----------------------
         DataRecyclerViewAdapter dataRecyclerViewAdapter = getDataRecyclerViewAdapter(container);
         binding.co2EquivalentList.setAdapter(dataRecyclerViewAdapter);
 

@@ -7,10 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import de.htwg.co2footprint_tracker.MainActivity;
 import de.htwg.co2footprint_tracker.enums.DatabaseInterval;
+import de.htwg.co2footprint_tracker.model.AppNameAndConsumptionModel;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.utils.UnitUtils;
 
@@ -391,6 +394,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             reveivedBytes += getTotalReceivedBytesForPackage(uid);
         }
         return reveivedBytes;
+    }
+
+    public List<AppNameAndConsumptionModel> getTopConsumingApps() {
+        //TODO join with minute table
+        String query = "SELECT " + NAME + ", " + ENERGY_CONSUMPTION + " FROM " + TABLE_NAME_DATA_PER_DAY_TABLE + " ORDER BY " + ENERGY_CONSUMPTION;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor data = db.rawQuery(query, null);
+        List<AppNameAndConsumptionModel> consumers = new ArrayList<>();
+
+        data.moveToFirst();
+        do {
+            consumers.add(new AppNameAndConsumptionModel(
+                    data.getDouble(1),
+                    data.getString(0)
+            ));
+        } while (data.moveToNext());
+
+        return consumers;
     }
 
     /**

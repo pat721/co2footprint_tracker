@@ -21,7 +21,9 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal">
 
-            <include layout="@layout/toggle" android:id="@+id/mode_toggle"/>
+            <include
+                android:id="@+id/mode_toggle"
+                layout="@layout/toggle" />
         </LinearLayout>
 
         <androidx.cardview.widget.CardView
@@ -135,6 +137,11 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp" />
 
+        <ListView
+            android:id="@+id/top_consumer_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
     </LinearLayout>
 
 
