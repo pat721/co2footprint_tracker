@@ -37,13 +37,13 @@ Für den Proof of Concept beschränkt sich das Team auf die Implementierung eine
 
 
 ## Designentscheidungen
-Im folgenden werden grundlegende Designentscheidung für die Architektur und Implementierung der Anwendung aufgeführt.
+Im Folgenden werden grundlegende Designentscheidungen für Architektur und Implementierung der Anwendung aufgeführt.
 
 ### NetworkStatsManager
 Der NetworkStatsManager ist ein vom Android System bereitgestellter Service. Er ermöglicht den Zugriff auf den Verlauf, so wie auf Statistiken der Netzwerknutzung. Die Nutzungsdaten werden in diskreten Zeitabschnitten, in sogenannten *Buckets*, gesammelt.
 
 ### SQLight
-
+Das Android System verwendet SQLight als Datenbank den Umgang mit Daten. Es bietet Schnittstellen für Datenbankzzugriffe und Aktionen auf dem Betriebssystem. Die Datenbank und deren Daten bleiben hierbei lokal auf dem Gerät und werden nur im Kontext der App verwendet.
 
 ### Periodische 
 

@@ -75,7 +75,7 @@ public class LocationHelper {
 
                     } catch (IOException e) {
                         e.printStackTrace();
-                        Log.e(Constants.LOG.TAG, "exception!");
+                        Log.e(Constants.LOG.TAG, "exception in location helper:" + e.getMessage());
                     }
 
                 }

@@ -23,9 +23,16 @@ public class Constants {
     public interface PERSISTENCY {
         String PREFERENCE_STARTING_TIME_KEY = "SAVED_START_TIME";
         String DEVICE_IS_TABLET = "DEVICE_IS_TABLET";
+        int DEVICE_TYPE_NOT_SET = -1;
+        int DEVICE_TYPE_TABLET = 0;
+        int DEVICE_TYPE_NOT_TABLET = 1;
         String ADMINISTRATION_AREA = "ADMINISTRATION_AREA";
         String SERVICE_STARTED = "STARTED";
         String SERVICE_STOPPED = "STOPPED";
+        String TODAY_TOTAL_TOGGLE_STATE= "TODAY_TOTAL_TOGGLE_STATE";
+        int TOGGLE_STATE_NOT_SET = -1;
+        int TOGGLE_STATE_TODAY = 0;
+        int TOGGLE_STATE_TOTAL = 1;
     }
 
     public interface LOG {

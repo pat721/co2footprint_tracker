@@ -10,8 +10,6 @@
     <string name="menu_stop_test">Stop Test</string>
     <string name="menu_purge_db">Purge DB</string>
     <string name="menu_request_permissions">Request Runtime Permissions</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="data_usage">data usage</string>
     <string name="co2_equivalent">co2</string>
     <string name="icon_of_co2_equivalent">icon of co2 equivalent</string>

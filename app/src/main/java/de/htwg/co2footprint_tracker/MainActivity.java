@@ -1,5 +1,7 @@
 package de.htwg.co2footprint_tracker;
 
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.DEVICE_TYPE_NOT_SET;
+
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (PreferenceManagerHelper.getDeviceType(this) == -1) {
+        if (PreferenceManagerHelper.getDeviceType(this) == DEVICE_TYPE_NOT_SET) {
             PreferenceManagerHelper.setDeviceType(this);
         }
 

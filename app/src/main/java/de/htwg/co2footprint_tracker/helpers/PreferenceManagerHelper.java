@@ -1,29 +1,29 @@
 package de.htwg.co2footprint_tracker.helpers;
 
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.*;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.DisplayMetrics;
 
 import androidx.preference.PreferenceManager;
 
-import de.htwg.co2footprint_tracker.utils.Constants;
-
 public class PreferenceManagerHelper {
 
     public static void setStartTime(Context context) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putLong(Constants.PERSISTENCY.PREFERENCE_STARTING_TIME_KEY, System.currentTimeMillis());
+        editor.putLong(PREFERENCE_STARTING_TIME_KEY, System.currentTimeMillis());
         editor.apply();
     }
 
     public static long getStartTime(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPref.getLong(Constants.PERSISTENCY.PREFERENCE_STARTING_TIME_KEY, 0L);
+        return sharedPref.getLong(PREFERENCE_STARTING_TIME_KEY, 0L);
     }
 
     public static void clearStoredStartTime(Context context) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.remove(Constants.PERSISTENCY.PREFERENCE_STARTING_TIME_KEY);
+        editor.remove(PREFERENCE_STARTING_TIME_KEY);
         editor.apply();
     }
 
@@ -34,9 +34,9 @@ public class PreferenceManagerHelper {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 
         if (independentPixelDensity >= 600) {
-            editor.putInt(Constants.PERSISTENCY.DEVICE_IS_TABLET, 1);
+            editor.putInt(DEVICE_IS_TABLET, DEVICE_TYPE_TABLET);
         } else {
-            editor.putInt(Constants.PERSISTENCY.DEVICE_IS_TABLET, 0);
+            editor.putInt(DEVICE_IS_TABLET, DEVICE_TYPE_NOT_TABLET);
         }
 
         editor.apply();
@@ -44,28 +44,40 @@ public class PreferenceManagerHelper {
 
     public static int getDeviceType(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPref.getInt(Constants.PERSISTENCY.DEVICE_IS_TABLET, -1);
+        return sharedPref.getInt(DEVICE_IS_TABLET, DEVICE_TYPE_NOT_SET);
     }
 
     public static void setAdminArea(Context context, String adminArea) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putString(Constants.PERSISTENCY.ADMINISTRATION_AREA, adminArea);
+        editor.putString(ADMINISTRATION_AREA, adminArea);
         editor.apply();
     }
 
     public static String getAdminArea(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPref.getString(Constants.PERSISTENCY.ADMINISTRATION_AREA, "");
+        return sharedPref.getString(ADMINISTRATION_AREA, "");
     }
 
     public static void setServiceState(Context context, String serviceState) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putString(Constants.PERSISTENCY.SERVICE_STARTED, serviceState);
+        editor.putString(SERVICE_STARTED, serviceState);
         editor.apply();
     }
 
     public static String getServiceState(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPref.getString(Constants.PERSISTENCY.SERVICE_STARTED, "");
+        return sharedPref.getString(SERVICE_STARTED, "");
     }
+
+    public static void setTodayTotalToggleState(Context context, int state) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putInt(TODAY_TOTAL_TOGGLE_STATE, state);
+        editor.apply();
+    }
+
+    public static int getTodayTotalToggleState(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPref.getInt(TODAY_TOTAL_TOGGLE_STATE, TOGGLE_STATE_NOT_SET);
+    }
+
 }
