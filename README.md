@@ -1,10 +1,18 @@
 # CO2 Footprint Tracker
 
-Diese Anwendung ist ein Proof of Concept für einen Online Fußabdruckrechner auf einem mobilen Endgerät. Die mobile Applikation sammelt den Datenverbrauch der Benutzer und berechnet einen CO2-Wert auf Grundlage eines gegeben Berechnungsmodels. Zusätzlich wird dieser Wert in Form von plaktiven Equivalenten (wie z.B. Autokilometer, Handyladungen, usw.) darstellen.
+This project is being developed for the [OFAR4All](https://map.bodenseehochschule.org/proj.php?id=101&origin=map) research project, with the aim of measuring and transparently presenting CO2 emissions from online data traffic. 
 
-Für den Proof of Concept beschränkt sich das Team auf die Implementierung einer **Android  Anwendung**.
 
-## Projekt Struktur
+
+## About the application
+
+The application tracks the users data usage and calculates the emitted CO2-values based on a computational model, which is currently under development by [ZHAW](https://www.zhaw.ch/de/hochschule/). In order to be able to classify consumption properly, CO2 equivalents are given that are familiar from everyday life.
+
+The application is currently only available for **android devices**.
+
+
+
+## Project structure
 	co2footprint_tracker
 	├── app
 	│	└── src/main
@@ -17,8 +25,6 @@ Für den Proof of Concept beschränkt sich das Team auf die Implementierung eine
 	|		|	└── utils
 	|		└── res
 	└── gradle/wrapper
-
-
 
 | Folder                            | Description                                                  |
 | --------------------------------- | ------------------------------------------------------------ |
@@ -36,24 +42,59 @@ Für den Proof of Concept beschränkt sich das Team auf die Implementierung eine
 | gradle/wrapper                    | Contains files for gradle                                    |
 
 
-## Designentscheidungen
-Im folgenden werden grundlegende Designentscheidung für die Architektur und Implementierung der Anwendung aufgeführt.
+
+## Design decisions
+
+The following is a list of relevant design decisions and their technical relevance to the app.
 
 ### NetworkStatsManager
-Der NetworkStatsManager ist ein vom Android System bereitgestellter Service. Er ermöglicht den Zugriff auf den Verlauf, so wie auf Statistiken der Netzwerknutzung. Die Nutzungsdaten werden in diskreten Zeitabschnitten, in sogenannten *Buckets*, gesammelt.
 
-### SQLight
-
-
-### Periodische 
-
-## Requesting permissions
-This application requires several runtime permissions as well as the ability to monitor usage stats.  All permissions are requested when the app is first launched and should be accepted by the user.  If you do not accept the permissions at launch then you can request them later through the menu.  **This is just a test app so if you don't accept permissions you may experience unexpected behaviour**
+For gathering the devices data usage and the generated network traffic, the application uses the NetworkStatsManager API provided by the operating system. Via the NetworkStatsManager it is possible to access all information in regards to the Network usage. The provided data is divided in discrete time periods (Buckets) which can overlap from time to time. More information on the NetworkStatsManager: https://developer.android.com/reference/android/app/usage/NetworkStatsManager
 
 
-## Package UIDs
-Each package has an associated kernal user-id (or uid) assigned to it, this uid is passed to the Network Stats API to differentiate between packages however it is not unique on the device.  What this means is that **you may see multiple applications reporting the same Rx/Tx statistics because under the covers they share the same uid**.  
 
-I have tried to make this obvious by indicating on the UI where an application has a shared uid and uids are also written to the csv file.
+### SQLight-Database
 
-Most other applications like this will group these kind of packages into "System" but I wanted to maintain the granularity of reporting statistics for as many applications or services as possible.
+For saving information and relevant data, the application uses a simple SQLight-Database. The database contains the information about the network traffic fetched from the NetworkStatsManager. These information are fetched periodically after every minute and saved in a table together with other calculated values. To save storage space, every 24h hours, the collected data of the last day gets accumulated and saved while the old data is being wiped.
+
+
+
+### Foreground Service
+
+To work correctly, the application must always be open in the background. This is ensured via a Foreground Service, which ensures that the app is not closed by the system (memory optimizer). If the app should be closed by the system or the user, it will restart itself.
+
+
+
+### Location determination
+
+To determine the current location of the user, the application uses the LocationHelper API provided by the operation system. The location is determined at the first installation of the App (onStart) and always when reopening it (onResume) and is then saved in the background for further calculations.
+
+
+
+### Identifying Devicetype  (Smartphone and Tablet)
+
+To identify which type of device is currently used, the application calculates the device-indepentent pixel density and checks, if the density of >= 600. If it is bigger, then the device is considered a tablet, if it's smaller the device is identified as a smartphone. For the values and the calculation see: https://developer.android.com/training/multiscreen/screensizes
+
+
+
+### Google Cloud Config
+
+With the help of the connection to the Google Cloud, configuration files and information can be provided online, which flows directly into the app without having to create a new build of the app. For example, tips can be adjusted directly via Google Cloud Config without having to deploy a new app version.
+
+
+
+## App Permissions
+The Application needs a couple of permissions in order to function properly.
+
+**Network Permission:** This Permission is needed to access the internet to retrieve information from the Google Cloud Config (e.g. new Tips).
+
+**Phone State Permission:** This Permission is needed to access the information for the current celluar network information. We use this information to determine which network type is currently used (2G, 3G, 4G, WiFi).
+
+**Location Permission:** This Permission is needed to access the GPS Module to get the current location. The calulation of CO2 values needs the location for different factors.
+
+**Usage Stats Permission:** This Permission is essential for accessing the network statistics of the device. This permissions allows the application to access the NetworkStatsManager API and gather the data usage of different apps.  
+
+**IMPORTANT NOTICE:** The application is not able to see which websites you have browsed or what you do exactly in your different applications. The Application only accesses the information, which are already collected by the operating system. Furthermore are all permissions needed and not abused in other ways.
+
+
+
