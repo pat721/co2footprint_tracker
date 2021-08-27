@@ -1,10 +1,18 @@
 # CO2 Footprint Tracker
 
-Diese Anwendung ist ein Proof of Concept für einen Online Fußabdruckrechner auf einem mobilen Endgerät. Die mobile Applikation sammelt den Datenverbrauch der Benutzer und berechnet einen CO2-Wert auf Grundlage eines gegeben Berechnungsmodels. Zusätzlich wird dieser Wert in Form von plaktiven Equivalenten (wie z.B. Autokilometer, Handyladungen, usw.) darstellen.
+This project is being developed for the [OFAR4All](https://map.bodenseehochschule.org/proj.php?id=101&origin=map) research project, with the aim of measuring and transparently presenting CO2 emissions from online data traffic.
 
-Für den Proof of Concept beschränkt sich das Team auf die Implementierung einer **Android  Anwendung**.
 
-## Projekt Struktur
+
+## About the application
+
+The application tracks the users data usage and calculates the emitted CO2-values based on a computational model, which is currently under development by [ZHAW](https://www.zhaw.ch/de/hochschule/). In order to be able to classify consumption properly, CO2 equivalents are given that are familiar from everyday life.
+
+The application is currently only available for **android devices**.
+
+
+
+## Project structure
 	co2footprint_tracker
 	├── app
 	│	└── src/main
@@ -37,13 +45,13 @@ Für den Proof of Concept beschränkt sich das Team auf die Implementierung eine
 
 
 ## Designentscheidungen
-Im Folgenden werden grundlegende Designentscheidungen für Architektur und Implementierung der Anwendung aufgeführt.
+Im folgenden werden grundlegende Designentscheidung für die Architektur und Implementierung der Anwendung aufgeführt.
 
 ### NetworkStatsManager
 Der NetworkStatsManager ist ein vom Android System bereitgestellter Service. Er ermöglicht den Zugriff auf den Verlauf, so wie auf Statistiken der Netzwerknutzung. Die Nutzungsdaten werden in diskreten Zeitabschnitten, in sogenannten *Buckets*, gesammelt.
 
 ### SQLight
-Das Android System verwendet SQLight als Datenbank den Umgang mit Daten. Es bietet Schnittstellen für Datenbankzzugriffe und Aktionen auf dem Betriebssystem. Die Datenbank und deren Daten bleiben hierbei lokal auf dem Gerät und werden nur im Kontext der App verwendet.
+
 
 ### Periodische 
 
