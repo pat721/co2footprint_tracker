@@ -38,10 +38,12 @@ public class PermissionHelper {
     private void requestPermissions() {
         if (!hasNetworkHistoryPermission()) {
             //nop
-        } else if (!hasPhoneStatsPermission()) {
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_PHONE_STATE}, Constants.PERMISSION.REQUEST_CODE);
-        } else if (hasLocationPermission()) {
+        }
+        if (hasLocationPermission()) {
             ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, Constants.PERMISSION.LOCATION_REQUEST_CODE);
+        }
+        if (!hasPhoneStatsPermission()) {
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_PHONE_STATE}, Constants.PERMISSION.REQUEST_CODE);
         }
     }
 

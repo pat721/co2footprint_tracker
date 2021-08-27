@@ -51,34 +51,31 @@ public class LocationHelper {
         if (ActivityCompat.checkSelfPermission(activity.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(activity.getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.e(Constants.LOG.TAG, "Location Permission error");
-            
+
             ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, Constants.PERMISSION.LOCATION_REQUEST_CODE);
+
             return;
         }
-        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(task -> {
+            Location location = task.getResult();
+            if (location != null) {
+                try {
 
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                Location location = task.getResult();
-                if (location != null) {
-                    try {
-
-                        Geocoder geocoder = new Geocoder(activity.getApplicationContext(), Locale.getDefault());
-                        List<Address> addresses = geocoder.getFromLocation(
-                                location.getLatitude(), location.getLongitude(), 1
-                        );
+                    Geocoder geocoder = new Geocoder(activity.getApplicationContext(), Locale.getDefault());
+                    List<Address> addresses = geocoder.getFromLocation(
+                            location.getLatitude(), location.getLongitude(), 1
+                    );
 
 
-                        PreferenceManagerHelper.setAdminArea(activity.getApplicationContext(), addresses.get(0).getAdminArea());
-                        Log.e(Constants.LOG.TAG, "Area: \"" + addresses.get(0).getAdminArea() + "\" was set to storage");
+                    PreferenceManagerHelper.setAdminArea(activity.getApplicationContext(), addresses.get(0).getAdminArea());
+                    Log.e(Constants.LOG.TAG, "Area: \"" + addresses.get(0).getAdminArea() + "\" was set to storage");
 
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.e(Constants.LOG.TAG, "exception in location helper:" + e.getMessage());
-                    }
-
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e(Constants.LOG.TAG, "exception in location helper:" + e.getMessage());
                 }
+
             }
         });
     }
