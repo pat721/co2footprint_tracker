@@ -2,8 +2,8 @@ package de.htwg.co2footprint_tracker.utils;
 
 public class Constants {
     public interface PERMISSION {
-        int REQUEST_CODE = 1;
-        int LOCATION_REQUEST_CODE = 44;
+        int RC_LOCATION_READ_PHONE_STATE_ACCESS_NETWORK_STATE = 69;
+        int RC_LOCATION = 420;
     }
 
     public interface ACTION {
@@ -29,7 +29,7 @@ public class Constants {
         String ADMINISTRATION_AREA = "ADMINISTRATION_AREA";
         String SERVICE_STARTED = "STARTED";
         String SERVICE_STOPPED = "STOPPED";
-        String TODAY_TOTAL_TOGGLE_STATE= "TODAY_TOTAL_TOGGLE_STATE";
+        String TODAY_TOTAL_TOGGLE_STATE = "TODAY_TOTAL_TOGGLE_STATE";
         int TOGGLE_STATE_NOT_SET = -1;
         int TOGGLE_STATE_TODAY = 0;
         int TOGGLE_STATE_TOTAL = 1;

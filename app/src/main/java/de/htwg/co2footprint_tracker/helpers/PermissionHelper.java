@@ -1,69 +1,72 @@
 package de.htwg.co2footprint_tracker.helpers;
 
+import static de.htwg.co2footprint_tracker.utils.Constants.PERMISSION.RC_LOCATION_READ_PHONE_STATE_ACCESS_NETWORK_STATE;
+
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
-
 import de.htwg.co2footprint_tracker.MainActivity;
-import de.htwg.co2footprint_tracker.utils.Constants;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
-public class PermissionHelper {
+public class PermissionHelper extends Activity {
 
 
-    private final Activity activity;
+    private final MainActivity activity = MainActivity.getWeakInstanceActivity();
+    private static PermissionHelper permissionHelper;
 
-    public PermissionHelper(Activity activity) {
-        this.activity = activity;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this, activity);
     }
 
+    public static PermissionHelper getInstance() {
+        if (permissionHelper == null) {
+            permissionHelper = new PermissionHelper();
+        }
+        return permissionHelper;
+    }
+
+
+    @AfterPermissionGranted(RC_LOCATION_READ_PHONE_STATE_ACCESS_NETWORK_STATE)
     public void processPermissionHandling() {
-        if (!permissionsGranted()) {
-            requestPermissions();
+        //TODO evaluate if we really need accessnetworkstate permission.
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_NETWORK_STATE};
+
+        if (!hasNetworkHistoryReadingPermission()) {
+            requestReadNetworkHistoryAccess();
+        }
+
+        if (!EasyPermissions.hasPermissions(activity, perms)) {
+
+            //TODO rationale string
+            EasyPermissions.requestPermissions(activity,
+                    "TODO: getString(R.string.rationale_ask)",
+                    RC_LOCATION_READ_PHONE_STATE_ACCESS_NETWORK_STATE
+                    , perms);
         }
     }
 
-    private boolean permissionsGranted() {
-        return hasNetworkHistoryPermission() && hasPhoneStatsPermission() && hasLocationPermission();
-    }
 
-    private void requestPermissions() {
-        if (!hasNetworkHistoryPermission()) {
-            //nop
-        }
-        if (hasLocationPermission()) {
-            ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, Constants.PERMISSION.LOCATION_REQUEST_CODE);
-        }
-        if (!hasPhoneStatsPermission()) {
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_PHONE_STATE}, Constants.PERMISSION.REQUEST_CODE);
-        }
-    }
-
-    private boolean hasPhoneStatsPermission() {
-        return !(ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED);
-    }
-
-    public boolean hasLocationPermission() {
-        return ActivityCompat.checkSelfPermission(activity.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(activity.getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
-    }
-
-    private boolean hasNetworkHistoryPermission() {
+    private boolean hasNetworkHistoryReadingPermission() {
         final AppOpsManager appOps = (AppOpsManager) activity.getSystemService(Context.APP_OPS_SERVICE);
         int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
                 android.os.Process.myUid(), activity.getPackageName());
         if (mode == AppOpsManager.MODE_ALLOWED) {
             return true;
         }
-        Toast.makeText(activity, "Usage Stats permission is required", Toast.LENGTH_LONG).show();
+        Toast.makeText(activity, "Usage stats permission is required for the app to work properly", Toast.LENGTH_LONG).show();
+
         appOps.startWatchingMode(AppOpsManager.OPSTR_GET_USAGE_STATS, activity.getPackageName(),
                 new AppOpsManager.OnOpChangedListener() {
                     @Override

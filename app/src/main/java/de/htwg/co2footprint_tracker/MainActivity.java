@@ -61,31 +61,27 @@ public class MainActivity extends AppCompatActivity {
         this.binding.bottomNavigation.setSelectedItemId(R.id.data);
         navigateToFragment(DataFragment.getInstance(), false);
 
-        this.binding.bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        //TODO rm depricated method? maybe getOnFocusChangeListener can do that
+        this.binding.bottomNavigation.setOnNavigationItemSelectedListener(item -> {
 
-                int currentlyActiveView = binding.bottomNavigation.getSelectedItemId();
+            int currentlyActiveView = binding.bottomNavigation.getSelectedItemId();
 
-                if (item.getItemId() == R.id.data && currentlyActiveView != R.id.data) {
-                    navigateToFragment(DataFragment.getInstance(), true);
-                    return true;
-                }
-
-                if (item.getItemId() == R.id.tips && currentlyActiveView != R.id.tips) {
-                    navigateToFragment(TipsFragment.getInstance(), true);
-                    return true;
-                }
-
-                return false;
+            if (item.getItemId() == R.id.data && currentlyActiveView != R.id.data) {
+                navigateToFragment(DataFragment.getInstance(), true);
+                return true;
             }
+
+            if (item.getItemId() == R.id.tips && currentlyActiveView != R.id.tips) {
+                navigateToFragment(TipsFragment.getInstance(), true);
+                return true;
+            }
+
+            return false;
         });
 
         if (PreferenceManagerHelper.getDeviceType(this) == DEVICE_TYPE_NOT_SET) {
             PreferenceManagerHelper.setDeviceType(this);
         }
-
-        LocationHelper.getInstance(MainActivity.this).updateCurrentAdminArea();
 
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
@@ -104,9 +100,10 @@ public class MainActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.M)
     protected void onResume() {
         isInForeground = true;
-        PermissionHelper ph = new PermissionHelper(this);
+        PermissionHelper ph = PermissionHelper.getInstance();
         ph.processPermissionHandling();
-        LocationHelper.getInstance(MainActivity.this).updateCurrentAdminArea();
+        LocationHelper.getInstance().updateCurrentAdminArea();
+        refreshUi();
         super.onResume();
     }
 
