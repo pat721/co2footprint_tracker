@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -56,19 +57,24 @@ public class MainActivity extends AppCompatActivity {
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         this.binding.bottomNavigation.setSelectedItemId(R.id.data);
-        navigateToFragment(DataFragment.getInstance());
+        navigateToFragment(DataFragment.getInstance(), false);
 
         this.binding.bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.data:
-                        navigateToFragment(DataFragment.getInstance());
-                        return true;
-                    case R.id.tips:
-                        navigateToFragment(TipsFragment.getInstance());
-                        return true;
+
+                int currentlyActiveView = binding.bottomNavigation.getSelectedItemId();
+
+                if (item.getItemId() == R.id.data && currentlyActiveView != R.id.data) {
+                    navigateToFragment(DataFragment.getInstance(), true);
+                    return true;
                 }
+
+                if (item.getItemId() == R.id.tips && currentlyActiveView != R.id.tips) {
+                    navigateToFragment(TipsFragment.getInstance(), true);
+                    return true;
+                }
+
                 return false;
             }
         });
@@ -152,12 +158,13 @@ public class MainActivity extends AppCompatActivity {
         foregroundServiceAction(Constants.ACTION.START_SERVICE);
     }
 
-    public void navigateToFragment(@NonNull Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.content, fragment)
-                .addToBackStack(fragment.getClass().getName())
-                .commit();
+    public void navigateToFragment(@NonNull Fragment fragment, boolean addToBackStack) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment);
+
+        if (addToBackStack) {
+            ft.addToBackStack(fragment.getClass().getName());
+        }
+        ft.commit();
     }
 
 
@@ -182,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshUi() {
         if (isInForeground && this.binding.bottomNavigation.getSelectedItemId() == R.id.data) {
-            navigateToFragment(DataFragment.getInstance());
+            navigateToFragment(DataFragment.getInstance(), false);
         }
     }
 }
