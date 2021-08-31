@@ -20,4 +20,6 @@
     <string name="clearing_database">Clearing database!</string>
     <string name="tracking_was_started">Tracking was started!</string>
     <string name="usage_stats_permission_required">Usage stats permission is required for the app to work properly</string>
+    <string name="open_source_licences">Open Source Licences</string>
+    <string name="about_footprint_tracker">About the Footprint Tracker</string>
 </resources>

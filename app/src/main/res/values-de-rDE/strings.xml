@@ -21,4 +21,6 @@
     <string name="tracking_was_started">Tracking wurde gestartet!</string>
     <string name="usage_stats_permission_required">Die Berechtigung zum abrufen der Nutzungsstatistiken wird benötigt.</string>
     <string name="page_about">Über</string>
+    <string name="open_source_licences">Open Source Lizenzen</string>
+    <string name="about_footprint_tracker">Über den Footprint Tracker</string>
 </resources>
