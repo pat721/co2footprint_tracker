@@ -41,6 +41,11 @@ The application is currently only available for **android devices**.
 | res                               | Contains resource files and static content used by the source code e.g. bitmaps, fonts, etc. |
 | gradle/wrapper                    | Contains files for gradle                                    |
 
+## Core Application Design
+
+The image shows the core design of the application with the most important classes.
+
+![Core Design](resources/co2_footprint_tracker_core.jpg)
 
 
 ## Design decisions
