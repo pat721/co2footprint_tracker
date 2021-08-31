@@ -9,4 +9,9 @@
         android:enabled="true"
         android:icon="@drawable/baseline_sync_alt_black_24dp"
         android:title="@string/page_data"/>
+    <item
+        android:id="@+id/about"
+        android:enabled="true"
+        android:icon="@drawable/ic_outline_info_24"
+        android:title="@string/page_about"/>
 </menu>
