@@ -22,6 +22,7 @@ public class Constants {
 
     public interface PERSISTENCY {
         String PREFERENCE_STARTING_TIME_KEY = "SAVED_START_TIME";
+        long NO_START_TIME_SET = 0L;
         String DEVICE_IS_TABLET = "DEVICE_IS_TABLET";
         int DEVICE_TYPE_NOT_SET = -1;
         int DEVICE_TYPE_TABLET = 0;

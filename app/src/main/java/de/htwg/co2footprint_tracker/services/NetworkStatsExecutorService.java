@@ -134,7 +134,7 @@ public class NetworkStatsExecutorService extends Service {
 
         //TODO zeit auf 1 min
         //run the timer task
-        timer.schedule(timerTask, 0l, 1000 * 10);
+        timer.schedule(timerTask, 0L, 1000 * 10);
 
     }
 
@@ -142,6 +142,10 @@ public class NetworkStatsExecutorService extends Service {
         Log.e(Constants.LOG.TAG, "Stopping the ForgegroundService".toUpperCase());
 
         try {
+            if(null == wakeLock){
+                Log.e(Constants.LOG.TAG, "Wakelock object is null. This indicates, that the service is stopped without being started");
+                return;
+            }
             if (wakeLock.isHeld()) {
                 wakeLock.release();
             }

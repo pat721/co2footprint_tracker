@@ -1,6 +1,7 @@
 package de.htwg.co2footprint_tracker;
 
 import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.DEVICE_TYPE_NOT_SET;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.NO_START_TIME_SET;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (menuItem == R.id.menu_start_tracking) {
             //if no time is stored there is no test running
-            if (PreferenceManagerHelper.getStartTime(this) == 0L) {
+            if (PreferenceManagerHelper.getStartTime(this) == NO_START_TIME_SET) {
                 startTracking();
             } else {
                 Toast.makeText(this, "Test already running!", Toast.LENGTH_LONG).show();

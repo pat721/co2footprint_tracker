@@ -1,5 +1,6 @@
 package de.htwg.co2footprint_tracker.views.data;
 
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.NO_START_TIME_SET;
 import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.TOGGLE_STATE_NOT_SET;
 import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.TOGGLE_STATE_TODAY;
 import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.TOGGLE_STATE_TOTAL;
@@ -88,7 +89,7 @@ public class DataFragment extends Fragment {
 
         UiHelper.getInstance().changeStartStopButtonAccordingToCurrentState(binding.startStopButton, getActivity());
         binding.startStopButton.setOnClickListener((v) -> {
-            if (PreferenceManagerHelper.getStartTime(getActivity().getApplicationContext()) == 0L) {
+            if (PreferenceManagerHelper.getStartTime(getActivity().getApplicationContext()) == NO_START_TIME_SET) {
                 MainActivity.getWeakInstanceActivity().startTracking();
             } else {
                 MainActivity.getWeakInstanceActivity().stopTracking();

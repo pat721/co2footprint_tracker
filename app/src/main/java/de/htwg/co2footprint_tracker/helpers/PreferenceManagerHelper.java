@@ -18,7 +18,7 @@ public class PreferenceManagerHelper {
 
     public static long getStartTime(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPref.getLong(PREFERENCE_STARTING_TIME_KEY, 0L);
+        return sharedPref.getLong(PREFERENCE_STARTING_TIME_KEY, NO_START_TIME_SET);
     }
 
     public static void clearStoredStartTime(Context context) {

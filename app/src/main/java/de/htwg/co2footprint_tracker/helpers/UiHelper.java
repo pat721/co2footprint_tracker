@@ -1,5 +1,7 @@
 package de.htwg.co2footprint_tracker.helpers;
 
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.NO_START_TIME_SET;
+
 import android.app.Activity;
 import android.widget.Button;
 
@@ -20,7 +22,7 @@ public class UiHelper {
     }
 
     public void changeStartStopButtonAccordingToCurrentState(Button button, Activity activity) {
-        if (PreferenceManagerHelper.getStartTime(activity.getApplicationContext()) == 0L) {
+        if (PreferenceManagerHelper.getStartTime(activity.getApplicationContext()) == NO_START_TIME_SET) {
             button.setText("Tap to start tracking");
             button.setBackground(ContextCompat.getDrawable(activity.getApplicationContext(), R.drawable.test_stopped_background));
         } else {
