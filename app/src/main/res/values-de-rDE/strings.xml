@@ -31,5 +31,5 @@
     <string name="tips_to_reduce_your_footprint">Tipps für das Reduzieren des CO2 Fußabdrucks</string>
     <string name="tap_to_start_tracking">Tracking starten</string>
     <string name="no_top_consumers_text">Es wurden noch keine Verbräuche gemessen. Bitte Tracking aktivieren um Verbrauch zu messen!</string>
-    <string name="tracking_active_button_text">Tracking is active!</string>
+    <string name="tracking_active_button_text">Tracking ist Aktiv!</string>
 </resources>
