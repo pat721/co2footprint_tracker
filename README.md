@@ -101,5 +101,8 @@ The Application needs a couple of permissions in order to function properly.
 
 **IMPORTANT NOTICE:** The application is not able to see which websites you have browsed or what you do exactly in your different applications. The Application only accesses the information, which are already collected by the operating system. Furthermore are all permissions needed and not abused in other ways.
 
+## Class Diagramm
 
+TODO: Add most recent Class Diagramm
 
+![Class Diagramm](resources/class_diagramm.svg)
