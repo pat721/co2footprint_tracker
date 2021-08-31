@@ -13,8 +13,8 @@
     <string name="data_usage">data usage</string>
     <string name="co2_equivalent">co2</string>
     <string name="icon_of_co2_equivalent">icon of co2 equivalent</string>
-    <string name="equates_to">Equates to</string>
-    <string name="greatest_consumers">Top 3 consumers</string>
+    <string name="equates_to">Equates to:</string>
+    <string name="greatest_consumers">Top 3 consumers:</string>
     <string name="notification_context_text">CO2-Footprint-Tracker is running in background…</string>
     <string name="tracking_already_running">Tracking is already running!</string>
     <string name="clearing_database">Clearing database!</string>
@@ -24,4 +24,11 @@
     <string name="about_footprint_tracker">About the Footprint Tracker</string>
     <string name="project_information">This project is being developed for the OFAR4All research project, with the aim of measuring and transparently presenting CO2 emissions from online data traffic.</string>
     <string name="privacy_policy">Privacy policy</string>
+    <string name="today">Today</string>
+    <string name="total">Total</string>
+    <string name="reduc_footprint_dialog">Here are some helpful tips which can help you to reduce your CO2 Footprint caused by your data usage.</string>
+    <string name="tips_to_reduce_your_footprint">Tips to reduce your footprint</string>
+    <string name="tap_to_start_tracking">Tap to start tracking</string>
+    <string name="no_top_consumers_text">No consumption has been measured yet. Please activate tracking to measure consumption!</string>
+    <string name="tracking_active_button_text">Tracking is active!</string>
 </resources>

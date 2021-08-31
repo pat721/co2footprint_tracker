@@ -69,9 +69,8 @@ public class ConnectionHelper {
                 return ConnectionType.MOBILE_3G;
             case TelephonyManager.NETWORK_TYPE_LTE:
                 return ConnectionType.MOBILE_4G;
-// Todo: add this when available
-// case TelephonyManager.NETWORK_TYPE_NR:
-//                return "5G";
+            case TelephonyManager.NETWORK_TYPE_NR:
+                return ConnectionType.MOBILE_5G;
             default:
                 return ConnectionType.OTHER;
         }

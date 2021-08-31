@@ -23,10 +23,10 @@ public class UiHelper {
 
     public void changeStartStopButtonAccordingToCurrentState(Button button, Activity activity) {
         if (PreferenceManagerHelper.getStartTime(activity.getApplicationContext()) == NO_START_TIME_SET) {
-            button.setText("Tap to start tracking");
+            button.setText(R.string.tap_to_start_tracking);
             button.setBackground(ContextCompat.getDrawable(activity.getApplicationContext(), R.drawable.test_stopped_background));
         } else {
-            button.setText("Tracking is active!");
+            button.setText(R.string.tracking_active_button_text);
             button.setBackground(ContextCompat.getDrawable(activity.getApplicationContext(), R.drawable.test_running_background));
         }
     }

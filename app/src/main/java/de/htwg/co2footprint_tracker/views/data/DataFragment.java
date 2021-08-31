@@ -146,6 +146,8 @@ public class DataFragment extends Fragment {
         //Bind top consumers list
         List<Consumer> consumers = databaseHelper.getTopConsumingAppsForToday(getContext());
         if (consumers.size() > 2) {
+            binding.topConsumerContainer.setVisibility(View.VISIBLE);
+            binding.noConsumersTextView.setVisibility(View.GONE);
             binding.first.setConsumer(consumers.get(0));
             binding.second.setConsumer(consumers.get(1));
             binding.third.setConsumer(consumers.get(2));

@@ -30,7 +30,7 @@
                 android:button="@null"
                 android:gravity="center"
                 android:textSize="@dimen/text_size_medium"
-                android:text="Today"
+                android:text="@string/today"
                 android:textColor="@drawable/toggle_widget_textcolor" />
 
             <RadioButton
@@ -42,7 +42,7 @@
                 android:button="@null"
                 android:gravity="center"
                 android:textSize="@dimen/text_size_medium"
-                android:text="Total"
+                android:text="@string/total"
                 android:textColor="@drawable/toggle_widget_textcolor" />
         </RadioGroup>
     </androidx.appcompat.widget.LinearLayoutCompat>

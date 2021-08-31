@@ -121,7 +121,7 @@
 
         <Button
             android:id="@+id/start_stop_button"
-            android:text="Tap to start tracking"
+            android:text="@string/tap_to_start_tracking"
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_marginVertical="@dimen/margin_medium"
@@ -150,13 +150,26 @@
                     android:layout_marginStart="26dp"
                     android:background="@color/colorAccent" />
             </LinearLayout>
+            <TextView
+                android:id="@+id/no_consumers_text_view"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="100dp"
+                android:layout_margin="@dimen/margin_medium"
+                android:gravity="center"
+                android:text="@string/no_top_consumers_text"
+                android:textSize="18sp" />
 
             <LinearLayout
+                android:id="@+id/top_consumer_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginVertical="16dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone"
+                >
+
 
                 <include
                     android:id="@+id/first"
