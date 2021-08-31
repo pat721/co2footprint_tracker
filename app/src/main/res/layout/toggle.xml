@@ -5,16 +5,12 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/margin_medium">
+        android:layout_marginVertical="@dimen/margin_big">
 
         <RadioGroup
             android:id="@+id/toggle"
             android:layout_width="180dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="@dimen/margin_medium"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="@dimen/margin_medium"
             android:background="@drawable/toggle_background"
             android:checkedButton="@+id/today_toggle"
             android:orientation="horizontal"

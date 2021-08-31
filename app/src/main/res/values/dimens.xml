@@ -3,4 +3,6 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="text_size_medium">16dp</dimen>
     <dimen name="margin_medium">8dp</dimen>
+    <dimen name="margin_big">16dp</dimen>
+    <dimen name="bottom_nav_height">64dp</dimen>
 </resources>
