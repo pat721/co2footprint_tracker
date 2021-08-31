@@ -20,4 +20,5 @@
     <string name="clearing_database">Datenbank wird geleert!</string>
     <string name="tracking_was_started">Tracking wurde gestartet!</string>
     <string name="usage_stats_permission_required">Die Berechtigung zum abrufen der Nutzungsstatistiken wird benötigt.</string>
+    <string name="page_about">Über</string>
 </resources>
