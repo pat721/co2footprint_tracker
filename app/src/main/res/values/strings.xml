@@ -2,11 +2,10 @@
     <string name="app_name">CO2-Footprint-Tracker</string>
     <string name="settings">Settings</string>
     <string name="page_tips">Tips</string>
-    <string name="page_data">Data</string>
-    <string name="content_description_settings">Settings und so weiter</string>
+    <string name="page_data">Home</string>
+    <string name="content_description_settings">Different Settings</string>
     <string name="menu_start_test">Start Test</string>
     <string name="menu_update_stats">Update Stats (UI only)</string>
-    <string name="menu_update_stats_and_log">Update Stats and log</string>
     <string name="menu_stop_test">Stop Test</string>
     <string name="menu_purge_db">Purge DB</string>
     <string name="menu_request_permissions">Request Runtime Permissions</string>
@@ -15,4 +14,9 @@
     <string name="icon_of_co2_equivalent">icon of co2 equivalent</string>
     <string name="equates_to">Equates to</string>
     <string name="greatest_consumers">Top 3 consumers</string>
+    <string name="notification_context_text">CO2-Footprint-Tracker is running in background…</string>
+    <string name="tracking_already_running">Tracking is already running!</string>
+    <string name="clearing_database">Clearing database!</string>
+    <string name="tracking_was_started">Tracking was started!</string>
+    <string name="usage_stats_permission_required">Usage stats permission is required for the app to work properly</string>
 </resources>

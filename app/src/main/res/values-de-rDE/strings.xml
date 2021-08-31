@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CO2-Footprint-Tracker</string>
+    <string name="settings">Einstellungen</string>
+    <string name="page_tips">Tipps</string>
+    <string name="page_data">Home</string>
+    <string name="content_description_settings">Verschiedene Einstellungen</string>
+    <string name="menu_start_test">Test starten</string>
+    <string name="menu_update_stats">Oberfläche aktualisieren</string>
+    <string name="menu_stop_test">Test Stoppen</string>
+    <string name="menu_purge_db">Datenbank leeren</string>
+    <string name="menu_request_permissions">Berechtigungen abfragen</string>
+    <string name="data_usage">Datennutzung</string>
+    <string name="co2_equivalent">co2</string>
+    <string name="icon_of_co2_equivalent">co2 equivalent Icon</string>
+    <string name="equates_to">entspricht</string>
+    <string name="greatest_consumers">Die 3 größten verbraucher</string>
+    <string name="notification_context_text">CO2-Footprint-Tracker is läuft im Hintergrund…</string>
+    <string name="tracking_already_running">Tracking läuft bereits!</string>
+    <string name="clearing_database">Datenbank wird geleert!</string>
+    <string name="tracking_was_started">Tracking wurde gestartet!</string>
+    <string name="usage_stats_permission_required">Die Berechtigung zum abrufen der Nutzungsstatistiken wird benötigt.</string>
+</resources>

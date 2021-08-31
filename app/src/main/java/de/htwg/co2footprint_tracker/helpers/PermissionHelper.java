@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.widget.Toast;
 
 import de.htwg.co2footprint_tracker.MainActivity;
+import de.htwg.co2footprint_tracker.R;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -65,7 +66,7 @@ public class PermissionHelper extends Activity {
         if (mode == AppOpsManager.MODE_ALLOWED) {
             return true;
         }
-        Toast.makeText(activity, "Usage stats permission is required for the app to work properly", Toast.LENGTH_LONG).show();
+        Toast.makeText(activity, R.string.usage_stats_permission_required, Toast.LENGTH_LONG).show();
 
         appOps.startWatchingMode(AppOpsManager.OPSTR_GET_USAGE_STATS, activity.getPackageName(),
                 new AppOpsManager.OnOpChangedListener() {

@@ -17,12 +17,6 @@ public class InitialBucketContainer {
     private static boolean newRun = true;
     private static HashMap<String, Long> mappedPackageData = new HashMap<>();
 
-    //debugging only------
-
-    public static HashMap<String, Long> getOurMap() {
-        return mappedPackageData;
-    }
-    //debugging only------
 
     public static void putInitialTransmittedWifiData(int uid, long bytes) {
         if (mappedPackageData.containsKey(DATA_PREFIX + WIFI_PREFIX + TRANSMITTED_PREFIX + uid)) {

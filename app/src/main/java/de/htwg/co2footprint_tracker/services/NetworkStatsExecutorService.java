@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -132,9 +133,8 @@ public class NetworkStatsExecutorService extends Service {
             }
         };
 
-        //TODO zeit auf 1 min
         //run the timer task
-        timer.schedule(timerTask, 0L, 1000 * 10);
+        timer.schedule(timerTask, 0L, 1000 * 60);
 
     }
 
@@ -142,7 +142,7 @@ public class NetworkStatsExecutorService extends Service {
         Log.e(Constants.LOG.TAG, "Stopping the ForgegroundService".toUpperCase());
 
         try {
-            if(null == wakeLock){
+            if (null == wakeLock) {
                 Log.e(Constants.LOG.TAG, "Wakelock object is null. This indicates, that the service is stopped without being started");
                 return;
             }
@@ -183,11 +183,13 @@ public class NetworkStatsExecutorService extends Service {
         }
 
         //TODO Evtl globale und localized variable nutzen für benamung
-        builder.setContentTitle("CO2-Footprint-Tracker")
-                .setContentText("CO2-Footprint-Tracker is running...")
+
+        Resources res = MainActivity.getWeakInstanceActivity().getResources();
+        builder.setContentTitle(res.getString(R.string.app_name))
+                .setContentText(res.getString(R.string.notification_context_text))
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.mipmap.ic_launcher) //TODO change icon
-                .setTicker("CO2 Footprint tracker is running") //ticker used for accessibility mode
+                .setTicker(res.getString(R.string.notification_context_text)) //ticker used for accessibility mode
                 .setPriority(Notification.PRIORITY_HIGH);
 
         return builder.build();

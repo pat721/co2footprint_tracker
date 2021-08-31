@@ -19,7 +19,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -131,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
             if (PreferenceManagerHelper.getStartTime(this) == NO_START_TIME_SET) {
                 startTracking();
             } else {
-                Toast.makeText(this, "Test already running!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.tracking_already_running, Toast.LENGTH_LONG).show();
                 Log.e(Constants.LOG.TAG, "Tried to start test even tho the test is already running!");
             }
             return true;
@@ -139,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             stopTracking();
         } else if (menuItem == R.id.menu_purge_db) {
             DatabaseHelper.getInstance(this).purgeDB();
-            Toast.makeText(this, "clearing database", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.clearing_database, Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -154,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void startTracking() {
         PreferenceManagerHelper.setStartTime(this);
-        Toast.makeText(this, "Tracking started!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.tracking_was_started, Toast.LENGTH_LONG).show();
         foregroundServiceAction(Constants.ACTION.START_SERVICE);
     }
 
