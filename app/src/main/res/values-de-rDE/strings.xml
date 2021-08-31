@@ -11,10 +11,10 @@
     <string name="menu_purge_db">Datenbank leeren</string>
     <string name="menu_request_permissions">Berechtigungen abfragen</string>
     <string name="data_usage">Datennutzung</string>
-    <string name="co2_equivalent">co2</string>
-    <string name="icon_of_co2_equivalent">co2 equivalent Icon</string>
-    <string name="equates_to">entspricht</string>
-    <string name="greatest_consumers">Die 3 größten verbraucher</string>
+    <string name="co2_equivalent">CO2</string>
+    <string name="icon_of_co2_equivalent">CO2 equivalent Icon</string>
+    <string name="equates_to">Entspricht:</string>
+    <string name="greatest_consumers">Die 3 größten Verbraucher:</string>
     <string name="notification_context_text">CO2-Footprint-Tracker is läuft im Hintergrund…</string>
     <string name="tracking_already_running">Tracking läuft bereits!</string>
     <string name="clearing_database">Datenbank wird geleert!</string>
@@ -23,6 +23,14 @@
     <string name="page_about">Über</string>
     <string name="open_source_licences">Lizenzen</string>
     <string name="about_footprint_tracker">Über den Footprint Tracker</string>
+    <string name="project_information">Dieses Projekt wird im Rahmen des Forschungsprojekts OFAR4All mit dem Ziel entwickelt, die CO2-Emissionen des Online-Datenverkehrs zu messen und transparent abzubilden.</string>
     <string name="privacy_policy">Datenschutz</string>
     <string name="contact_text">Für Fragen und Kommentare wenden Sie sich bitte an:</string>
+    <string name="today">Heute</string>
+    <string name="total">Gesamt</string>
+    <string name="reduc_footprint_dialog">Hier sind einige hilfreiche Tipps, die Ihnen helfen können, Ihren durch Ihre Datennutzung verursachten CO2-Fußabdruck zu verringern.</string>
+    <string name="tips_to_reduce_your_footprint">Tipps für das Reduzieren des CO2 Fußabdrucks</string>
+    <string name="tap_to_start_tracking">Tracking starten</string>
+    <string name="no_top_consumers_text">Es wurden noch keine Verbräuche gemessen. Bitte Tracking aktivieren um Verbrauch zu messen!</string>
+    <string name="tracking_active_button_text">Tracking ist Aktiv!</string>
 </resources>
