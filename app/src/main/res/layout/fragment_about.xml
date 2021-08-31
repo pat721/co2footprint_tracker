@@ -37,5 +37,20 @@
             android:layout_height="wrap_content"
             android:text="@string/privacy_policy" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/contact_text"
+            android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="some-mail@tracker.de"
+            android:textColor="@color/colorAccent"
+            android:id="@+id/contact_mail"
+            android:textSize="14sp" />
+
     </LinearLayout>
 </layout>

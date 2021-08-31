@@ -20,6 +20,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 import de.htwg.co2footprint_tracker.databinding.DataProtectionBottomSheetBinding;
 import de.htwg.co2footprint_tracker.databinding.FragmentAboutBinding;
+import de.htwg.co2footprint_tracker.utils.CommonUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -80,13 +81,16 @@ public class AboutFragment extends Fragment {
         sheetDialog.setOnShowListener(dialog -> {
             BottomSheetDialog dialogc = (BottomSheetDialog) dialog;
             // When using AndroidX the resource can be found at com.google.android.material.R.id.design_bottom_sheet
-            FrameLayout bottomSheet =  dialogc.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            FrameLayout bottomSheet = dialogc.findViewById(com.google.android.material.R.id.design_bottom_sheet);
 
             BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
             bottomSheetBehavior.setPeekHeight(Resources.getSystem().getDisplayMetrics().heightPixels);
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         });
 
+        String contactMail = FirebaseRemoteConfig.getInstance().getString("contact_mail");
+        binding.contactMail.setOnClickListener(view -> CommonUtils.composeEmail(new String[]{contactMail}, "Footprint Tracker feedback", getContext())
+        );
 
         String privacyPolicy = FirebaseRemoteConfig.getInstance().getString("privacy_policy");
 
