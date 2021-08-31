@@ -76,6 +76,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
 
+            if (item.getItemId() == R.id.about && currentlyActiveView != R.id.about) {
+                navigateToFragment(AboutFragment.getInstance(), true);
+                return true;
+            }
+
             return false;
         });
 
@@ -100,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.M)
     protected void onResume() {
         isInForeground = true;
+        getSupportActionBar().hide();
         PermissionHelper ph = PermissionHelper.getInstance();
         ph.processPermissionHandling();
         LocationHelper.getInstance().updateCurrentAdminArea();
@@ -165,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
         }
         ft.commit();
     }
-
 
     private void foregroundServiceAction(String action) {
 

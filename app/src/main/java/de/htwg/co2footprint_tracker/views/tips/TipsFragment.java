@@ -67,7 +67,7 @@ public class TipsFragment extends Fragment {
         // initializing the objects
         initObjects();
         // preparing list data
-        //initListData();
+        initListData();
     }
 
     /**
