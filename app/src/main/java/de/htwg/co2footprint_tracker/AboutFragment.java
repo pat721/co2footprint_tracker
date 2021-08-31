@@ -1,15 +1,25 @@
 package de.htwg.co2footprint_tracker;
 
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
-import de.htwg.co2footprint_tracker.views.tips.TipsFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+
+import de.htwg.co2footprint_tracker.databinding.DataProtectionBottomSheetBinding;
+import de.htwg.co2footprint_tracker.databinding.FragmentAboutBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,14 +28,8 @@ import de.htwg.co2footprint_tracker.views.tips.TipsFragment;
  */
 public class AboutFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    FragmentAboutBinding binding;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public AboutFragment() {
         // Required empty public constructor
@@ -49,26 +53,56 @@ public class AboutFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static AboutFragment newInstance(String param1, String param2) {
         AboutFragment fragment = new AboutFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
+        binding = DataBindingUtil.inflate(
+                inflater,
+                R.layout.fragment_about,
+                container,
+                false
+        );
+
+        BottomSheetDialog sheetDialog = new BottomSheetDialog(getContext());
+
+        sheetDialog.setOnShowListener(dialog -> {
+            BottomSheetDialog dialogc = (BottomSheetDialog) dialog;
+            // When using AndroidX the resource can be found at com.google.android.material.R.id.design_bottom_sheet
+            FrameLayout bottomSheet =  dialogc.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+
+            BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+            bottomSheetBehavior.setPeekHeight(Resources.getSystem().getDisplayMetrics().heightPixels);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        });
+
+
+        String privacyPolicy = FirebaseRemoteConfig.getInstance().getString("privacy_policy");
+
+        binding.licenseButton.setOnClickListener(view -> {
+            startActivity(new Intent(getContext(), OssLicensesMenuActivity.class));
+        });
+
+        binding.dataProtectionButton.setOnClickListener(view -> {
+            DataProtectionBottomSheetBinding bottomSheetBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.data_protection_bottom_sheet, container, false);
+            bottomSheetBinding.dataProtection.setText(privacyPolicy);
+
+            sheetDialog.setContentView(bottomSheetBinding.getRoot());
+            sheetDialog.show();
+        });
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_about, container, false);
+        return binding.getRoot();
     }
 }

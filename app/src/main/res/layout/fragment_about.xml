@@ -2,6 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,15 +21,21 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="Here are some helpful tips which can help you to reduce your CO2 Footprint caused by your data usage."
+            android:layout_marginVertical="10dp"
+            android:text="@string/project_information"
             android:textSize="14sp" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/license_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/open_source_licences" />
+
+        <Button
+            android:id="@+id/data_protection_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/privacy_policy" />
 
     </LinearLayout>
 </layout>
