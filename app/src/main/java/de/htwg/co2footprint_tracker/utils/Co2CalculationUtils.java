@@ -28,37 +28,23 @@ public class Co2CalculationUtils {
         return new MainCardModel(totalReceivedBytes, totalEnergyConsumption);
     }
 
+
     /**
      * @param time: minutes
-     * @param gb:   gb
-     * @return energy consumption in kWh
-     */
-    private double calculateTotalEnergyConsumption(double time, double gb) {
-        double total;
-        total = calculateSmartphoneEnergyConsumption(time);
-        total += calculateInternetEnergyConsumption(gb);
-        total += calculateDataCenterEnergyConsumption(gb);
-        total += calculateDslamAndCpeEnergyConsumption();
-
-        return total;
-    }
-
-    /**
-     * @param time:  minutes
-     * @param bytes: bytes
      * @return energy consumption in g co2
      */
-    public double calculateTotalEnergyConsumption(double time, long bytes, String adminArea) {
+    public double calculateTotalEnergyConsumption(double time, String adminArea) {
 
-        double gb = bytesToGB(bytes);
-        double energyConsumption = calculateTotalEnergyConsumption(time, gb);
+        double energyConsumption = calculateSmartphoneEnergyConsumption(time);
         double returnVal = 0;
 
         if (adminArea == null) { //base case
             Log.e(Constants.LOG.TAG, "calculated c02 with null");
-            return calculateTotalEnergyConsumption(time, gb) * KHW_TO_CO2_CONVERSION_VALUE;
+            return calculateSmartphoneEnergyConsumption(time) * KHW_TO_CO2_CONVERSION_VALUE;
         }
 
+
+        //TODO switch case move to helper class -> initialize as map and use map only
         switch (adminArea) {
             case "Baden-Württemberg":
                 returnVal = Constants.ELECTRICITY.BADEN_WUERTTEMBERG_FACTOR * energyConsumption;
@@ -94,29 +80,19 @@ public class Co2CalculationUtils {
                 returnVal = Constants.ELECTRICITY.LICHTENSTEIN_FACTOR * energyConsumption;
                 break;
             default:
-                returnVal = calculateTotalEnergyConsumption(time, gb) * KHW_TO_CO2_CONVERSION_VALUE;
+                returnVal = calculateSmartphoneEnergyConsumption(time) * KHW_TO_CO2_CONVERSION_VALUE;
         }
 
         return returnVal;
     }
 
+
+    /**
+     * @param time: minutes
+     * @return energy consumption in kWh
+     */
     public double calculateSmartphoneEnergyConsumption(double time) {
         return time * ENERGY_IMPACT_SMARTPHONE;
-    }
-
-    public double calculateInternetEnergyConsumption(double megabyte) {
-        //TODO raus
-        return megabyte * AVERAGE_ENERGY_INTESITY_OF_LONG_HAUL_AND_METRO;
-    }
-
-    public double calculateDataCenterEnergyConsumption(double gigabyte) {
-        //TODO raus
-        return gigabyte * 1000000000 * ELECTRICITY_CONSUMPTION_BY_DATACENTERS;
-    }
-
-    public double calculateDslamAndCpeEnergyConsumption() {
-        //TODO raus
-        return AVERAGE_CONSUMPTION_ACCESS_NETWORK_AND_CPE / 1000;
     }
 
     private double bytesToGB(long bytes) {

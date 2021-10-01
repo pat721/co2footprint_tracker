@@ -189,11 +189,9 @@ public class NetworkStatsUpdateService extends IntentService {
         for (Package packet : packageList) {
             if (packetHasChanges(packet)) {
 
-                long totalBytes = packet.getReceivedBytesTotal() + packet.getTransmittedBytesTotal();
-
                 String adminArea = PreferenceManagerHelper.getAdminArea(context);
-                packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, totalBytes, adminArea));
-                packet.setTimestamp(timeStamp/1000);
+                packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, adminArea));
+                packet.setTimestamp(timeStamp / 1000);
                 databaseHelper.addData(packet);
             }
         }
