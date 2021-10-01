@@ -50,13 +50,13 @@ public class Co2CalculationUtils {
      */
     public double calculateTotalEnergyConsumption(double time, long bytes, String adminArea) {
 
-        double mb = bytesToGB(bytes);
-        double energyConsumption = calculateTotalEnergyConsumption(time, mb);
+        double gb = bytesToGB(bytes);
+        double energyConsumption = calculateTotalEnergyConsumption(time, gb);
         double returnVal = 0;
 
         if (adminArea == null) { //base case
             Log.e(Constants.LOG.TAG, "calculated c02 with null");
-            return calculateTotalEnergyConsumption(time, mb) * KHW_TO_CO2_CONVERSION_VALUE;
+            return calculateTotalEnergyConsumption(time, gb) * KHW_TO_CO2_CONVERSION_VALUE;
         }
 
         switch (adminArea) {
@@ -94,7 +94,7 @@ public class Co2CalculationUtils {
                 returnVal = Constants.ELECTRICITY.LICHTENSTEIN_FACTOR * energyConsumption;
                 break;
             default:
-                returnVal = calculateTotalEnergyConsumption(time, mb) * KHW_TO_CO2_CONVERSION_VALUE;
+                returnVal = calculateTotalEnergyConsumption(time, gb) * KHW_TO_CO2_CONVERSION_VALUE;
         }
 
         return returnVal;
@@ -105,14 +105,17 @@ public class Co2CalculationUtils {
     }
 
     public double calculateInternetEnergyConsumption(double megabyte) {
+        //TODO raus
         return megabyte * AVERAGE_ENERGY_INTESITY_OF_LONG_HAUL_AND_METRO;
     }
 
     public double calculateDataCenterEnergyConsumption(double gigabyte) {
+        //TODO raus
         return gigabyte * 1000000000 * ELECTRICITY_CONSUMPTION_BY_DATACENTERS;
     }
 
     public double calculateDslamAndCpeEnergyConsumption() {
+        //TODO raus
         return AVERAGE_CONSUMPTION_ACCESS_NETWORK_AND_CPE / 1000;
     }
 
