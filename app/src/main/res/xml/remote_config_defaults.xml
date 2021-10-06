@@ -109,26 +109,26 @@
         <value>
             {
             "world": {
-            "mobilephone": {
-            "ipcc": 0.881
-            },
-            "tablet": {
-            "ipcc": 0.00406
-            },
+                "mobilephone": {
+                    "ipcc": 0.881
+                },
+                "tablet": {
+                    "ipcc": 0.00406
+                },
             "basisstation": {
-            "ipcc": 0.0257
+                "ipcc": 0.0257
             },
             "corenetwork": {
-            "ipcc": 0.000278
+                "ipcc": 0.000278
             },
             "transportnetwork": {
-            "ipcc": 0.00206
+                "ipcc": 0.00206
             },
             "datacenter": {
-            "ipcc": 0.433
+                "ipcc": 0.433
             },
             "homerouter": {
-            "ipcc": 0.00355
+                "ipcc": 0.00355
             }
             }
             }

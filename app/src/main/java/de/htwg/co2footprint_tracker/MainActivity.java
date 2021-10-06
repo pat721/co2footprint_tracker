@@ -62,9 +62,6 @@ public class MainActivity extends AppCompatActivity {
         this.binding.bottomNavigation.setSelectedItemId(R.id.data);
         navigateToFragment(DataFragment.getInstance(), false);
 
-        new IpccTableHelper(this);
-
-
         //TODO rm depricated method? maybe getOnFocusChangeListener can do that
         this.binding.bottomNavigation.setOnNavigationItemSelectedListener(item -> {
 
@@ -98,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
+
+
+        new IpccTableHelper();
     }
 
     @Override

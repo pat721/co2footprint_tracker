@@ -1,88 +1,135 @@
 package de.htwg.co2footprint_tracker.helpers;
 
-import android.content.Context;
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 public class IpccTableHelper {
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public IpccTableHelper(Context context) {
+    private static IpccTableHelper ipccTableHelper;
+    private JsonObject productionIpccTable;
+    private JsonObject operationIpccTable;
+    private JsonObject endOfLifeIpccTable;
+    private JsonObject strommixTable;
 
 
-        String jsonString = "hier ist nichts!";
-        try {
-            InputStream is = context.getAssets().open("");
-            jsonString = convertStreamToString(is);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+    public IpccTableHelper getInstance() {
+        if (ipccTableHelper == null) {
+            ipccTableHelper = new IpccTableHelper();
         }
+        return ipccTableHelper;
+    }
 
-//        String jsonString = new FileReader("de")
+    public IpccTableHelper() {
 
-        HashMap<String, Object> map = new Gson().fromJson(jsonString, HashMap.class);
-
-        Map<String, Object> flattenedMap = flatMap(map);
-
+        String object = FirebaseRemoteConfig.getInstance().getString("ProductionIpccTable");
+        Gson gson = new GsonBuilder().create();
+        JsonObject json = gson.fromJson(object, JsonObject.class);
 
         int i = 0;
 
     }
 
-    public Map getProductionValueMap() {
-        return null;
-    }
+    public double getIpccValuesFor(String adminArea, String country) {
+
+        double result = 0;
+
+        result += getIpccProductionValues();
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    static Map<String, Object> flatMap(Map<String, Object> map) {
-        Map<String, Object> flatenedMap = new HashMap<>();
-        map.forEach((key, value) -> {
-            if (value instanceof Map) {
-                flatenedMap.putAll(flatMap((Map) value));
-            } else {
-                flatenedMap.put(key, value);
-            }
-        });
+        JsonObject world = productionIpccTable.getAsJsonObject("world");
 
-        return flatenedMap;
-    }
+        JsonObject countryJson = world.getAsJsonObject(country);
 
-    public static String convertStreamToString(InputStream is)
-            throws IOException {
-
-        Writer writer = new StringWriter();
-        char[] buffer = new char[2048];
-
-        try {
-            Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-            int n;
-            while ((n = reader.read(buffer)) != -1) {
-                writer.write(buffer, 0, n);
-            }
-        } finally {
-            is.close();
+        if (countryJson != null) {
+            JsonObject adminAreaJson = countryJson.getAsJsonObject(adminArea);
         }
 
-        String text = writer.toString();
-        return text;
+
+        //TODO
+        return 0.0;
     }
+
+
+    private double getIpccProductionValues(boolean isMobilePhone, boolean isWifi) {
+
+        double result = 0.0;
+        JsonObject world = productionIpccTable.getAsJsonObject("world");
+
+        JsonObject phoneJson = world.getAsJsonObject("phone");
+        JsonObject tabletJson = world.getAsJsonObject("tablet");
+        JsonObject basisstationJson = world.getAsJsonObject("basisstation");
+        JsonObject corenetworkJson = world.getAsJsonObject("corenetwork");
+        JsonObject transportnetworkJson = world.getAsJsonObject("transportnetwork");
+        JsonObject datacenterJson = world.getAsJsonObject("datacenter");
+        JsonObject homerouterJson = world.getAsJsonObject("homerouter");
+
+        double ipccPhone = phoneJson.getAsJsonObject("ipcc").getAsDouble();
+        double ipccTablet = tabletJson.getAsJsonObject("ipcc").getAsDouble();
+        double ipccBasisstation = basisstationJson.getAsJsonObject("ipcc").getAsDouble();
+        double ipcccorenetwork = corenetworkJson.getAsJsonObject("ipcc").getAsDouble();
+        double ipcctransportnetwork = transportnetworkJson.getAsJsonObject("ipcc").getAsDouble();
+        double ipccdatacenter = datacenterJson.getAsJsonObject("ipcc").getAsDouble();
+        double ipcchomerouter = homerouterJson.getAsJsonObject("ipcc").getAsDouble();
+
+        result += isMobilePhone ? ipccPhone : ipccTablet;
+        result += isWifi ? ipcchomerouter : ipccBasisstation;
+        result += ipcccorenetwork;
+        result += ipcctransportnetwork;
+        result += ipccdatacenter;
+
+        return result;
+    }
+
+    private double getIpccOperationValues(String adminArea, String country) {
+
+
+//        "world": {
+//            "datacenter": 0.0000001485,
+//                    "corenetwork_maintenance": 0.00000834,
+//                    "transportnetwork_maintenance": 0.0000618,
+//                    "basisstation_maintenance": 0.000771,
+//                    "datacenter_maintenance": 0.01299,
+//
+//                    "germany": {
+//                "stromverbrauch_corenetwork": 0.00017,
+//                        "stromverbrauch_transportnetwork": 0.00211,
+//                        "baden-württemberg": {
+//                    "stromverbrauch_basisstationen": 0.0000042621013,
+//                            "dslam_energieverbrauch": 0.0015832224,
+//                            "electricity_usage_router": 0.0004870029
+//                },
+
+
+        double result = 0.0;
+        JsonObject world = operationIpccTable.getAsJsonObject("world");
+
+
+        String[] operationIpccArray = {"StromBasis", "StromCore", "StromTransport"}; //TODO
+
+
+        for (String key : operationIpccArray) {
+
+            JsonObject countryJsonObject = world.getAsJsonObject(country);
+            if (countryJsonObject != null) { //if country exists
+
+                JsonObject adminAreaJsonObject = countryJsonObject.getAsJsonObject(adminArea);
+                if (adminAreaJsonObject != null) {
+                    //TODO add to result
+                    continue;
+                }
+                //add to result
+                result += adminAreaJsonObject.getAsJsonObject(key).getAsDouble();
+                continue;
+            }
+            result += world.getAsJsonObject(key).getAsDouble();
+        }
+
+
+        return result;
+    }
+
 
 }
