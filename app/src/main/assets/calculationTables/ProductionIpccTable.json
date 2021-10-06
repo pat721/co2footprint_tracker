@@ -1,0 +1,25 @@
+{
+  "World": {
+    "mobilephone": {
+      "ipcc": 0.881
+    },
+    "tablet": {
+      "ipcc": 0.00406
+    },
+    "basisstation": {
+      "ipcc": 0.0257
+    },
+    "CoreNetwork": {
+      "ipcc": 0.000278
+    },
+    "TransportNetwork": {
+      "ipcc": 0.00206
+    },
+    "DataCenter": {
+      "ipcc": 0.433
+    },
+    "HomeRouter": {
+      "ipcc": 0.00355
+    }
+  }
+}

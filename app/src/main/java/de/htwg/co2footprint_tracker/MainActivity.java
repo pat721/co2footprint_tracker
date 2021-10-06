@@ -26,6 +26,7 @@ import java.lang.ref.WeakReference;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.databinding.ActivityMainBinding;
+import de.htwg.co2footprint_tracker.helpers.IpccTableHelper;
 import de.htwg.co2footprint_tracker.helpers.LocationHelper;
 import de.htwg.co2footprint_tracker.helpers.PermissionHelper;
 import de.htwg.co2footprint_tracker.helpers.PreferenceManagerHelper;
@@ -60,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
 
         this.binding.bottomNavigation.setSelectedItemId(R.id.data);
         navigateToFragment(DataFragment.getInstance(), false);
+
+        new IpccTableHelper(this);
+
 
         //TODO rm depricated method? maybe getOnFocusChangeListener can do that
         this.binding.bottomNavigation.setOnNavigationItemSelectedListener(item -> {

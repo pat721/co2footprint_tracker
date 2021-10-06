@@ -1,0 +1,74 @@
+{
+  "World": {
+    "DataCenter": 0.0000001485,
+    "CoreNetworkMaintenance": 0.00000834,
+    "TransportNetworkMaintenance": 0.0000618,
+    "BasisstationMaintenance": 0.000771,
+    "DataCenterMaintenance": 0.01299,
+
+    "Germany": {
+      "StromVerbrauchCoreNetwork": 0.00017,
+      "StromverbrauchTransportNetwork": 0.00211,
+      "Baden-Württemberg": {
+        "Stromverbrauch Basisstationen": 0.0000042621013,
+        "DSLAMEnergieverbrauch": 0.0015832224,
+        "Electricity usage router": 0.0004870029
+      },
+      "Bayern": {
+        "Stromverbrauch Basisstationen": 0.0000013415772,
+        "DSLAMEnergieverbrauch": 0.00049834925,
+        "Electricity usage router": 0.0001532934
+      }
+    },
+    "Switzerland": {
+      "StromVerbrauchCoreNetwork": 0.000932,
+      "StromverbrauchTransportNetwork": 0.0116,
+      "Appenzell Innerrhoden": {
+        "Stromverbrauch Basisstationen": 0.00000007091821,
+        "DSLAMEnergieverbrauch": 0.000026343648,
+        "Electricity usage router": 0.0000081033677
+      },
+      "Appenzell Ausserrhoden": {
+        "Stromverbrauch Basisstationen": 0.00000045750761,
+        "DSLAMEnergieverbrauch": 0.00016994816,
+        "Electricity usage router": 0.000052276453
+      },
+      "Thurgau": {
+        "Stromverbrauch Basisstationen": 0.00000034092785,
+        "DSLAMEnergieverbrauch": 0.00012664284,
+        "Electricity usage router": 0.000038955633
+      },
+      "Schaffhausen": {
+        "Stromverbrauch Basisstationen": 0.00000073365991,
+        "DSLAMEnergieverbrauch": 0.000273,
+        "Electricity usage router": 0.0000838306
+      },
+      "Zürich": {
+        "Stromverbrauch Basisstationen": 0.00000043704242,
+        "DSLAMEnergieverbrauch": 0.00016234606,
+        "Electricity usage router": 0.000049938026
+      },
+      "Sankt Gallen": {
+        "Stromverbrauch Basisstationen": 0.0000010079445,
+        "DSLAMEnergieverbrauch": 0.00037441632,
+        "Electricity usage router": 0.00011517134
+      }
+    },
+    "Austria": {
+      "StromVerbrauchCoreNetwork": 0.0016,
+      "StromverbrauchTransportNetwork": 0.0198,
+      "Vorarlberg": {
+        "Stromverbrauch Basisstationen": 0.0000006193382,
+        "DSLAMEnergieverbrauch": 0.0002300626,
+        "Electricity usage router": 0.000070767793
+      }
+    },
+    "Liechtenstein": {
+      "StromVerbrauchCoreNetwork": 0.00017,
+      "StromverbrauchTransportNetwork": 0.00211,
+      "Stromverbrauch Basisstationen": 0.00000091388587,
+      "DSLAMEnergieverbrauch": 0.00033947681,
+      "Electricity usage router": 0.00010442386
+    }
+  }
+}

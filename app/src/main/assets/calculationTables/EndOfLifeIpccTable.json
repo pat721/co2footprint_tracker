@@ -1,0 +1,26 @@
+{
+  "World": {
+    "Phone": 0.0010284646,
+    "Tablet": 0.0024992145,
+
+    "Germany": {
+      "Phone": 0.0010284646,
+      "Tablet": 0.0024992145
+    },
+
+    "Switzerland": {
+      "Phone": 0.0010250434,
+      "Tablet": 0.0024909007
+    },
+
+    "Austria": {
+      "Phone": 0.0010284646,
+      "Tablet": 0.0024992145
+    },
+
+    "Liechtenstein": {
+      "Phone": 0.0010284646,
+      "Tablet": 0.0024909007
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "World": {
+    "Germany": {
+      "Baden-Württemberg": 0.13439065,
+      "Bayern": 0.04230199
+    },
+    "Switzerland": {
+      "Appenzell Innerrhoden": 0.0022361601,
+      "Appenzell Ausserrhoden": 0.014425932,
+      "Thurgau": 0.010749989,
+      "Schaffhausen": 0.023133478,
+      "Zürich": 0.013780631,
+      "Sankt Gallen": 0.031782046
+    },
+    "Austria": {
+      "Vorarlberg": 0.019528684
+    },
+    "Liechtenstein": 0.028816243
+  }
+}
