@@ -109,26 +109,26 @@
         <value>
             {
             "world": {
-                "mobilephone": {
-                    "ipcc": 0.881
-                },
-                "tablet": {
-                    "ipcc": 0.00406
-                },
+            "mobilephone": {
+            "ipcc": 0.881
+            },
+            "tablet": {
+            "ipcc": 0.00406
+            },
             "basisstation": {
-                "ipcc": 0.0257
+            "ipcc": 0.0257
             },
             "corenetwork": {
-                "ipcc": 0.000278
+            "ipcc": 0.000278
             },
             "transportnetwork": {
-                "ipcc": 0.00206
+            "ipcc": 0.00206
             },
             "datacenter": {
-                "ipcc": 0.433
+            "ipcc": 0.433
             },
             "homerouter": {
-                "ipcc": 0.00355
+            "ipcc": 0.00355
             }
             }
             }
@@ -144,7 +144,10 @@
             "transportnetwork_maintenance": 0.0000618,
             "basisstation_maintenance": 0.000771,
             "datacenter_maintenance": 0.01299,
-
+            "stromverbrauch_corenetwork": 0.00017,
+            "stromverbrauch_transportnetwork": 0.00211,
+            "stromverbrauch_basisstationen": 0.0000042621013,
+            "electricity_usage_router": 0.0004870029,
             "germany": {
             "stromverbrauch_corenetwork": 0.00017,
             "stromverbrauch_transportnetwork": 0.00211,
@@ -204,7 +207,7 @@
         </value>
     </entry>
     <entry>
-        <key>CalculationValues_endOfLife</key>
+        <key>calculationValues_endOfLife</key>
         <value>
             {
             "world": {
@@ -235,7 +238,7 @@
         </value>
     </entry>
     <entry>
-        <key>CalculationValues_electricityMix</key>
+        <key>calculationValues_electricityMix</key>
         <value>
             {
             "world": {
