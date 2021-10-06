@@ -3,7 +3,11 @@ package de.htwg.co2footprint_tracker.helpers;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class IpccTableHelper {
 
@@ -24,9 +28,16 @@ public class IpccTableHelper {
 
     public IpccTableHelper() {
 
-        String object = FirebaseRemoteConfig.getInstance().getString("ProductionIpccTable");
+        String object = FirebaseRemoteConfig.getInstance().getString("calculationValues_production");
         Gson gson = new GsonBuilder().create();
-        JsonObject json = gson.fromJson(object, JsonObject.class);
+        productionIpccTable = gson.fromJson(object, JsonObject.class);
+
+        object = FirebaseRemoteConfig.getInstance().getString("calculationValues_operation");
+        operationIpccTable = gson.fromJson(object, JsonObject.class);
+
+        object = FirebaseRemoteConfig.getInstance().getString("CalculationValues_endOfLife");
+        endOfLifeIpccTable = gson.fromJson(object, JsonObject.class);
+
 
         int i = 0;
 
@@ -36,20 +47,12 @@ public class IpccTableHelper {
 
         double result = 0;
 
-        result += getIpccProductionValues();
+        result += getIpccProductionValues(true, true);
+        result += getIpccOperationValues(adminArea, country, true);
+        result += getIpccEndOfLifeValues();
 
 
-        JsonObject world = productionIpccTable.getAsJsonObject("world");
-
-        JsonObject countryJson = world.getAsJsonObject(country);
-
-        if (countryJson != null) {
-            JsonObject adminAreaJson = countryJson.getAsJsonObject(adminArea);
-        }
-
-
-        //TODO
-        return 0.0;
+        return result;
     }
 
 
@@ -58,7 +61,7 @@ public class IpccTableHelper {
         double result = 0.0;
         JsonObject world = productionIpccTable.getAsJsonObject("world");
 
-        JsonObject phoneJson = world.getAsJsonObject("phone");
+        JsonObject phoneJson = world.getAsJsonObject("mobilephone");
         JsonObject tabletJson = world.getAsJsonObject("tablet");
         JsonObject basisstationJson = world.getAsJsonObject("basisstation");
         JsonObject corenetworkJson = world.getAsJsonObject("corenetwork");
@@ -66,13 +69,13 @@ public class IpccTableHelper {
         JsonObject datacenterJson = world.getAsJsonObject("datacenter");
         JsonObject homerouterJson = world.getAsJsonObject("homerouter");
 
-        double ipccPhone = phoneJson.getAsJsonObject("ipcc").getAsDouble();
-        double ipccTablet = tabletJson.getAsJsonObject("ipcc").getAsDouble();
-        double ipccBasisstation = basisstationJson.getAsJsonObject("ipcc").getAsDouble();
-        double ipcccorenetwork = corenetworkJson.getAsJsonObject("ipcc").getAsDouble();
-        double ipcctransportnetwork = transportnetworkJson.getAsJsonObject("ipcc").getAsDouble();
-        double ipccdatacenter = datacenterJson.getAsJsonObject("ipcc").getAsDouble();
-        double ipcchomerouter = homerouterJson.getAsJsonObject("ipcc").getAsDouble();
+        double ipccPhone = phoneJson.get("ipcc").getAsDouble();
+        double ipccTablet = tabletJson.get("ipcc").getAsDouble();
+        double ipccBasisstation = basisstationJson.get("ipcc").getAsDouble();
+        double ipcccorenetwork = corenetworkJson.get("ipcc").getAsDouble();
+        double ipcctransportnetwork = transportnetworkJson.get("ipcc").getAsDouble();
+        double ipccdatacenter = datacenterJson.get("ipcc").getAsDouble();
+        double ipcchomerouter = homerouterJson.get("ipcc").getAsDouble();
 
         result += isMobilePhone ? ipccPhone : ipccTablet;
         result += isWifi ? ipcchomerouter : ipccBasisstation;
@@ -83,49 +86,59 @@ public class IpccTableHelper {
         return result;
     }
 
-    private double getIpccOperationValues(String adminArea, String country) {
 
-
-//        "world": {
-//            "datacenter": 0.0000001485,
-//                    "corenetwork_maintenance": 0.00000834,
-//                    "transportnetwork_maintenance": 0.0000618,
-//                    "basisstation_maintenance": 0.000771,
-//                    "datacenter_maintenance": 0.01299,
-//
-//                    "germany": {
-//                "stromverbrauch_corenetwork": 0.00017,
-//                        "stromverbrauch_transportnetwork": 0.00211,
-//                        "baden-württemberg": {
-//                    "stromverbrauch_basisstationen": 0.0000042621013,
-//                            "dslam_energieverbrauch": 0.0015832224,
-//                            "electricity_usage_router": 0.0004870029
-//                },
-
-
+    private double getIpccOperationValues(String adminArea, String country, boolean isWifi) {
         double result = 0.0;
         JsonObject world = operationIpccTable.getAsJsonObject("world");
+        JsonObject countryJsonObject = world.getAsJsonObject(country);
+
+        JsonObject adminAreaJsonObject = null;
+        if (countryJsonObject != null) {
+            adminAreaJsonObject = countryJsonObject.getAsJsonObject(adminArea);
+        }
 
 
-        String[] operationIpccArray = {"StromBasis", "StromCore", "StromTransport"}; //TODO
+        String[] operationIpccArray = {"datacenter", "corenetwork_maintenance", "datacenter_maintenance", "stromverbrauch_corenetwork", "stromverbrauch_transportnetwork"};
 
 
-        for (String key : operationIpccArray) {
+        ArrayList<String> operationIpccList = new ArrayList(Arrays.asList(operationIpccArray));
 
-            JsonObject countryJsonObject = world.getAsJsonObject(country);
+
+        if (isWifi) {
+            operationIpccList.add("electricity_usage_router");
+        } else {
+            operationIpccList.add("basisstation_maintenance");
+            operationIpccList.add("stromverbrauch_basisstationen");
+        }
+
+        for (String key : operationIpccList) {
+
             if (countryJsonObject != null) { //if country exists
 
-                JsonObject adminAreaJsonObject = countryJsonObject.getAsJsonObject(adminArea);
                 if (adminAreaJsonObject != null) {
-                    //TODO add to result
+                    JsonElement keyJsonElement = adminAreaJsonObject.get(key);
+                    if (keyJsonElement != null) {
+                        result += keyJsonElement.getAsDouble();
+                        continue;
+                    }
+                }
+
+                JsonElement keyJsonElement = countryJsonObject.get(key);
+                if (keyJsonElement != null) {
+                    result += keyJsonElement.getAsDouble();
                     continue;
                 }
-                //add to result
-                result += adminAreaJsonObject.getAsJsonObject(key).getAsDouble();
-                continue;
             }
-            result += world.getAsJsonObject(key).getAsDouble();
+            result += world.get(key).getAsDouble();
         }
+
+
+        return result;
+    }
+
+
+    private double getIpccEndOfLifeValues() {
+        double result = 0.0;
 
 
         return result;

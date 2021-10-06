@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
 
-        new IpccTableHelper();
+        new IpccTableHelper().getIpccValuesFor("Bayern", "Germany");
     }
 
     @Override
