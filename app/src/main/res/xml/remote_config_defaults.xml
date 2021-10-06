@@ -239,11 +239,14 @@
         <value>
             {
             "world": {
+            "default": 0.060263902,
             "germany": {
+            "default": 0.17669264,
             "baden-württemberg": 0.13439065,
             "bayern": 0.04230199
             },
             "switzerland": {
+            "default": 0.01601803935,
             "appenzell innerrhoden": 0.0022361601,
             "appenzell ausserrhoden": 0.014425932,
             "thurgau": 0.010749989,
@@ -252,9 +255,11 @@
             "sankt gallen": 0.031782046
             },
             "austria": {
-            "vorarlberg": 0.019528684
+            "default": 0.019528684
             },
-            "liechtenstein": 0.028816243
+            "liechtenstein": {
+            "default": 0.028816243
+            }
             }
             }
         </value>
