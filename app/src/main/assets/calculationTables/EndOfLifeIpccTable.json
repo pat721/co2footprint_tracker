@@ -1,26 +1,26 @@
 {
-  "World": {
-    "Phone": 0.0010284646,
-    "Tablet": 0.0024992145,
+  "world": {
+    "phone": 0.0010284646,
+    "tablet": 0.0024992145,
 
-    "Germany": {
-      "Phone": 0.0010284646,
-      "Tablet": 0.0024992145
+    "germany": {
+      "phone": 0.0010284646,
+      "tablet": 0.0024992145
     },
 
-    "Switzerland": {
-      "Phone": 0.0010250434,
-      "Tablet": 0.0024909007
+    "switzerland": {
+      "phone": 0.0010250434,
+      "tablet": 0.0024909007
     },
 
-    "Austria": {
-      "Phone": 0.0010284646,
-      "Tablet": 0.0024992145
+    "austria": {
+      "phone": 0.0010284646,
+      "tablet": 0.0024992145
     },
 
-    "Liechtenstein": {
-      "Phone": 0.0010284646,
-      "Tablet": 0.0024909007
+    "liechtenstein": {
+      "phone": 0.0010284646,
+      "tablet": 0.0024909007
     }
   }
 }
