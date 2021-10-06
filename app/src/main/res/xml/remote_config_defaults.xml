@@ -150,12 +150,10 @@
             "stromverbrauch_transportnetwork": 0.00211,
             "baden-württemberg": {
             "stromverbrauch_basisstationen": 0.0000042621013,
-            "dslam_energieverbrauch": 0.0015832224,
             "electricity_usage_router": 0.0004870029
             },
             "bayern": {
             "stromverbrauch_basisstationen": 0.0000013415772,
-            "dslam_energieverbrauch": 0.00049834925,
             "electricity_usage_router": 0.0001532934
             }
             },
@@ -164,32 +162,26 @@
             "stromverbrauch_transportnetwork": 0.0116,
             "appenzell innerrhoden": {
             "stromverbrauch_basisstationen": 0.00000007091821,
-            "dslam_energieverbrauch": 0.000026343648,
             "electricity_usage_router": 0.0000081033677
             },
             "appenzell ausserrhoden": {
             "stromverbrauch_basisstationen": 0.00000045750761,
-            "dslam_energieverbrauch": 0.00016994816,
             "electricity_usage_router": 0.000052276453
             },
             "thurgau": {
             "stromverbrauch_basisstationen": 0.00000034092785,
-            "dslam_energieverbrauch": 0.00012664284,
             "electricity_usage_router": 0.000038955633
             },
             "schaffhausen": {
             "stromverbrauch_basisstationen": 0.00000073365991,
-            "dslam_energieverbrauch": 0.000273,
             "electricity_usage_router": 0.0000838306
             },
             "zürich": {
             "stromverbrauch_basisstationen": 0.00000043704242,
-            "dslam_energieverbrauch": 0.00016234606,
             "electricity_usage_router": 0.000049938026
             },
             "sankt gallen": {
             "stromverbrauch_basisstationen": 0.0000010079445,
-            "dslam_energieverbrauch": 0.00037441632,
             "electricity_usage_router": 0.00011517134
             }
             },
@@ -198,7 +190,6 @@
             "stromverbrauch_transportnetwork": 0.0198,
             "vorarlberg": {
             "stromverbrauch_basisstationen": 0.0000006193382,
-            "dslam_energieverbrauch": 0.0002300626,
             "electricity_usage_router": 0.000070767793
             }
             },
@@ -206,7 +197,6 @@
             "stromverbrauch_corenetwork": 0.00017,
             "stromverbrauch_transportnetwork": 0.00211,
             "stromverbrauch_basisstationen": 0.00000091388587,
-            "dslam_energieverbrauch": 0.00033947681,
             "electricity_usage_router": 0.00010442386
             }
             }
