@@ -152,8 +152,16 @@ public class IpccTableHelper {
         return world.get(key).getAsDouble();
     }
 
-    public double getElectricityFactor(String adminArea) {
+    public double getElectricityFactor(String adminArea, String country) {
+        JsonObject world = electricityMix.getAsJsonObject("world");
+        JsonObject countryJsonObject = world.getAsJsonObject(country);
 
+        if (countryJsonObject != null) {
+            JsonElement adminAreaJson = countryJsonObject.get(adminArea);
+            if (adminAreaJson != null) {
+                return adminAreaJson.getAsDouble();
+            }
+        }
+        return countryJsonObject.get("default").getAsDouble();
     }
-
 }
