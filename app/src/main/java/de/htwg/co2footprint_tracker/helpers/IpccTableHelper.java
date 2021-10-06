@@ -28,8 +28,7 @@ public class IpccTableHelper {
 
         String jsonString = "hier ist nichts!";
         try {
-            //InputStream is = context.getAssets().open("calculationTables/strommix.json");
-            InputStream is = context.getAssets().open("calculationTables/ProductionIpccTable.json");
+            InputStream is = context.getAssets().open("");
             jsonString = convertStreamToString(is);
 
         } catch (IOException e) {
