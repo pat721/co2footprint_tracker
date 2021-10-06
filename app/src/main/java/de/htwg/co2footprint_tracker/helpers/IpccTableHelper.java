@@ -16,7 +16,7 @@ public class IpccTableHelper {
     private JsonObject productionIpccTable;
     private JsonObject operationIpccTable;
     private JsonObject endOfLifeIpccTable;
-    private JsonObject strommixTable;
+    private JsonObject electricityMix;
 
 
     public IpccTableHelper getInstance() {
@@ -35,11 +35,11 @@ public class IpccTableHelper {
         object = FirebaseRemoteConfig.getInstance().getString("calculationValues_operation");
         operationIpccTable = gson.fromJson(object, JsonObject.class);
 
-        object = FirebaseRemoteConfig.getInstance().getString("CalculationValues_endOfLife");
+        object = FirebaseRemoteConfig.getInstance().getString("calculationValues_endOfLife");
         endOfLifeIpccTable = gson.fromJson(object, JsonObject.class);
 
-
-        int i = 0;
+        object = FirebaseRemoteConfig.getInstance().getString("calculationValues_electricityMix");
+        electricityMix = gson.fromJson(object, JsonObject.class);
 
     }
 
@@ -47,10 +47,9 @@ public class IpccTableHelper {
 
         double result = 0;
 
-        result += getIpccProductionValues(true, true);
+        result += getIpccProductionValues(false, true);
         result += getIpccOperationValues(adminArea, country, true);
-        result += getIpccEndOfLifeValues();
-
+        result += getIpccEndOfLifeValues(false, country);
 
         return result;
     }
@@ -137,12 +136,24 @@ public class IpccTableHelper {
     }
 
 
-    private double getIpccEndOfLifeValues() {
-        double result = 0.0;
+    private double getIpccEndOfLifeValues(boolean isMobilePhone, String country) {
+        JsonObject world = endOfLifeIpccTable.getAsJsonObject("world");
+        JsonObject countryJsonObject = world.getAsJsonObject(country);
+        String key = isMobilePhone ? "mobilephone" : "tablet";
 
+        if (countryJsonObject != null) { //if country exists
 
-        return result;
+            JsonElement keyJsonElement = countryJsonObject.get(key);
+            if (keyJsonElement != null) {
+                return keyJsonElement.getAsDouble();
+            }
+
+        }
+        return world.get(key).getAsDouble();
     }
 
+    public double getElectricityFactor(String adminArea) {
+
+    }
 
 }

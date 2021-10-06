@@ -23,6 +23,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.lang.ref.WeakReference;
+import java.util.Locale;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.databinding.ActivityMainBinding;
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
 
-        new IpccTableHelper().getIpccValuesFor("Bayern", "Germany");
+        new IpccTableHelper().getIpccValuesFor("Schleswig-Holstein".toLowerCase(Locale.ROOT), "Germany".toLowerCase(Locale.ROOT));
     }
 
     @Override
