@@ -190,7 +190,8 @@ public class NetworkStatsUpdateService extends IntentService {
             if (packetHasChanges(packet)) {
 
                 String adminArea = PreferenceManagerHelper.getAdminArea(context);
-                packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, adminArea));
+                String country = PreferenceManagerHelper.getCountryISOCode(context);
+                packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, adminArea, country));
                 packet.setTimestamp(timeStamp / 1000);
                 databaseHelper.addData(packet);
             }
