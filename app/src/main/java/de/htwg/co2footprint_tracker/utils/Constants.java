@@ -28,6 +28,7 @@ public class Constants {
         int DEVICE_TYPE_TABLET = 0;
         int DEVICE_TYPE_NOT_TABLET = 1;
         String ADMINISTRATION_AREA = "ADMINISTRATION_AREA";
+        String COUNTRY_ISO_CODE = "COUNTRY_ISO_CODE";
         String SERVICE_STARTED = "STARTED";
         String SERVICE_STOPPED = "STOPPED";
         String TODAY_TOTAL_TOGGLE_STATE = "TODAY_TOTAL_TOGGLE_STATE";
