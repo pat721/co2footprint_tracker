@@ -58,6 +58,17 @@ public class PreferenceManagerHelper {
         return sharedPref.getString(ADMINISTRATION_AREA, "");
     }
 
+    public static void setCountryISOCode(Context context, String country) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putString(COUNTRY_ISO_CODE, country);
+        editor.apply();
+    }
+
+    public static String getCountryISOCode(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPref.getString(COUNTRY_ISO_CODE, "");
+    }
+
     public static void setServiceState(Context context, String serviceState) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putString(SERVICE_STARTED, serviceState);
@@ -79,5 +90,6 @@ public class PreferenceManagerHelper {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPref.getInt(TODAY_TOTAL_TOGGLE_STATE, TOGGLE_STATE_NOT_SET);
     }
+
 
 }
