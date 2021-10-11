@@ -33,7 +33,7 @@ public class Co2CalculationUtils {
      * @param time: minutes
      * @return energy consumption in g co2
      */
-    public double calculateTotalEnergyConsumption(double time, String adminArea) {
+    public double calculateTotalEnergyConsumption(double time, String adminArea, String country) {
 
         double energyConsumption = calculateSmartphoneEnergyConsumption(time);
         double returnVal = 0;
