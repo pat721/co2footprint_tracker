@@ -148,7 +148,7 @@
             "stromverbrauch_transportnetwork": 0.00211,
             "stromverbrauch_basisstationen": 0.0000042621013,
             "electricity_usage_router": 0.0004870029,
-            "germany": {
+            "de": {
             "stromverbrauch_corenetwork": 0.00017,
             "stromverbrauch_transportnetwork": 0.00211,
             "baden-württemberg": {
@@ -160,7 +160,7 @@
             "electricity_usage_router": 0.0001532934
             }
             },
-            "switzerland": {
+            "ch": {
             "stromverbrauch_corenetwork": 0.000932,
             "stromverbrauch_transportnetwork": 0.0116,
             "appenzell innerrhoden": {
@@ -188,7 +188,7 @@
             "electricity_usage_router": 0.00011517134
             }
             },
-            "austria": {
+            "at": {
             "stromverbrauch_corenetwork": 0.0016,
             "stromverbrauch_transportnetwork": 0.0198,
             "vorarlberg": {
@@ -196,7 +196,7 @@
             "electricity_usage_router": 0.000070767793
             }
             },
-            "liechtenstein": {
+            "li": {
             "stromverbrauch_corenetwork": 0.00017,
             "stromverbrauch_transportnetwork": 0.00211,
             "stromverbrauch_basisstationen": 0.00000091388587,
@@ -214,22 +214,22 @@
             "mobilephone": 0.0010284646,
             "tablet": 0.0024992145,
 
-            "germany": {
+            "de": {
             "mobilephone": 0.0010284646,
             "tablet": 0.0024992145
             },
 
-            "switzerland": {
+            "ch": {
             "mobilephone": 0.0010250434,
             "tablet": 0.0024909007
             },
 
-            "austria": {
+            "at": {
             "mobilephone": 0.0010284646,
             "tablet": 0.0024992145
             },
 
-            "liechtenstein": {
+            "li": {
             "mobilephone": 0.0010284646,
             "tablet": 0.0024909007
             }
@@ -243,12 +243,12 @@
             {
             "world": {
             "default": 0.060263902,
-            "germany": {
+            "de": {
             "default": 0.08834632,
             "baden-württemberg": 0.13439065,
             "bayern": 0.04230199
             },
-            "switzerland": {
+            "ch": {
             "default": 0.01601803935,
             "appenzell innerrhoden": 0.0022361601,
             "appenzell ausserrhoden": 0.014425932,
@@ -257,10 +257,10 @@
             "zürich": 0.013780631,
             "sankt gallen": 0.031782046
             },
-            "austria": {
+            "at": {
             "default": 0.019528684
             },
-            "liechtenstein": {
+            "li": {
             "default": 0.028816243
             }
             }
