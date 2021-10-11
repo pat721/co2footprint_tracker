@@ -66,7 +66,7 @@ public class LocationHelper extends Activity {
                     );
 
                     PreferenceManagerHelper.setAdminArea(activity.getApplicationContext(), addresses.get(0).getAdminArea());
-                    Log.e(Constants.LOG.TAG, "Area: \"" + addresses.get(0).getAdminArea() + "\" was set to storage");
+                    PreferenceManagerHelper.setCountryISOCode(activity.getApplicationContext(), addresses.get(0).getCountryCode());
 
                 } catch (IOException e) {
                     e.printStackTrace();
