@@ -97,8 +97,6 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
 
-
-        new IpccTableHelper().getIpccValuesFor("Schleswig-Holstein".toLowerCase(Locale.ROOT), "Germany".toLowerCase(Locale.ROOT));
     }
 
     @Override

@@ -1,5 +1,7 @@
 package de.htwg.co2footprint_tracker.helpers;
 
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.DEVICE_TYPE_NOT_TABLET;
+
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -8,6 +10,8 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import de.htwg.co2footprint_tracker.MainActivity;
 
 public class IpccTableHelper {
 
@@ -19,7 +23,7 @@ public class IpccTableHelper {
     private JsonObject electricityMix;
 
 
-    public IpccTableHelper getInstance() {
+    public static IpccTableHelper getInstance() {
         if (ipccTableHelper == null) {
             ipccTableHelper = new IpccTableHelper();
         }
@@ -43,13 +47,15 @@ public class IpccTableHelper {
 
     }
 
-    public double getIpccValuesFor(String adminArea, String country) {
+    public double getIpccValuesFor(String adminArea, String countryISOCode, boolean isWifi) {
 
         double result = 0;
 
-        result += getIpccProductionValues(false, true);
-        result += getIpccOperationValues(adminArea, country, true);
-        result += getIpccEndOfLifeValues(false, country);
+        boolean isMobilePhone = PreferenceManagerHelper.getDeviceType(MainActivity.getWeakInstanceActivity()) == DEVICE_TYPE_NOT_TABLET;
+
+        result += getIpccProductionValues(isMobilePhone, isWifi);
+        result += getIpccOperationValues(adminArea, countryISOCode, isWifi);
+        result += getIpccEndOfLifeValues(isMobilePhone, countryISOCode);
 
         return result;
     }

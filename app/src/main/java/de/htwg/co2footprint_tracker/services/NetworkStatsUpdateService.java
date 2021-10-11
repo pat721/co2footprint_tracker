@@ -15,6 +15,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
+import de.htwg.co2footprint_tracker.enums.ConnectionType;
 import de.htwg.co2footprint_tracker.helpers.ConnectionHelper;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
@@ -189,9 +190,11 @@ public class NetworkStatsUpdateService extends IntentService {
         for (Package packet : packageList) {
             if (packetHasChanges(packet)) {
 
+                long totalBytes = packet.getReceivedBytesTotal() + packet.getTransmittedBytesTotal();
+                boolean isWifi = packet.getConnectionType() == ConnectionType.WIFI;
                 String adminArea = PreferenceManagerHelper.getAdminArea(context);
                 String country = PreferenceManagerHelper.getCountryISOCode(context);
-                packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, adminArea, country));
+                packet.setEnergyConsumption(new Co2CalculationUtils().calculateTotalEnergyConsumption(1, adminArea, country, totalBytes, isWifi));
                 packet.setTimestamp(timeStamp / 1000);
                 databaseHelper.addData(packet);
             }
