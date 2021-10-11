@@ -86,10 +86,10 @@ public class IpccTableHelper {
     }
 
 
-    private double getIpccOperationValues(String adminArea, String country, boolean isWifi) {
+    private double getIpccOperationValues(String adminArea, String countryISOCode, boolean isWifi) {
         double result = 0.0;
         JsonObject world = operationIpccTable.getAsJsonObject("world");
-        JsonObject countryJsonObject = world.getAsJsonObject(country);
+        JsonObject countryJsonObject = world.getAsJsonObject(countryISOCode);
 
         JsonObject adminAreaJsonObject = null;
         if (countryJsonObject != null) {
@@ -136,9 +136,9 @@ public class IpccTableHelper {
     }
 
 
-    private double getIpccEndOfLifeValues(boolean isMobilePhone, String country) {
+    private double getIpccEndOfLifeValues(boolean isMobilePhone, String countryISOCode) {
         JsonObject world = endOfLifeIpccTable.getAsJsonObject("world");
-        JsonObject countryJsonObject = world.getAsJsonObject(country);
+        JsonObject countryJsonObject = world.getAsJsonObject(countryISOCode);
         String key = isMobilePhone ? "mobilephone" : "tablet";
 
         if (countryJsonObject != null) { //if country exists
@@ -152,9 +152,9 @@ public class IpccTableHelper {
         return world.get(key).getAsDouble();
     }
 
-    public double getElectricityFactor(String adminArea, String country) {
+    public double getElectricityFactor(String adminArea, String countryISOCode) {
         JsonObject world = electricityMix.getAsJsonObject("world");
-        JsonObject countryJsonObject = world.getAsJsonObject(country);
+        JsonObject countryJsonObject = world.getAsJsonObject(countryISOCode);
 
         if (countryJsonObject != null) {
             JsonElement adminAreaJson = countryJsonObject.get(adminArea);
