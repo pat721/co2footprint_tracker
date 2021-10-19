@@ -42,7 +42,7 @@ public class PermissionHelper extends Activity {
     @AfterPermissionGranted(RC_LOCATION_READ_PHONE_STATE_ACCESS_NETWORK_STATE)
     public void processPermissionHandling() {
         //TODO evaluate if we really need accessnetworkstate permission.
-        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_NETWORK_STATE};
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.QUERY_ALL_PACKAGES};
 
         if (!hasNetworkHistoryReadingPermission()) {
             requestReadNetworkHistoryAccess();
@@ -71,7 +71,7 @@ public class PermissionHelper extends Activity {
         appOps.startWatchingMode(AppOpsManager.OPSTR_GET_USAGE_STATS, activity.getPackageName(),
                 new AppOpsManager.OnOpChangedListener() {
                     @Override
-                    @TargetApi(Build.VERSION_CODES.M)
+                    @TargetApi(Build.VERSION_CODES.Q)
                     public void onOpChanged(String op, String packageName) {
                         int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
                                 android.os.Process.myUid(), activity.getPackageName());
