@@ -167,6 +167,8 @@ public class IpccTableHelper {
             if (adminAreaJson != null) {
                 return adminAreaJson.getAsDouble();
             }
+        } else {
+            return world.get("default").getAsDouble();
         }
         return countryJsonObject.get("default").getAsDouble();
     }
