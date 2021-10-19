@@ -14,6 +14,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import de.htwg.co2footprint_tracker.MainActivity;
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.enums.ConnectionType;
 import de.htwg.co2footprint_tracker.helpers.ConnectionHelper;
@@ -30,14 +31,13 @@ public class NetworkStatsUpdateService extends IntentService {
     }
 
     @SuppressLint("MissingPermission")
-    private String getSubscriberId(Context context, int networkType) {
-        if (ConnectivityManager.TYPE_MOBILE == networkType) {
-            TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            if (tm != null) {
-                return tm.getSubscriberId();
-            }
+    public static String getSubscriberId(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            return telephonyManager.getSubscriberId();
+        } else {
+            return null;
         }
-        return "";
     }
 
     @Override
@@ -110,7 +110,7 @@ public class NetworkStatsUpdateService extends IntentService {
                             Log.e(Constants.LOG.TAG, "Remote Exception: WIFI " + e.getMessage());
                         }
                         try {
-                            networkStatsMobile = networkStatsManager.querySummary(ConnectivityManager.TYPE_MOBILE, null, startTime, timeOnUpdate);
+                            networkStatsMobile = networkStatsManager.querySummary(ConnectivityManager.TYPE_MOBILE, getSubscriberId(getApplicationContext()), startTime, timeOnUpdate);
                             NetworkStats.Bucket bucket = new NetworkStats.Bucket();
                             do {
                                 if (bucket.getUid() == packageList.get(i).getPackageUid()) {
