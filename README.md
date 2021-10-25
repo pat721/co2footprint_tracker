@@ -8,6 +8,14 @@ This project is being developed for the [OFAR4All](https://map.bodenseehochschul
 
 The application tracks the users data usage and calculates the emitted CO2-values based on a computational model, which is currently under development by [ZHAW](https://www.zhaw.ch/de/hochschule/). In order to be able to classify consumption properly, CO2 equivalents are given that are familiar from everyday life.
 
+## Calculation model
+
+The CO2 value is composed of various factors. The energy consumption during use and average values of production and disposal of smartphones and tablets.
+Also part of the calculation model are usage time, wifi/mobility.
+
+All these factors are evaluated on the basis of the location and are thus converted into a CO2 value.
+The determination of the average values is based on an ongoing scientific study of the HTWG Konstanz in cooperation with the ETH Zurich.
+
 The application is currently only available for **android devices**.
 
 
