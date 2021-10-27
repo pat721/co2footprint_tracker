@@ -153,13 +153,13 @@ The Application needs a couple of permissions in order to function properly.
 
 **Network Permission:** This Permission is needed to access the internet to retrieve information from the Google Cloud Config (e.g. new Tips).
 
-**Phone State Permission:** This Permission is needed to access the information for the current celluar network information. We use this information to determine which network type is currently used (2G, 3G, 4G, WiFi).
+**Phone State Permission:** This Permission is needed to access the information for the current cellular network information. We use this information to determine which network type is currently used (2G, 3G, 4G, WiFi).
 
-**Location Permission:** This Permission is needed to access the GPS Module to get the current location. The calulation of CO2 values needs the location for different factors.
+**Location Permission:** This Permission is needed to access the GPS Module to get the current location. The calculation of CO2 values needs the location for different factors.
 
 **Usage Stats Permission:** This Permission is essential for accessing the network statistics of the device. This permissions allows the application to access the NetworkStatsManager API and gather the data usage of different apps.
 
-**IMPORTANT NOTICE:** The application is not able to see which websites you have browsed or what you do exactly in your different applications. The Application only accesses the information, which are already collected by the operating system. Furthermore are all permissions needed and not abused in other ways.
+**IMPORTANT NOTICE:** The application is not able to see which websites you visited or what you did/are doing in your different applications. The Application only accesses the information, which are already collected by the operating system. Furthermore are all required permissions are not used/transmitted in other ways by this app.
 
 ## Class Diagramm
 
