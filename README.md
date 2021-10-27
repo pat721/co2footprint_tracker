@@ -8,17 +8,22 @@ This project is being developed for the [OFAR4All](https://map.bodenseehochschul
 
 The application tracks the users data usage and calculates the emitted CO2-values based on a computational model, which is currently under development by [ZHAW](https://www.zhaw.ch/de/hochschule/). In order to be able to classify consumption properly, CO2 equivalents are given that are familiar from everyday life.
 
-## Calculation model
-
-The CO2 value is composed of various factors. The energy consumption during use and average values of production and disposal of smartphones and tablets.
-Also part of the calculation model are usage time, wifi/mobility.
-
-All these factors are evaluated on the basis of the location and are thus converted into a CO2 value.
-The determination of the average values is based on an ongoing scientific study of the HTWG Konstanz in cooperation with the ETH Zurich.
-
 The application is currently only available for **android devices**.
 
+## Calculation model
 
+The CO2 value is composed of several factors. Those factors are based on their respective global warming potential (IPCC GWP).
+
+More specifically, the calculated CO2 value consists of the following factors:
+- Factor for production of the devices involved in the network traffic
+- Factor for the operation of the devices involved in the network traffic
+- Factor for the disposal (EOL) of the devices involved in the network traffic
+- Factor for the power consumption of the device the app is running on
+
+All those factors are used in combination with various other influencing factors like the geo-location, the usage time and the network connection (WiFi, Mobile) the traffic was generated at, to calculate
+the caused CO2 pollution of the users internet behavior.
+
+The determination of the average values is based on an ongoing scientific study of the [HTWG](https://www.htwg-konstanz.de/en/) Konstanz in cooperation with the [ZHAW](https://www.zhaw.ch/de/hochschule/) Zürich.
 
 ## Project structure
 	co2footprint_tracker
