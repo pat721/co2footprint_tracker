@@ -23,11 +23,9 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.lang.ref.WeakReference;
-import java.util.Locale;
 
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.databinding.ActivityMainBinding;
-import de.htwg.co2footprint_tracker.helpers.IpccTableHelper;
 import de.htwg.co2footprint_tracker.helpers.LocationHelper;
 import de.htwg.co2footprint_tracker.helpers.PermissionHelper;
 import de.htwg.co2footprint_tracker.helpers.PreferenceManagerHelper;

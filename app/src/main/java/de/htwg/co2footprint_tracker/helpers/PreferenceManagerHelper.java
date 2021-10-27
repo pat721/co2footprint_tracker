@@ -1,6 +1,16 @@
 package de.htwg.co2footprint_tracker.helpers;
 
-import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.*;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.ADMINISTRATION_AREA;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.COUNTRY_ISO_CODE;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.DEVICE_IS_TABLET;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.DEVICE_TYPE_NOT_SET;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.DEVICE_TYPE_NOT_TABLET;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.DEVICE_TYPE_TABLET;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.NO_START_TIME_SET;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.PREFERENCE_STARTING_TIME_KEY;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.SERVICE_STARTED;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.TODAY_TOTAL_TOGGLE_STATE;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.TOGGLE_STATE_NOT_SET;
 
 import android.content.Context;
 import android.content.SharedPreferences;

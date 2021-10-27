@@ -1,5 +1,7 @@
 package de.htwg.co2footprint_tracker.services;
 
+import static de.htwg.co2footprint_tracker.helpers.PackageHelper.getPackagesData;
+
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -26,8 +28,6 @@ import de.htwg.co2footprint_tracker.R;
 import de.htwg.co2footprint_tracker.helpers.PreferenceManagerHelper;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.utils.Constants;
-
-import static de.htwg.co2footprint_tracker.helpers.PackageHelper.getPackagesData;
 
 /***
  * This class creates a foreground service, that will restart itself if the app is closed or destroyed by user.

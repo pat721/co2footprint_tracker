@@ -1,5 +1,10 @@
 package de.htwg.co2footprint_tracker.views.data;
 
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.NO_START_TIME_SET;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.TOGGLE_STATE_NOT_SET;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.TOGGLE_STATE_TODAY;
+import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.TOGGLE_STATE_TOTAL;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,11 +32,6 @@ import de.htwg.co2footprint_tracker.model.Co2Equivalent;
 import de.htwg.co2footprint_tracker.model.Consumer;
 import de.htwg.co2footprint_tracker.model.MainCardModel;
 import de.htwg.co2footprint_tracker.utils.Constants;
-
-import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.NO_START_TIME_SET;
-import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.TOGGLE_STATE_NOT_SET;
-import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.TOGGLE_STATE_TODAY;
-import static de.htwg.co2footprint_tracker.utils.Constants.PERSISTENCY.TOGGLE_STATE_TOTAL;
 
 public class DataFragment extends Fragment {
 

@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-import de.htwg.co2footprint_tracker.R;
-
 import java.util.HashMap;
 import java.util.List;
+
+import de.htwg.co2footprint_tracker.R;
 
 public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 

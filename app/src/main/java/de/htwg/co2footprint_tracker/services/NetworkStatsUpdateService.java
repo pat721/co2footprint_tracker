@@ -14,15 +14,14 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import de.htwg.co2footprint_tracker.MainActivity;
 import de.htwg.co2footprint_tracker.database.DatabaseHelper;
 import de.htwg.co2footprint_tracker.enums.ConnectionType;
 import de.htwg.co2footprint_tracker.helpers.ConnectionHelper;
+import de.htwg.co2footprint_tracker.helpers.PreferenceManagerHelper;
 import de.htwg.co2footprint_tracker.model.InitialBucketContainer;
 import de.htwg.co2footprint_tracker.model.Package;
 import de.htwg.co2footprint_tracker.utils.Co2CalculationUtils;
 import de.htwg.co2footprint_tracker.utils.Constants;
-import de.htwg.co2footprint_tracker.helpers.PreferenceManagerHelper;
 
 public class NetworkStatsUpdateService extends IntentService {
 
