@@ -8,17 +8,22 @@ This project is being developed for the [OFAR4All](https://map.bodenseehochschul
 
 The application tracks the users data usage and calculates the emitted CO2-values based on a computational model, which is currently under development by [ZHAW](https://www.zhaw.ch/de/hochschule/). In order to be able to classify consumption properly, CO2 equivalents are given that are familiar from everyday life.
 
-## Calculation model
-
-The CO2 value is composed of various factors. The energy consumption during use and average values of production and disposal of smartphones and tablets.
-Also part of the calculation model are usage time, wifi/mobility.
-
-All these factors are evaluated on the basis of the location and are thus converted into a CO2 value.
-The determination of the average values is based on an ongoing scientific study of the HTWG Konstanz in cooperation with the ETH Zurich.
-
 The application is currently only available for **android devices**.
 
+## Calculation model
 
+The CO2 value is composed of several factors. Those factors are based on their respective global warming potential (IPCC GWP).
+
+More specifically, the calculated CO2 value consists of the following factors:
+- Factor for production of the devices involved in the network traffic
+- Factor for the operation of the devices involved in the network traffic
+- Factor for the disposal (EOL) of the devices involved in the network traffic
+- Factor for the power consumption of the device the app is running on
+
+All those factors are used in combination with various other influencing factors like the geo-location, the usage time and the network connection (WiFi, Mobile) the traffic was generated at, to calculate
+the caused CO2 pollution of the users internet behavior.
+
+The determination of the average values is based on an ongoing scientific study of the [HTWG](https://www.htwg-konstanz.de/en/) Konstanz in cooperation with the [ZHAW](https://www.zhaw.ch/de/hochschule/) Zürich.
 
 ## Project structure
 	co2footprint_tracker
@@ -64,18 +69,13 @@ The following is a list of relevant design decisions and their technical relevan
 
 For gathering the devices data usage and the generated network traffic, the application uses the NetworkStatsManager API provided by the operating system. Via the NetworkStatsManager it is possible to access all information in regards to the Network usage. The provided data is divided in discrete time periods (Buckets) which can overlap from time to time. More information on the NetworkStatsManager: https://developer.android.com/reference/android/app/usage/NetworkStatsManager
 
-
-
 ### SQLight-Database
 
 For saving information and relevant data, the application uses a simple SQLight-Database. The database contains the information about the network traffic fetched from the NetworkStatsManager. These information are fetched periodically after every minute and saved in a table together with other calculated values. To save storage space, every 24h hours, the collected data of the last day gets accumulated and saved while the old data is being wiped.
 
-
-
 ### Foreground Service
 
 To work correctly, the application must always be open in the background. This is ensured via a Foreground Service, which ensures that the app is not closed by the system (memory optimizer). If the app should be closed by the system or the user, it will restart itself.
-
 
 
 ### Location determination
@@ -83,18 +83,18 @@ To work correctly, the application must always be open in the background. This i
 To determine the current location of the user, the application uses the LocationHelper API provided by the operation system. The location is determined at the first installation of the App (onStart) and always when reopening it (onResume) and is then saved in the background for further calculations.
 
 
-
 ### Identifying Devicetype  (Smartphone and Tablet)
 
 To identify which type of device is currently used, the application calculates the device-indepentent pixel density and checks, if the density of >= 600. If it is bigger, then the device is considered a tablet, if it's smaller the device is identified as a smartphone. For the values and the calculation see: https://developer.android.com/training/multiscreen/screensizes
-
 
 
 ### Google Cloud Config
 
 With the help of the connection to the Google Cloud, configuration files and information can be provided online, which flows directly into the app without having to create a new build of the app. For example, tips can be adjusted directly via Google Cloud Config without having to deploy a new app version.
 
+## CO2 Equivalents
 
+The values used for the CO2 Equivanlent Cards are currently only placeholders and not correctly scientifically determined values. They were collected from various sources and are only intended to give an impression of how possible representations could look.
 
 ## App Permissions
 The Application needs a couple of permissions in order to function properly.
