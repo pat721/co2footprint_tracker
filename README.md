@@ -2,13 +2,16 @@
 
 This project is being developed for the [OFAR4All](https://map.bodenseehochschule.org/proj.php?id=101&origin=map) research project, with the aim of measuring and transparently presenting CO2 emissions from online data traffic.
 
+The measured results are computed and displayed on the app.   
+
+<img src="resources/screenshots/home.png" alt="screenshot" style="zoom:20%;" />
 
 
 ## About the application
 
 The application tracks the users data usage and calculates the emitted CO2-values based on a computational model, which is currently under development by [ZHAW](https://www.zhaw.ch/de/hochschule/). In order to be able to classify consumption properly, CO2 equivalents are given that are familiar from everyday life.
 
-The application is currently only available for **android devices**.
+The application supports **English**,  **German** and is currently only available for **android devices**.
 
 ## Calculation model
 
@@ -95,18 +98,55 @@ With the help of the connection to the Google Cloud, configuration files and inf
 ## CO2 Equivalents
 
 The values used for the CO2 Equivanlent Cards are currently only placeholders and not correctly scientifically determined values. They were collected from various sources and are only intended to give an impression of how possible representations could look.
+They just vaguely represent the actual facts. The actual values are computed by the amount of co2, divided by some quotient.
+This may change in the future. For now the CO2 equivalents are composed in the following way:
 
 ### Car
+As of now, the cars quotient for calculating the distance driven is **139**. For the user this results in the following information:
+
+<img src="resources/screenshots/car.png" alt="screenshot" style="zoom:33%;" />
 
 ### Aircraft
+As of now, the planes quotient for calculating the distance flown is **201**. For the user this results in the following information:
+
+<img src="resources/screenshots/plane.png" alt="screenshot" style="zoom:33%;" />
 
 ### Lightbulb
+As of now, the light bulbs quotient for calculating the lightning duration is **20**. For the user this results in the following information:
+
+<img src="resources/screenshots/lightbulb.png" alt="screenshot" style="zoom:33%;" />
 
 ### Netflix
+As of now, the quotient for calculating the streaming duration on Netflix is **100** *. For the user this results in the following information
+
+<img src="resources/screenshots/netflix.png" alt="screenshot" style="zoom:33%;" />
+
+*Also see: https://www.livemint.com/news/world/your-netflix-habit-has-a-carbon-footprint-but-not-a-big-one-11623368952984.html
+
+
 
 ### Charged
 
+As of now, the quotient for calculating the amount of battery charges on a smartphone is *2.35875*.
+
+This quotient is based on the following functions:
+ - avg g CO2e/kWh in EU 2019: 255
+
+ - avg smartphone battery capacity 2500 mAh, 3.7V = 0.00925 kWh
+
+ - 0.00925 kWh * 255 g CO2e/kWh = *2.35875*
+
+ - X g CO2e / 2,35875 g CO2e = X Times
+
+For the user this results in the following information:
+
+<img src="resources/screenshots/charges.png" alt="screenshot" style="zoom:33%;" />
+
 ### Trees planted
+It is assumed, that one tree absorbs 200kg of CO2 during its live.
+Following this assumption, the quotient for calculating the amount of trees to be grown is **200000**  For the user this results in the following information:
+
+<img src="resources/screenshots/trees.png" alt="screenshot" style="zoom:33%;" />
 
 ## App Permissions
 The Application needs a couple of permissions in order to function properly.
