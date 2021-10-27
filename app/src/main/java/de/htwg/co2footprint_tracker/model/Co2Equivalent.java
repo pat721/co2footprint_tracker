@@ -41,6 +41,10 @@ public class Co2Equivalent {
         return co2Equivalents;
     }
 
+    private static String buildCo2String(double co2, double quotient) {
+        return UnitUtils.RoundTo2Decimals(co2 / quotient);
+    }
+
     public String getValue() {
         return value;
     }
@@ -63,10 +67,6 @@ public class Co2Equivalent {
 
     public void setImage(int image) {
         this.image = image;
-    }
-
-    private static String buildCo2String(double co2, double quotient) {
-        return UnitUtils.RoundTo2Decimals(co2 / quotient);
     }
 
     public String getDescription() {

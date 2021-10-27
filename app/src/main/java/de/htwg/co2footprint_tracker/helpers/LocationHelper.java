@@ -26,11 +26,9 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class LocationHelper extends Activity {
 
-    FusedLocationProviderClient fusedLocationProviderClient;
-
-    private final MainActivity activity = MainActivity.getWeakInstanceActivity();
-
     private static LocationHelper locationHelper;
+    private final MainActivity activity = MainActivity.getWeakInstanceActivity();
+    FusedLocationProviderClient fusedLocationProviderClient;
 
     private LocationHelper() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity);

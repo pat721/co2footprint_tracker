@@ -20,16 +20,8 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class PermissionHelper extends Activity {
 
 
-    private final MainActivity activity = MainActivity.getWeakInstanceActivity();
     private static PermissionHelper permissionHelper;
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        // Forward results to EasyPermissions
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this, activity);
-    }
+    private final MainActivity activity = MainActivity.getWeakInstanceActivity();
 
     public static PermissionHelper getInstance() {
         if (permissionHelper == null) {
@@ -38,6 +30,13 @@ public class PermissionHelper extends Activity {
         return permissionHelper;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this, activity);
+    }
 
     @AfterPermissionGranted(RC_LOCATION_READ_PHONE_STATE_ACCESS_NETWORK_STATE)
     public void processPermissionHandling() {

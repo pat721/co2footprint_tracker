@@ -15,13 +15,13 @@ import de.htwg.co2footprint_tracker.R;
 
 public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
-    private Context context;
+    private final Context context;
 
     // group titles
-    private List<String> listDataGroup;
+    private final List<String> listDataGroup;
 
     // child data
-    private HashMap<String, List<String>> listDataChild;
+    private final HashMap<String, List<String>> listDataChild;
 
     public ExpandableListViewAdapter(Context context, List<String> listDataGroup,
                                      HashMap<String, List<String>> listChildData) {

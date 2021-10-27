@@ -38,14 +38,13 @@ import de.htwg.co2footprint_tracker.views.tips.TipsFragment;
 public class MainActivity extends AppCompatActivity {
 
     private static WeakReference<MainActivity> weakActivity;
+    FirebaseRemoteConfig mFirebaseRemoteConfig;
     private boolean isInForeground = false;
+    private ActivityMainBinding binding;
 
     public static MainActivity getWeakInstanceActivity() {
         return weakActivity.get();
     }
-
-    private ActivityMainBinding binding;
-    FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

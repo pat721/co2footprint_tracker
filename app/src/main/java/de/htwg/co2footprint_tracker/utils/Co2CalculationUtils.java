@@ -22,7 +22,7 @@ public class Co2CalculationUtils {
 
         Log.e(Constants.LOG.TAG, "got returnVAl: " + returnVal);
 
-        return returnVal*1000;
+        return returnVal * 1000;
     }
 
 

@@ -15,7 +15,7 @@ public class InitialBucketContainer {
 
 
     private static boolean newRun = true;
-    private static HashMap<String, Long> mappedPackageData = new HashMap<>();
+    private static final HashMap<String, Long> mappedPackageData = new HashMap<>();
 
 
     public static void putInitialTransmittedWifiData(int uid, long bytes) {

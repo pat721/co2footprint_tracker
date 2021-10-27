@@ -17,18 +17,11 @@ public class IpccTableHelper {
 
 
     private static IpccTableHelper ipccTableHelper;
-    private JsonObject productionIpccTable;
-    private JsonObject operationIpccTable;
-    private JsonObject endOfLifeIpccTable;
-    private JsonObject electricityMix;
+    private final JsonObject productionIpccTable;
+    private final JsonObject operationIpccTable;
+    private final JsonObject endOfLifeIpccTable;
+    private final JsonObject electricityMix;
 
-
-    public static IpccTableHelper getInstance() {
-        if (ipccTableHelper == null) {
-            ipccTableHelper = new IpccTableHelper();
-        }
-        return ipccTableHelper;
-    }
 
     public IpccTableHelper() {
 
@@ -45,6 +38,13 @@ public class IpccTableHelper {
         object = FirebaseRemoteConfig.getInstance().getString("calculationValues_electricityMix");
         electricityMix = gson.fromJson(object, JsonObject.class);
 
+    }
+
+    public static IpccTableHelper getInstance() {
+        if (ipccTableHelper == null) {
+            ipccTableHelper = new IpccTableHelper();
+        }
+        return ipccTableHelper;
     }
 
     public double getIpccValuesFor(String adminArea, String countryISOCode, boolean isWifi) {

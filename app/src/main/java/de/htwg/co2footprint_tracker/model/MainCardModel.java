@@ -4,8 +4,8 @@ import de.htwg.co2footprint_tracker.utils.UnitUtils;
 
 public class MainCardModel {
 
-    private long totalReceivedBytes;
-    private double totalEnergyConsumption;
+    private final long totalReceivedBytes;
+    private final double totalEnergyConsumption;
 
     public MainCardModel(long totalReceivedBytes, double totalEnergyConsumption) {
         this.totalReceivedBytes = totalReceivedBytes;

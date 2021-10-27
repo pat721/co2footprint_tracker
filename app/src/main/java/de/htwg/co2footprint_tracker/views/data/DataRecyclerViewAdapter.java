@@ -16,8 +16,8 @@ import de.htwg.co2footprint_tracker.model.Co2Equivalent;
 
 public class DataRecyclerViewAdapter extends RecyclerView.Adapter<DataRecyclerViewAdapter.ViewHolder> {
 
-    private List<Co2Equivalent> co2Equivalents;
-    private LayoutInflater mInflater;
+    private final List<Co2Equivalent> co2Equivalents;
+    private final LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
     DataRecyclerViewAdapter(Context context, List<Co2Equivalent> co2Equivalents) {

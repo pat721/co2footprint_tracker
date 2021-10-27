@@ -13,6 +13,17 @@ import de.htwg.co2footprint_tracker.enums.ConnectionType;
  */
 
 public class Package implements Parcelable, Comparable {
+    public static final Creator<Package> CREATOR = new Creator<Package>() {
+        @Override
+        public Package createFromParcel(Parcel in) {
+            return new Package(in);
+        }
+
+        @Override
+        public Package[] newArray(int size) {
+            return new Package[size];
+        }
+    };
     private String name;
     private String version;
     private String packageName;
@@ -32,9 +43,7 @@ public class Package implements Parcelable, Comparable {
     private long transmittedPacketsTotal;
     private long timestamp;
     private double energyConsumption;
-
     private ConnectionType connectionType; //eg. wifi, 4g, 3g... see ConnectionType Enum
-
 
     protected Package(Parcel in) {
         name = in.readString();
@@ -56,19 +65,8 @@ public class Package implements Parcelable, Comparable {
         transmittedPacketsTotal = in.readLong();
     }
 
-    public Package() {}
-
-    public static final Creator<Package> CREATOR = new Creator<Package>() {
-        @Override
-        public Package createFromParcel(Parcel in) {
-            return new Package(in);
-        }
-
-        @Override
-        public Package[] newArray(int size) {
-            return new Package[size];
-        }
-    };
+    public Package() {
+    }
 
     public String getName() {
         return name;
@@ -81,6 +79,7 @@ public class Package implements Parcelable, Comparable {
     public String getVersion() {
         return version;
     }
+
     public void setVersion(String version) {
         this.version = version;
     }
@@ -88,51 +87,122 @@ public class Package implements Parcelable, Comparable {
     public String getPackageName() {
         return packageName;
     }
+
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
 
-    public int getPackageUid() {return packageUid;}
-    public void setPackageUid(int packageUid) { this.packageUid = packageUid;}
+    public int getPackageUid() {
+        return packageUid;
+    }
 
-    public boolean getDuplicateUids() {return duplicateUids;}
-    public void setDuplicateUids(boolean dup) { this.duplicateUids = dup;}
+    public void setPackageUid(int packageUid) {
+        this.packageUid = packageUid;
+    }
 
-    public long getReceivedBytesWifi() {return receivedBytesWifi;}
-    public void setReceivedBytesWifi(long bytes) {receivedBytesWifi = bytes;}
+    public boolean getDuplicateUids() {
+        return duplicateUids;
+    }
 
-    public long getReceivedBytesMobile() {return receivedBytesMobile;}
-    public void setReceivedBytesMobile(long bytes) {receivedBytesMobile = bytes;}
+    public void setDuplicateUids(boolean dup) {
+        this.duplicateUids = dup;
+    }
 
-    public long getReceivedBytesTotal() {return receivedBytesTotal;}
-    public void setReceivedBytesTotal(long bytes) {receivedBytesTotal = bytes;}
+    public long getReceivedBytesWifi() {
+        return receivedBytesWifi;
+    }
 
-    public long getTransmittedBytesWifi() {return transmittedBytesWifi;}
-    public void setTransmittedBytesWifi(long bytes) {transmittedBytesWifi = bytes;}
+    public void setReceivedBytesWifi(long bytes) {
+        receivedBytesWifi = bytes;
+    }
 
-    public long getTransmittedBytesMobile() {return transmittedBytesMobile;}
-    public void setTransmittedBytesMobile(long bytes) {transmittedBytesMobile = bytes;}
+    public long getReceivedBytesMobile() {
+        return receivedBytesMobile;
+    }
 
-    public long getTransmittedBytesTotal() {return transmittedBytesTotal;}
-    public void setTransmittedBytesTotal(long bytes) {transmittedBytesTotal = bytes;}
+    public void setReceivedBytesMobile(long bytes) {
+        receivedBytesMobile = bytes;
+    }
 
-    public long getReceivedPacketsWifi() {return receivedPacketsWifi;}
-    public void setReceivedPacketsWifi(long bytes) {receivedPacketsWifi = bytes;}
+    public long getReceivedBytesTotal() {
+        return receivedBytesTotal;
+    }
 
-    public long getReceivedPacketsMobile() {return receivedPacketsMobile;}
-    public void setReceivedPacketsMobile(long bytes) {receivedPacketsMobile = bytes;}
+    public void setReceivedBytesTotal(long bytes) {
+        receivedBytesTotal = bytes;
+    }
 
-    public long getReceivedPacketsTotal() {return receivedPacketsTotal;}
-    public void setReceivedPacketsTotal(long bytes) {receivedPacketsTotal = bytes;}
+    public long getTransmittedBytesWifi() {
+        return transmittedBytesWifi;
+    }
 
-    public long getTransmittedPacketsWifi() {return transmittedPacketsWifi;}
-    public void setTransmittedPacketsWifi(long bytes) {transmittedPacketsWifi = bytes;}
+    public void setTransmittedBytesWifi(long bytes) {
+        transmittedBytesWifi = bytes;
+    }
 
-    public long getTransmittedPacketsMobile() {return transmittedPacketsMobile;}
-    public void setTransmittedPacketsMobile(long bytes) {transmittedPacketsMobile = bytes;}
+    public long getTransmittedBytesMobile() {
+        return transmittedBytesMobile;
+    }
 
-    public long getTransmittedPacketsTotal() {return transmittedPacketsTotal;}
-    public void setTransmittedPacketsTotal(long bytes) {transmittedPacketsTotal = bytes;}
+    public void setTransmittedBytesMobile(long bytes) {
+        transmittedBytesMobile = bytes;
+    }
+
+    public long getTransmittedBytesTotal() {
+        return transmittedBytesTotal;
+    }
+
+    public void setTransmittedBytesTotal(long bytes) {
+        transmittedBytesTotal = bytes;
+    }
+
+    public long getReceivedPacketsWifi() {
+        return receivedPacketsWifi;
+    }
+
+    public void setReceivedPacketsWifi(long bytes) {
+        receivedPacketsWifi = bytes;
+    }
+
+    public long getReceivedPacketsMobile() {
+        return receivedPacketsMobile;
+    }
+
+    public void setReceivedPacketsMobile(long bytes) {
+        receivedPacketsMobile = bytes;
+    }
+
+    public long getReceivedPacketsTotal() {
+        return receivedPacketsTotal;
+    }
+
+    public void setReceivedPacketsTotal(long bytes) {
+        receivedPacketsTotal = bytes;
+    }
+
+    public long getTransmittedPacketsWifi() {
+        return transmittedPacketsWifi;
+    }
+
+    public void setTransmittedPacketsWifi(long bytes) {
+        transmittedPacketsWifi = bytes;
+    }
+
+    public long getTransmittedPacketsMobile() {
+        return transmittedPacketsMobile;
+    }
+
+    public void setTransmittedPacketsMobile(long bytes) {
+        transmittedPacketsMobile = bytes;
+    }
+
+    public long getTransmittedPacketsTotal() {
+        return transmittedPacketsTotal;
+    }
+
+    public void setTransmittedPacketsTotal(long bytes) {
+        transmittedPacketsTotal = bytes;
+    }
 
     public long getTimestamp() {
         return timestamp;
@@ -161,7 +231,7 @@ public class Package implements Parcelable, Comparable {
 
     @Override
     public int compareTo(@NonNull Object comparePackage) {
-        long compareMetric = ((Package)comparePackage).getReceivedPacketsTotal() + ((Package)comparePackage).getTransmittedPacketsTotal();
+        long compareMetric = ((Package) comparePackage).getReceivedPacketsTotal() + ((Package) comparePackage).getTransmittedPacketsTotal();
         return (int) (compareMetric - (this.getReceivedPacketsTotal() + this.getTransmittedPacketsTotal()));
     }
 
