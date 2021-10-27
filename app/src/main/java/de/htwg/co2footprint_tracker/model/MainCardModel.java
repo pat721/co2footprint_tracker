@@ -17,6 +17,6 @@ public class MainCardModel {
     }
 
     public String getTotalEnergyConsumption() {
-        return UnitUtils.RoundTo2Decimals(totalEnergyConsumption) + " g";
+        return UnitUtils.toFormattedWeight(totalEnergyConsumption);
     }
 }
