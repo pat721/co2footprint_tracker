@@ -111,6 +111,4 @@ The Application needs a couple of permissions in order to function properly.
 
 ## Class Diagramm
 
-TODO: Add most recent Class Diagramm
-
 ![Class Diagramm](resources/class_diagramm.svg)

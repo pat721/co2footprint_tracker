@@ -40,7 +40,6 @@ public class PermissionHelper extends Activity {
 
     @AfterPermissionGranted(RC_LOCATION_READ_PHONE_STATE_ACCESS_NETWORK_STATE)
     public void processPermissionHandling() {
-        //TODO evaluate if we really need accessnetworkstate permission.
         String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_NETWORK_STATE};
 
         if (!hasNetworkHistoryReadingPermission()) {
