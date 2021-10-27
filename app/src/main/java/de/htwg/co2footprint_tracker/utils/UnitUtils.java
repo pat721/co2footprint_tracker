@@ -19,7 +19,7 @@ public class UnitUtils {
 
     /**
      * @return unix timestamp converted to midnight
-     * */
+     */
     public static long getMidnightTimestamp() {
         long now = System.currentTimeMillis() / 1000;
         return now - now % 86400; // 24 * 60 * 60 sec in one day
@@ -28,6 +28,16 @@ public class UnitUtils {
     public static String RoundTo2Decimals(double val) {
         DecimalFormat df2 = new DecimalFormat("###.##");
         return df2.format(val);
+    }
+
+    public static String toFormattedWeight(double grams) {
+        double kg = grams / 1000.0;
+        if (grams >= 1000) {
+            return RoundTo2Decimals(kg) + " kg";
+        } else {
+            return RoundTo2Decimals(grams) + " g";
+        }
+
     }
 
 }
