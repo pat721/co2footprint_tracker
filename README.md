@@ -96,6 +96,18 @@ With the help of the connection to the Google Cloud, configuration files and inf
 
 The values used for the CO2 Equivanlent Cards are currently only placeholders and not correctly scientifically determined values. They were collected from various sources and are only intended to give an impression of how possible representations could look.
 
+### Car
+
+### Aircraft
+
+### Lightbulb
+
+### Netflix
+
+### Charged
+
+### Trees planted
+
 ## App Permissions
 The Application needs a couple of permissions in order to function properly.
 
