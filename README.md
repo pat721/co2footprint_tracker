@@ -104,22 +104,22 @@ This may change in the future. For now the CO2 equivalents are composed in the f
 ### Car
 As of now, the cars quotient for calculating the distance driven is **139**. For the user this results in the following information:
 
-<img src="resources/screenshots/car.png" alt="screenshot" width="300" />
+<img src="resources/screenshots/car.png" alt="screenshot" width="400" />
 
 ### Aircraft
 As of now, the planes quotient for calculating the distance flown is **201**. For the user this results in the following information:
 
-<img src="resources/screenshots/plane.png" alt="screenshot" width="300" />
+<img src="resources/screenshots/plane.png" alt="screenshot" width="400" />
 
 ### Lightbulb
 As of now, the light bulbs quotient for calculating the lightning duration is **20**. For the user this results in the following information:
 
-<img src="resources/screenshots/lightbulb.png" alt="screenshot" width="300" />
+<img src="resources/screenshots/lightbulb.png" alt="screenshot" width="400" />
 
 ### Netflix
 As of now, the quotient for calculating the streaming duration on Netflix is **100** *. For the user this results in the following information
 
-<img src="resources/screenshots/netflix.png" alt="screenshot" width="300" />
+<img src="resources/screenshots/netflix.png" alt="screenshot" width="400" />
 
 *Also see: https://www.livemint.com/news/world/your-netflix-habit-has-a-carbon-footprint-but-not-a-big-one-11623368952984.html
 
@@ -138,13 +138,13 @@ This quotient is based on the following functions:
 
 For the user this results in the following information:
 
-<img src="resources/screenshots/charges.png" alt="screenshot" width="300" />
+<img src="resources/screenshots/charges.png" alt="screenshot" width="400" />
 
 ### Trees planted
 It is assumed, that one tree absorbs 200kg of CO2 during its live.
 Following this assumption, the quotient for calculating the amount of trees to be grown is **200000**  For the user this results in the following information:
 
-<img src="resources/screenshots/trees.png" alt="screenshot" width="300" />
+<img src="resources/screenshots/trees.png" alt="screenshot" width="400" />
 
 ## App Permissions
 The Application needs a couple of permissions in order to function properly.
