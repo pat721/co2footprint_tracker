@@ -4,7 +4,7 @@ This project is being developed for the [OFAR4All](https://map.bodenseehochschul
 
 The measured results are computed and displayed on the app.   
 
-<img src="resources/screenshots/home.png" alt="screenshot" width="200" />
+<img src="resources/screenshots/home.png" alt="screenshot" width="400" />
 
 
 ## About the application
