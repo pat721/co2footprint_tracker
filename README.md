@@ -123,8 +123,6 @@ As of now, the quotient for calculating the streaming duration on Netflix is **1
 
 *Also see: https://www.livemint.com/news/world/your-netflix-habit-has-a-carbon-footprint-but-not-a-big-one-11623368952984.html
 
-
-
 ### Charged
 
 As of now, the quotient for calculating the amount of battery charges on a smartphone is *2.35875*.
@@ -140,13 +138,13 @@ This quotient is based on the following functions:
 
 For the user this results in the following information:
 
-<img src="resources/screenshots/charges.png" alt="screenshot" style="zoom:33%;" />
+<img src="resources/screenshots/charges.png" alt="screenshot" width="300" />
 
 ### Trees planted
 It is assumed, that one tree absorbs 200kg of CO2 during its live.
 Following this assumption, the quotient for calculating the amount of trees to be grown is **200000**  For the user this results in the following information:
 
-<img src="resources/screenshots/trees.png" alt="screenshot" style="zoom:33%;" />
+<img src="resources/screenshots/trees.png" alt="screenshot" width="300" />
 
 ## App Permissions
 The Application needs a couple of permissions in order to function properly.
