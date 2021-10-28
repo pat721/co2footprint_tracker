@@ -104,22 +104,22 @@ This may change in the future. For now the CO2 equivalents are composed in the f
 ### Car
 As of now, the cars quotient for calculating the distance driven is **139**. For the user this results in the following information:
 
-<img src="resources/screenshots/car.png" alt="screenshot" style="zoom:33%;" />
+<img src="resources/screenshots/car.png" alt="screenshot" width="300" />
 
 ### Aircraft
 As of now, the planes quotient for calculating the distance flown is **201**. For the user this results in the following information:
 
-<img src="resources/screenshots/plane.png" alt="screenshot" style="zoom:33%;" />
+<img src="resources/screenshots/plane.png" alt="screenshot" width="300" />
 
 ### Lightbulb
 As of now, the light bulbs quotient for calculating the lightning duration is **20**. For the user this results in the following information:
 
-<img src="resources/screenshots/lightbulb.png" alt="screenshot" style="zoom:33%;" />
+<img src="resources/screenshots/lightbulb.png" alt="screenshot" width="300" />
 
 ### Netflix
 As of now, the quotient for calculating the streaming duration on Netflix is **100** *. For the user this results in the following information
 
-<img src="resources/screenshots/netflix.png" alt="screenshot" style="zoom:33%;" />
+<img src="resources/screenshots/netflix.png" alt="screenshot" width="300" />
 
 *Also see: https://www.livemint.com/news/world/your-netflix-habit-has-a-carbon-footprint-but-not-a-big-one-11623368952984.html
 
